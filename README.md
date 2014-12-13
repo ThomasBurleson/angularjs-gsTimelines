@@ -10,6 +10,9 @@ New animation requirements and a viable DSL (for AngularJS ngAnimate) will be de
 *  [Polymer WebAnimations](https://github.com/web-animations/web-animations-js)
 *  [Famo.us](http://famo.us/)
 
+
+![dsl_ideas](https://cloud.githubusercontent.com/assets/210413/5424470/0d8c746e-82b6-11e4-92ba-3c76a5b89807.jpg)
+
 ## Greensock API
 
 Use Greensock's (**GSAP**) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions. These animation implementations will be used to create a DSL API... achieved by exploring the API usages & complexities of functionality required to create desired effects and UX.
