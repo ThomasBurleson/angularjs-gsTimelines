@@ -13,7 +13,7 @@ New animation requirements and a viable DSL (for AngularJS ngAnimate) will be de
 For these experiments, two (2) real-world UX applications were selected from Material Design: 
 ![dsl_ideas](https://cloud.githubusercontent.com/assets/210413/5424470/0d8c746e-82b6-11e4-92ba-3c76a5b89807.jpg)
 
-Each application will be implemented with the three (3) Animation libraries... and allow implementations will be used to identify common APIs and features. That API will, in turn, be used to derive a XML-based Animation DSL.
+Each application will be implemented with the three (3) Animation libraries show above. These implementations will be used to identify core animation APIs and features. And that API will, in turn, be used to derive a XML-based Animation DSL.
 
 ## Greensock API
 
