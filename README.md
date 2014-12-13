@@ -17,16 +17,16 @@ New animation requirements and a viable DSL (for AngularJS ngAnimate) will be de
 
 Use Greensock's (**GSAP**) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions. These animation implementations will be used to create a DSL API... achieved by exploring the API usages & complexities of functionality required to create desired effects and UX.
 
-The samples contained here include:
+The samples HTML source is here:
 
 *  [Koda_1.html](src/koda_1.html): &nbsp;&nbsp;**jQuery** only with click animation
 *  [Koda_2.html](src/koda_2.html): &nbsp;&nbsp;**AngularJS** with Timeline slider controls.
 
-Live Demos
+And online, live demos of these samples are also available:
+
+*  [Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj)
 
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
-
-> Click here: [Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj)
 
 ---
 
