@@ -1,10 +1,14 @@
 ## Animation DSL
 
-The goal is to identify an HTML-level DSL that conforms in power and features to the Javascript API typically used for animations and UX transitions.
+The goal is to identify an HTML-level DSL that conforms in power and features to the Javascript API typically used for animations and UX transitions. 
+
+Quick Link:  [Full Koda DSL](koda_timelines.xml)
+
+#### From Javascript to DSL 
 
 Consider the JavaScript usages of the Greensock TimeLine API below:
 
-> See [CodePen Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj) - Javascript-based version
+> See [Koda #2 Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj) - Javascript-based version
 
 ```js
 var mask = document.getElementById("mask"),
@@ -43,7 +47,7 @@ zoom.timeScale(1)
     .to( info_cnt,    1.0, { opacity:1 },            "fullWdith+=0.6");
 ```            
 
-We can this express the same API and transitions as an HTML DSL (contained in [koda_timelines.xml](koda_timelines.xml)):
+We can this express the same API and transitions as an HTML DSL (see the full version contained in [Full Koda DSL](koda_timelines.xml)):
 
 ```xml
 
