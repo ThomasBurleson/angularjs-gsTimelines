@@ -23,9 +23,9 @@ Use Greensock's (**GSAP**) `TimelineLite` within a Gridlist application and demo
 
 | Description | HTML | Javascript | Live Demos | DSL |
 |--------|--------|--------|--------|--------|
-| jQuery app with click animation | [koda_1.html](src/koda_1.html) |  [koda_1.js](src/assets/js/koda_1.js) | [CodePen #1](http://codepen.io/ThomasBurleson/pen/OPMgqj) | [Koda #1](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl) | 
+| jQuery app with click animation | [koda_1.html](src/koda_1.html) |  [koda_1.js](src/assets/js/koda_1.js) | [CodePen #1](http://codepen.io/ThomasBurleson/pen/OPMgqj) |  | 
 | AngularJS app with Timeline slider controls | [koda_2.html](src/koda_2.html) |  [koda_2.js](src/assets/js/koda_2.js) |  | |
-| AngularJS app with DSL | [koda_3.html](src/koda_3.html) |  [koda_3.js](src/assets/js/koda_3.js) |  | |
+| AngularJS app with DSL |  | |  | [Koda #1](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)|
 <br/>
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
 
