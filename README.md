@@ -4,6 +4,7 @@
 
 Use Greensock's (GSAP) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions. Koda implementations will be used to explore the API usages & complexities of functionality required to create desired effects and UX.
 
+[Live CodePen Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj)
 
 ![koda_gridlist](https://cloud.githubusercontent.com/assets/210413/5424252/316fb6c4-82ad-11e4-977d-6cf3d597c0f9.png)
 
