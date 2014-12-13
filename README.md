@@ -51,7 +51,7 @@ Koda #2 Only
 
 Koda #3 Only
 
-- Support to drag on image to manually sequence through transitions
+- Support to drag on image to manually sequence through transition frames
 
 ---
 
