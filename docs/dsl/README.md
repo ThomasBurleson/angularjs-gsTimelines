@@ -4,6 +4,8 @@ The goal is to identify an HTML-level DSL that conforms in power and features to
 
 Consider the JavaScript usages of the Greensock TimeLine API below:
 
+> See [CodePen Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj) - Javascript-based version
+
 ```js
 var mask = document.getElementById("mask"),
     details = document.getElementById("details"),
@@ -40,8 +42,6 @@ zoom.timeScale(1)
     .to( pause,       0.4, { opacity:1, scale:1.0 }, "fullWidth+=0.4")
     .to( info_cnt,    1.0, { opacity:1 },            "fullWdith+=0.6");
 ```            
-
-> See [CodePen Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj) - Javascript-based version
 
 We can this same API as a HTML DSL (contained in [koda_timelines.xml](koda_timelines.xml)):
 
