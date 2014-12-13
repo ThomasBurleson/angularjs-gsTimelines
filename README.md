@@ -22,10 +22,11 @@ The samples contained here include:
 *  [Koda_1.html](src/koda_1.html): &nbsp;&nbsp;**jQuery** only with click animation
 *  [Koda_2.html](src/koda_2.html): &nbsp;&nbsp;**AngularJS** with Timeline slider controls.
 
----
+Live Demos
 
-[CodePen Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj):
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
+
+> Click for [Live Demo]([CodePen Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj)
 
 ---
 
