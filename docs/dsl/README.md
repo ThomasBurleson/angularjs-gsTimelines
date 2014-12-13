@@ -90,6 +90,8 @@ We can this express the same API and transitions as an HTML-based DSL:
 
 This DSL is much more expressive and - in fact - is intended to be specified with the *.html. Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
 
+---
+
 ### DSL Heuristics
 
 #### Transition Overlays:
