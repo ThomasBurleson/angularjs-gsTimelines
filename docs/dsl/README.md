@@ -63,10 +63,10 @@ Additional rules:
 Reference values for complex selectors (e.g. `#details > #info`) are cached for subsequent step usages.
 
 
-### Additional APIS
+### Additional APIs
 
-The DSL above is based on usages and API of  GSAP (GreenSock Animation Platform).
+The DSL above is based on usages and API of GSAP (GreenSock Animation Platform).
 
-> An important consideration to note is the the GSAP developer(s) have been publishing Flash Animation code since for &gt; 10 years and its Javascript equivalents for &gt; 3 years. The API will is well thought and is based on real-world validation from tens-of-thousands of developers and designers.
+> An important consideration to note is the the GSAP developer(s) have been publishing Flash Animation code since for &gt; 10 years and its Javascript equivalents for &gt; 3 years. The GSAP API will is mature, rich, and is based on real-world validation from tens-of-thousands of developers and designers.
 
 The Polymer WebAnimations API must be reviewed and studied to identify parity and mismatches of functionality/features.
