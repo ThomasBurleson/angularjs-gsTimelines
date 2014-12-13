@@ -24,6 +24,7 @@ Here are some quick links to experiments used:
 | **jQuery** only with click animation | [Koda_1](src/koda_1.html) |  [Koda_1](src/assets/js/koda_1.js) | [Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj) |
 | **AngularJS** with Timeline slider controls | [Koda_2](src/koda_2.html) |  [Koda_2](src/assets/js/koda_2.js) |  |
 
+---
 
 Koda_1 CodePen:
 
