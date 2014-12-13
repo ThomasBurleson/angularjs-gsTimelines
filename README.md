@@ -19,7 +19,7 @@ Each application will be implemented with the three (3) Animation libraries show
 
 #### Koda with GreenSock GSAP 
 
-Use Greensock's (**GSAP**) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions. These animation implementations will be used to create a DSL API... achieved by exploring the API usages & complexities of functionality required to create desired effects and UX.
+Use Greensock's (**GSAP**) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions.
 
 Here are some quick links to source or demos for the experiments:
 
