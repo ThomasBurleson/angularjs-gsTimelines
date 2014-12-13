@@ -25,7 +25,7 @@ Here are some quick links to experiments used:
 | **AngularJS** with Timeline slider controls | [Koda_2](src/koda_2.html) |  [Koda_2](src/assets/js/koda_2.js) |  |
 
 
-#### Koda 1 - CodePen
+Koda_1 CodePen:
 
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
 
