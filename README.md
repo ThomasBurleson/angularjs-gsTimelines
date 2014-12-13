@@ -26,7 +26,7 @@ Live Demos
 
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
 
-> Click for [Live Demo]([CodePen Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj)
+> Click here: [Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj)
 
 ---
 
