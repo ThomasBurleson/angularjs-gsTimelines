@@ -4,8 +4,8 @@
 
 Use Greensock's (GSAP) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions. Koda implementations will be used to explore the API usages & complexities of functionality required to create desired effects and UX. The samples contained here include:
 
-*  [Demo_1](src/demo_1.html): Animations with click support only 
-*  [Demo_2](src/demo_2.html): Animations with Timeline slider controls.
+*  [Demo_1.html](src/demo_1.html): &nbsp;&nbsp;Animations with click support only 
+*  [Demo_2.html](src/demo_2.html): &nbsp;&nbsp;Animations with Timeline slider controls.
 
 ---
 
