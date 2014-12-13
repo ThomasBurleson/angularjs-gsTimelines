@@ -41,7 +41,7 @@ Koda
 - Use promises to delay transitions until the images are ready
 - Dynamically modify timescale so unzoom is faster
 - Use of global keypress to unzoom/reverse the timeline
-- Use tile data model to define dynamic zoom from/to information
+- Use data model to dynamically define tile zoom from/to transitions
 
 Koda #2 Only
 
