@@ -15,7 +15,7 @@ For these experiments, two (2) real-world UX applications were selected from Mat
 
 Each application will be implemented with the three (3) Animation libraries show above. These implementations will be used to identify core animation APIs and features. And that API will, in turn, be used to derive a XML-based Animation DSL.
 
-## Greensock API
+## 1) Koda with Greensock API
 
 Use Greensock's (**GSAP**) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions. These animation implementations will be used to create a DSL API... achieved by exploring the API usages & complexities of functionality required to create desired effects and UX.
 
