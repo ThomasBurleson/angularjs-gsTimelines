@@ -47,7 +47,7 @@ zoom.timeScale(1)
     .to( info_cnt,    1.0, { opacity:1 },            "fullWdith+=0.6");
 ```            
 
-We can this express the same API and transitions as an HTML DSL (see the full version contained in [Full Koda DSL](koda_timelines.xml)):
+We can this express the same API and transitions as an HTML-based DSL (see the full version contained in [Full Koda DSL](koda_timelines.xml)):
 
 ```xml
 
