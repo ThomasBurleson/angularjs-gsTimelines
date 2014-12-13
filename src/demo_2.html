@@ -1,1 +1,60 @@
-<!DOCTYPE html><html>    <head>        <link rel="stylesheet" href="assets/styles.css"/>    </head><body>    <div id="stage" ng-app="kodaline" ng-controller="TimelineController" >        <!-- Tile Grid View -->        <div id="status" class="status"></div>        <div id="header"></div>        <div class="tile1" ng-click="showDetails(0)" ></div>        <div class="tile2" ng-click="showDetails(1)" ></div>        <div class="tile3" ng-click="showDetails(2)" ></div>        <div class="tile4" ng-click="showDetails(3)" ></div>        <div id="other"></div>        <div id="footer"></div>        <!-- Tile Grid Mask -->        <div id="mask" class="hidden"></div>        <!-- Tile Details View -->        <div id="green_status" class="hidden"></div>        <div id="details" class="hidden">            <img src="" class="scaled">            <div id="title" >                <div class="content"></div>            </div>            <div id="info" >                <div class="content"></div>            </div>            <div id="pause">                <img src="http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pause.png" class="pause">            </div>        </div>        <div id="timeline-slider" class="timeline-slider-container hidden" ng-controller="TimelineSliderController">            <input type="range"                   ng-model="slider.position"                   ng-mousedown="isDragging(true)"                   ng-mouseup="isDragging(false)"                   step="{{slider.step}}"                   min="0" max="{{slider.totalDuration}}"                   class="repeat-slider">        </div>    </div>    <script src="//cdnjs.cloudflare.com/ajax/libs/q.js/1.1.2/q.js"></script>    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.14.2/TweenMax.min.js"></script>    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.js"></script>    <script type="text/javascript" src="assets/js/demo_2.js"></script></body></html>
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org/" >
+    <head>
+        <link rel="stylesheet" href="assets/styles.css"/>
+    </head>
+<body>
+
+    <div id="stage" ng-app="kodaline" ng-controller="TimelineController" >
+
+        <!-- Tile Grid View -->
+        <div id="status" class="status"></div>
+        <div id="header"></div>
+
+        <div class="tile1" ng-click="showDetails(0)" ></div>
+        <div class="tile2" ng-click="showDetails(1)" ></div>
+        <div class="tile3" ng-click="showDetails(2)" ></div>
+        <div class="tile4" ng-click="showDetails(3)" ></div>
+
+        <div id="other"></div>
+        <div id="footer"></div>
+
+        <!-- Tile Grid Mask -->
+        <div id="mask" class="hidden"></div>
+
+        <!-- Tile Details View -->
+        <div id="green_status" class="hidden"></div>
+        <div id="details" class="hidden">
+            <img src="" class="scaled">
+            <div id="title" >
+                <div class="content"></div>
+            </div>
+            <div id="info" >
+                <div class="content"></div>
+            </div>
+            <div id="pause">
+                <img src="http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pause.png" class="pause">
+            </div>
+        </div>
+
+        <div id="timeline-slider" class="timeline-slider-container hidden" ng-controller="TimelineSliderController">
+            <input type="range"
+                   ng-model="slider.position"
+                   ng-mousedown="isDragging(true)"
+                   ng-mouseup="isDragging(false)"
+                   step="{{slider.step}}"
+                   min="0" max="{{slider.totalDuration}}"
+                   class="repeat-slider">
+        </div>
+
+    </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/q.js/1.1.2/q.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.14.2/TweenMax.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.js"></script>
+
+    <script type="text/javascript" src="assets/js/demo_2.js"></script>
+</body>
+
+</html>
