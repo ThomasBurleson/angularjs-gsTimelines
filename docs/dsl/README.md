@@ -43,7 +43,7 @@ zoom.timeScale(1)
     .to( info_cnt,    1.0, { opacity:1 },            "fullWdith+=0.6");
 ```            
 
-We can this same API as a HTML DSL (contained in [koda_timelines.xml](koda_timelines.xml)):
+We can this express the same API and transitions as an HTML DSL (contained in [koda_timelines.xml](koda_timelines.xml)):
 
 ```xml
 
@@ -83,6 +83,8 @@ We can this same API as a HTML DSL (contained in [koda_timelines.xml](koda_timel
   </timeline>
 
 ```
+
+This DSL is much more expressive and - in fact - is intended to be specified with the *.html. Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
 
 ### DSL Heuristics
 
