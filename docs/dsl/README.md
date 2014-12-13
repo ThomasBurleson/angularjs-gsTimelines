@@ -43,8 +43,9 @@ The DSL (contained in [koda_timelines.xml](koda_timelines.xml)) is expressed as 
 
 ```
 
-### Rules
+### DSL Heuristics
 
+Transition Overlays:
 
 Note that `position` attribute is a complex attribute that allows a step transition to start relative to the defined position; which can be:
 -  an absolute value that corresponds to an offset for the start of the timeline:  `position="0.3"`
