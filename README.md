@@ -7,9 +7,10 @@ Use Greensock's (GSAP) `TimelineLite` to demonstrate the use of animation timeli
 *  [Demo_1](src/demo_1.html): Animations with click support only 
 *  [Demo_2](src/demo_2.html): Animations with Timeline slider controls.
 
-## Live Demo(s)
+---
+#### Live Demo
 
-[Live Online Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj)
+[CodePen Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj)
 
 ![koda_gridlist](https://cloud.githubusercontent.com/assets/210413/5424252/316fb6c4-82ad-11e4-977d-6cf3d597c0f9.png)
 
