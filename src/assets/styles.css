@@ -1,0 +1,214 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #3e3e3e;
+    padding: 10px;
+}
+
+#stage {
+    position: relative;
+    height: 634px;
+    width: 323px;
+    z-index: 0;
+    overflow: hidden;
+    text-overflow: clip;
+    background-color: rgb(255, 255, 255,0);
+    background-size: 100% 100%;
+    opacity:0;
+}
+
+#stage > div {
+    position: absolute;
+    margin: 0px;
+    right: auto;
+    bottom: auto;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0);
+    background-size: 100% 100%;
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+}
+
+.hidden {
+    display: none;
+}
+
+.scaled {
+    width: 100%
+}
+
+#stage > div#status {
+    top: 0px;
+    width: 323px;
+    height: 21px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/status.png);
+}
+
+#stage > div#green_status {
+    top: 21px;
+    width: 323px;
+    height: 18px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/zoomed_header.png);
+}
+
+#stage > div#header {
+    top: 21px;
+    width: 323px;
+    height: 53px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/header.png);
+}
+
+#stage > div#tile1, #stage > div.tile1 {
+    top: 74px;
+    width: 162px;
+    height: 164px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_kodaline_v3.png);
+    cursor: zoom-in;
+}
+
+#stage > div#tile2, #stage > div.tile2 {
+    left: 162px;
+    top: 74px;
+    width: 161px;
+    height: 164px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_moby_v3.png);
+    cursor: zoom-in;
+}
+
+#stage > div#tile3, #stage > div.tile3 {
+    top: 238px;
+    width: 162px;
+    height: 223px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_supermodel.png);
+    cursor: zoom-in;
+}
+
+#stage > div#tile4, #stage > div.tile4 {
+    left: 162px;
+    top: 238px;
+    width: 161px;
+    height: 223px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_goulding.png);
+    cursor: zoom-in;
+}
+
+
+#stage > div#details {
+    top: 75px;
+    width: 162px;
+    height: 162px;
+    overflow: hidden;
+    z-index: 100;
+    cursor: zoom-out;
+}
+
+#stage div#title {
+    margin-top: -4px;
+    position: relative;
+    width: 323px;
+    height: 0px;
+    /*height: 131px;*/
+    background: #3c6373;
+}
+
+#stage div#title > .content {
+    opacity: 0;
+    width: 323px;
+    height: 131px;
+}
+
+#stage div#info {
+    position: relative;
+    width: 323px;
+    height: 0px;
+    /*height: 56px;*/
+    background: white;
+}
+
+#stage div#info > .content {
+    opacity: 0;
+    width: 323px;
+    height: 56px;
+}
+
+
+#stage > div#other {
+    top: 461px;
+    width: 323px;
+    height: 71px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/otherTiles.png);
+}
+
+#stage > div#footer {
+    top: 532px;
+    width: 323px;
+    height: 42px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/footer.png);
+}
+
+#stage > div#mask {
+    z-index: 0;
+    background-color: rgba(0, 0, 0, 1);
+    opacity: 0.0;
+    top: 75px;
+    width: 324px;
+    height: 458px;
+}
+
+#pause {
+    position: absolute;
+
+    top: 305px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #67CABC;
+    -webkit-box-shadow: 2px 4px 3px 0px rgba(20, 20, 20, 0.7);
+    -moz-box-shadow: 2px 4px 3px 0px rgba(20, 20, 20, 0.7);
+    box-shadow: 2px 4px 3px 0px rgba(20, 20, 20, 0.7);
+
+    -webkit-transform: scale(0.4);
+    -moz-transform: scale(0.4);
+    transform: scale(0.4);
+    opacity: 0;
+    overflow: hidden;
+}
+
+.pause {
+    margin-left: 4px;
+    margin-top: 5px;
+}
+
+div#title > img, div#info > img {
+    opacity: 0;
+}
+
+#stage .timeline-slider-container {
+    position: absolute;
+    top: 590px;
+    left: 40px;
+    background: #ffffff;
+    border-radius: 3px;
+    width: 70%;
+    height: 10px;
+    padding: 10px;
+}
+
+#stage input[type=range] {
+    display: block;
+    background-color: #383838;
+    width: 100%;
+    height: 5px;
+    border-radius: 5px;
+    vertical-align: middle;
+    margin-top: 2px;
+}
+
+#stage .repeat-slider {
+    border: 0;
+    border-radius: 3px;
+    margin: auto;
+    height: 50px;
+    width: 90%;
+}

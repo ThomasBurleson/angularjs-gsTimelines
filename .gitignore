@@ -1,0 +1,7 @@
+*.log
+*.sw*
+.DS_STORE
+bower_components
+node_modules
+dist
+/.idea/
