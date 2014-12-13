@@ -7,7 +7,7 @@ The goal is the development of a next-generation of Animation features for Angul
 New animation requirements and a viable DSL (for AngularJS ngAnimate) will be derived from experiments and explorations of real-world UX animation samples using the following three (3) Animation libraries:
 
 *  [Greensock GSAP](https://github.com/greensock/GreenSock-JS)
-*  [Polymer WebAnimations](https://github.com/web-animations/web-animations-js)
+*  [Polymer WedAnimations](https://www.polymer-project.org/platform/web-animations.html), [GitHub WebAnimations](https://github.com/web-animations/web-animations-js)
 *  [Famo.us](http://famo.us/)
 
 For these experiments, two (2) real-world UX applications were selected from Material Design: 
