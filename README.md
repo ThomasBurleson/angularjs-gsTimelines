@@ -7,7 +7,7 @@ Use Greensock's (GSAP) `TimelineLite` to demonstrate the use of animation timeli
 *  [Demo_1](src/demo_1.html): Animations with click support only 
 *  [Demo_2](src/demo_2.html): Animations with Timeline slider controls.
 
-### Live Demo(s)
+## Live Demo(s)
 
 [Live Online Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj)
 
