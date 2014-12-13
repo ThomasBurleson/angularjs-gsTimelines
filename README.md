@@ -24,8 +24,9 @@ The samples contained here include:
 
 ---
 
-[CodePen Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj)<br/>
-![dsl_codepen](https://cloud.githubusercontent.com/assets/210413/5424485/7f13c97a-82b6-11e4-898b-266bd9a08cb4.jpg)
+[CodePen Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj):
+![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
+
 ---
 
 #### Functional Considerations
