@@ -8,7 +8,9 @@ The samples contained here include:
 
 *  [Demo_1](src/demo_1.html): Animations with click support only 
 *  [Demo_2](src/demo_2.html): Animations with Timeline slider controls.
-*  [CodePen](http://codepen.io/ThomasBurleson/pen/OPMgqj): Live Online Demo
+<br/>
+
+[CodePen](http://codepen.io/ThomasBurleson/pen/OPMgqj): Live Online Demo
 
 ![koda_gridlist](https://cloud.githubusercontent.com/assets/210413/5424252/316fb6c4-82ad-11e4-977d-6cf3d597c0f9.png)
 
