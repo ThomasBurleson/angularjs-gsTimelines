@@ -1,4 +1,4 @@
-# Designing a UX Animation DSL
+# Designing an AngularJS Animation DSL
 
 ## Summary
 
