@@ -2,6 +2,16 @@
 
 ## Summary
 
+The goal is the development of a next-generation of Animation features for AngularJS... with functionality and power to easily develop UX as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) app.
+
+New animation requirements and a viable DSL (for AngularJS ngAnimate) will be derived from experiments and explorations of real-world UX animation samples using the following three (3) Animation libraries:
+
+*  [Greensock GSAP](https://github.com/greensock/GreenSock-JS)
+*  [Polymer WebAnimations](https://github.com/web-animations/web-animations-js)
+*  [Famo.us](http://famo.us/)
+
+## Greensock API
+
 Use Greensock's (**GSAP**) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions. These animation implementations will be used to create a DSL API... achieved by exploring the API usages & complexities of functionality required to create desired effects and UX.
 
 The samples contained here include:
