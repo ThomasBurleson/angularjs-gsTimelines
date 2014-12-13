@@ -21,9 +21,9 @@ Here are some quick links to experiments used:
 
 | Description | HTML | Javascript | Live Demos |
 |--------|--------|--------|--------|
-| **jQuery** only with click animation | [Koda #1](src/koda_1.html) |  [Koda #1](src/assets/js/koda_1.js) | [Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj) |
-| **AngularJS** with Timeline slider controls | [Koda #2](src/koda_2.html) |  [Koda #2](src/assets/js/koda_2.js) |  |
-| **AngularJS** with Timeline Drag features | [Koda #3](src/koda_3.html) |  [Koda #3](src/assets/js/koda_3.js) |  |
+| **jQuery** app with click animation | [Koda #1](src/koda_1.html) |  [Koda #1](src/assets/js/koda_1.js) | [Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj) |
+| **AngularJS** app with Timeline slider controls | [Koda #2](src/koda_2.html) |  [Koda #2](src/assets/js/koda_2.js) |  |
+| **AngularJS** app with Timeline Drag features | [Koda #3](src/koda_3.html) |  [Koda #3](src/assets/js/koda_3.js) |  |
 ---
 
 Koda_1 CodePen:
