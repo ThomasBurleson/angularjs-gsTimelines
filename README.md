@@ -21,3 +21,14 @@ While exploring the animation API requirements, the implemenation should also co
   - Sync Slider to transition timeline
   - Use slider to manually sequence through transition frames
 - Support to drag on image to manually sequence through transitions
+
+### Run Locally
+
+Open Terminal console in the project directory.
+
+```sh
+bower update
+http-server -d ./
+```
+
+Open Browser and navigate to URL `http://localhost:8080/`
