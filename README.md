@@ -35,14 +35,22 @@ Use Greensock's (**GSAP**) `TimelineLite` to demonstrate the use of animation ti
 
 While exploring the animation API requirements, the implemenation should also consider other functional requirements:
 
+Koda 
+
 - Load images in background so zoom works quickly
 - Use promises to delay transitions until the images are ready
 - Dynamically modify timescale so unzoom is faster
 - Use of global keypress to unzoom/reverse the timeline
 - Use tile data model to define dynamic zoom from/to information
+
+Koda #2 Only
+
 - Plugin use of Timeline Slider controls; independent of TimelineController
   - Sync Slider to transition timeline
   - Use slider to manually sequence through transition frames
+
+Koda #3 Only
+
 - Support to drag on image to manually sequence through transitions
 
 ---
