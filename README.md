@@ -15,7 +15,7 @@ For these experiments, two (2) real-world UX applications were selected from Mat
 
 Each application will be implemented with the three (3) Animation libraries show above. These implementations will be used to identify core animation APIs and features. And that API will, in turn, be used to derive a XML-based Animation DSL.
 
-## Koda Applications
+## The Koda Application
 
 #### Koda with GreenSock GSAP 
 
