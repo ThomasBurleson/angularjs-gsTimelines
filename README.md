@@ -49,7 +49,7 @@ While exploring the animation API requirements, the implemenation should also co
 
 ---
 
-#### Tips to Run Locally
+## Tips to Run Locally
 
 Open Terminal console in the project directory.
 
