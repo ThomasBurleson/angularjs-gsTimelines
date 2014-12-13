@@ -26,8 +26,8 @@ Here are some quick links to source or demos for the experiments:
 | AngularJS application with Timeline Drag features | [Koda #3](src/koda_3.html) |  [Koda #3](src/assets/js/koda_3.js) |  |
 
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
+
 ---
-<br/>
 
 #### Functional Considerations
 
