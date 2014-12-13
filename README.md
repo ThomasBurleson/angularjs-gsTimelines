@@ -26,8 +26,8 @@ The samples contained here include:
 
 [CodePen Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj)
 
-![koda_gridlist](https://cloud.githubusercontent.com/assets/210413/5424252/316fb6c4-82ad-11e4-977d-6cf3d597c0f9.png)
 
+![dsl_codepen](https://cloud.githubusercontent.com/assets/210413/5424485/7f13c97a-82b6-11e4-898b-266bd9a08cb4.jpg)
 ---
 
 #### Functional Considerations
