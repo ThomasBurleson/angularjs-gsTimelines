@@ -1,11 +1,13 @@
-# UX Animation Experiments - Koda 
+# Designing a UX Animation DSL
 
 ## Summary
 
-Use Greensock's (**GSAP**) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions. Koda implementations will be used to explore the API usages & complexities of functionality required to create desired effects and UX. The samples contained here include:
+Use Greensock's (**GSAP**) `TimelineLite` to demonstrate the use of animation timelines to build complex transitions. These animation implementations will be used to create a DSL API... achieved by exploring the API usages & complexities of functionality required to create desired effects and UX.
 
-*  [Demo_1.html](src/demo_1.html): &nbsp;&nbsp;**jQuery** only with click animation
-*  [Demo_2.html](src/demo_2.html): &nbsp;&nbsp;**AngularJS** with Timeline slider controls.
+The samples contained here include:
+
+*  [Koda_1.html](src/koda_1.html): &nbsp;&nbsp;**jQuery** only with click animation
+*  [Koda_2.html](src/koda_2.html): &nbsp;&nbsp;**AngularJS** with Timeline slider controls.
 
 ---
 
