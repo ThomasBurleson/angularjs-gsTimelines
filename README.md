@@ -24,9 +24,7 @@ The samples contained here include:
 
 ---
 
-[CodePen Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj)
-
-
+[CodePen Koda_1](http://codepen.io/ThomasBurleson/pen/OPMgqj)<br/>
 ![dsl_codepen](https://cloud.githubusercontent.com/assets/210413/5424485/7f13c97a-82b6-11e4-898b-266bd9a08cb4.jpg)
 ---
 
