@@ -1,5 +1,5 @@
-<!-- 
-    Proposed DSL version (instead of programmatically)
+<!--
+    Proposed DSL version (instead of programmatic)
 
     See Javascript Timeline usage in online sample
     @http://codepen.io/ThomasBurleson/pen/OPMgqj
@@ -8,7 +8,7 @@
 
   <!-- Show the full details for the selected Tile/thumbnail -->
 
-  <timeline id="enter"
+  <timeline state="enter"
           time-scale="1"
           resolve="preloadImages(source)"
           cache="true" >
@@ -27,12 +27,10 @@
       <!-- frame #details as overlay above thumbnail of tile `source` element -->
 
       <step style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" class="" />
-      <step duration="0.3"  style="left:0; height:210; width:323;" />
-
+      <step style="left:0; height:210; width:323;" duration="0.3"  />
       <step mark-position="fullWidth"/>
-      <step duration="300" style="top:18; height:512" position="fullWidth-=0.3"/>
+      <step style="top:18; height:512" duration="300" position="fullWidth-=0.3"/>
       <step mark-position="slideIn"/>
-
       <step target="#details > #green" style="z-index:92; opacity:1; top:21;" class="" />
       <step target="#details > #green"               style="top:0;" />
       <step target="#details > #title"               style="height:131;"  duration="200" position="fullWidth" />
@@ -47,7 +45,7 @@
 
   <!-- Hide the full details for the selected Tile/thumbnail -->
 
-  <timeline id="leave" time-scale="1.4">
+  <timeline state="leave" time-scale="1.4">
 
     <timeline target="#mask">
        <step duration="0.5" style="opacity:0.80;" ease="Sine.easeIn" position="0.5" />
@@ -57,18 +55,15 @@
     <timeline target="#details">
 
       <step mark-position="start"/>
-
       <step target="#details > #green"               styles="opacity:0.0; top:21"   duration="0.2" class="hidden" />
       <step target="#details > #pause"               style="opacity:0.0; scale:0.4" duration="0.1" position="start" />
       <step target="#details > #title > div.content" style="opacity:0;"             duration="0.1" position="start" />
       <step target="#details > #info > div.content"  style="opacity:0;"             duration="0.1" position="start" />
       <step target="#details > #info"                style="height:0;"              duration="0.2" position="start=+0.2" />
       <step target="#details > #title"               style="height:0;"              duration="0.2" position="start=+0.2" />
-
       <step duration="0.3" style="top:from.top; height:{{to.height}};"  position="start=+0.2" />
       <step duration="0.3" style="left:{{from.left}};width:{{from.width}};height:{{from.height}}; ease:'Sine.easeIn';"  />
       <step duration="0.3" style="opacity:0;"  />
-
       <step class="hidden" />
 
     </timeline>

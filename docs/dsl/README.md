@@ -1,0 +1,71 @@
+## Animation DSL
+
+The DSL (contained in [koda_timelines.xml](koda_timelines.xml)) is expressed as HTML markup and is intended to be *adjacent* to standard HTML tags.
+
+> See [CodePen Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj) - Javascript-based version
+
+```xml
+
+<timeline state="enter"
+          time-scale="1"
+          resolve="preloadImages(source)"
+          cache="true" >
+
+    <!-- timelines for #mask and #details run in parallel -->
+
+    <timeline target="#mask" position="">
+
+      <step style="z-index:90;" class="" />
+      <step duration="0.5" style="opacity:0.8;" position="300" />
+
+    </timeline>
+
+    <timeline target="#details" position="">
+
+      <!-- frame #details as overlay above thumbnail of tile `source` element -->
+
+      <step style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" class="" />
+      <step style="left:0; height:210; width:323;" duration="0.3"  />
+      <step mark-position="fullWidth"/>
+      <step style="top:18; height:512" duration="300" position="fullWidth-=0.3"/>
+      <step mark-position="slideIn"/>
+      <step target="#details > #green" style="z-index:92; opacity:1; top:21;" class="" />
+      <step target="#details > #green"               style="top:0;" />
+      <step target="#details > #title"               style="height:131;"  duration="200" position="fullWidth" />
+      <step target="#details > #info"                style="height:56;"   duration="0.6" position="fullWidth+=0.2" />
+      <step target="#details > #title > div.content" style="opacity:1.0;" duration="500" position="fullWidth+=0.3" />
+      <step target="#details > #pause"               style="opacity:0.8;" duration="800" position="fullWidth+=0.4" />
+      <step target="#details > #info > div.content"  style="opacity:0;"   duration="0.4" position="fullWidth+=0.6" />
+
+    </timeline>
+
+  </timeline>
+
+```
+
+### Rules
+
+
+Note that `position` attribute is a complex attribute that allows a step transition to start relative to the defined position; which can be:
+-  an absolute value that corresponds to an offset for the start of the timeline:  `position="0.3"`
+-  a label value that corresponds to a frame with the specified label:  `position="start"`
+-  a label and offset value that corresponds to a time offset from the labelled frame:  `position="start=+0.2"`
+
+If a `position` is not defined, then the step will be placed in the timeline queue based on aggregate durations of all preceding steps.
+
+Additional rules:
+
+-  All nested sibling timelines with `position=""` start at parent starttime and run in parallel.
+- `<step>` can nest child timelines; which will be started at when the `step` frame is reached.
+-  If a step does specify a `target` then the `timeline` target is used.
+-  if a step does not specify a `duration` then the changes are immediate (duration === 0).
+
+Reference values for complex selectors (e.g. `#details > #info`) are cached for subsequent step usages.
+
+The DSL above is based on usages and API of  GSAP (GreenSock Animation Platform).
+
+An important consideration to note is the the GSAP developer(s) have been publishing Flash Animation code since for > 10 years and its Javascript equivalents for > 3 years. The API will is well thought and is based on real-world validation from tens-of-thousands of developers and designers.
+
+### Additional APIS
+
+The Polymer WebAnimations API must be reviewed and studied to identify parity and mismatches of functionality/features.
