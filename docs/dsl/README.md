@@ -45,7 +45,7 @@ The DSL (contained in [koda_timelines.xml](koda_timelines.xml)) is expressed as 
 
 ### DSL Heuristics
 
-Transition Overlays:
+#### Transition Overlays:
 
 Note that `position` attribute is a complex attribute that allows a step transition to start relative to the defined position; which can be:
 -  an absolute value that corresponds to an offset for the start of the timeline:  `position="0.3"`
@@ -54,7 +54,7 @@ Note that `position` attribute is a complex attribute that allows a step transit
 
 If a `position` is not defined, then the step will be placed in the timeline queue based on aggregate durations of all preceding steps.
 
-Additional rules:
+#### Additional rules:
 
 -  All nested sibling timelines with `position=""` start at parent starttime and run in parallel.
 - `<step>` can nest child timelines; which will be started at when the `step` frame is reached.
@@ -64,7 +64,7 @@ Additional rules:
 Reference values for complex selectors (e.g. `#details > #info`) are cached for subsequent step usages.
 
 
-### Additional APIs
+## Additional APIs
 
 The DSL above is based on usages and API of GSAP (GreenSock Animation Platform).
 
