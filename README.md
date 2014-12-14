@@ -57,8 +57,8 @@ We can this express this same transition as an HTML-based DSL:
 
     <timeline target="#mask" position="">
 
-      <step style="z-index:90;" class="" />
-      <step duration="0.5" style="opacity:0.8;" position="300" />
+      <step                                          style="z-index:90;" class="" />
+      <step duration="0.5"                           style="opacity:0.8;" position="300" />
 
     </timeline>
 
