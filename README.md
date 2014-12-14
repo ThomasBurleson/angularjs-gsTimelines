@@ -66,12 +66,12 @@ We can this express this same transition as an HTML-based DSL:
 
       <!-- frame #details as overlay above thumbnail of tile `source` element -->
 
-      <step style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" class="" />
-      <step style="left:0; height:210; width:323;" duration="0.3"  />
+      <step                                          style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" class="" />
+      <step                                          style="left:0; height:210; width:323;" duration="0.3"  />
       <step mark-position="fullWidth"/>
-      <step style="top:18; height:512" duration="300" position="fullWidth-=0.3"/>
+      <step                                          style="top:18; height:512" duration="300" position="fullWidth-=0.3"/>
       <step mark-position="slideIn"/>
-      <step target="#details > #green" style="z-index:92; opacity:1; top:21;" class="" />
+      <step target="#details > #green"               style="z-index:92; opacity:1; top:21;" class="" />
       <step target="#details > #green"               style="top:0;" />
       <step target="#details > #title"               style="height:131;"  duration="200" position="fullWidth" />
       <step target="#details > #info"                style="height:56;"   duration="0.6" position="fullWidth+=0.2" />
