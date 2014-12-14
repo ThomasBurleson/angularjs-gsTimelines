@@ -83,6 +83,28 @@ We can this express this same transition as an HTML-based DSL:
 
   </timeline>
 
+<div id="stage" ng-app="kodaline" ng-controller="TimelineController" >
+
+    <!-- Tile Grid View -->
+    <div id="status" class="status"></div>
+    <div id="header"></div>
+
+    <div class="tile1" ng-click="showDetails(0)" ></div>
+    <div class="tile2" ng-click="showDetails(1)" ></div>
+    <div class="tile3" ng-click="showDetails(2)" ></div>
+    <div class="tile4" ng-click="showDetails(3)" ></div>
+
+    <div id="other"></div>
+    <div id="footer"></div>
+
+    <!-- Tile Grid Mask -->
+    <div id="mask" class="hidden"></div>
+
+    <!-- Tile Details View -->
+    <div id="green_status" class="hidden"></div>
+    <div id="details" class="hidden">
+
+
 ```
 
 This DSL is much more expressive and, more importantly, is embedded within the **HTML** markup adjacent to the DOM elements that will transitioned... 
