@@ -22,6 +22,9 @@ Consider the JavaScript usages of the Greensock TimeLine API below:
 > See [Koda #2 Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj) - Javascript-based version
 
 ```js
+var zoom = new TimelineLite({paused:true}),
+    unzoom = new TimelineLite({paused:true});
+
 var mask = document.getElementById("mask"),
     details = document.getElementById("details"),
     green = document.getElementById("green_status"),
@@ -31,31 +34,25 @@ var mask = document.getElementById("mask"),
     title_cnt = title.children[0],
     info_cnt  = info.children[0];
 
-var zoom = new TimelineLite({paused:true}),
-    unzoom = new TimelineLite({paused:true});
-
-var from = options.from,
-    to   = options.to;
-
 // Do zoom to show Kodaline details...
 
 zoom.timeScale(1)
-    .set(mask,             { zIndex:90, className:""})
-    .set(details,          options.from )
-    .set(details,          { className:"" })
-    .to( details,  0.2,    { opacity:1} )
-    .to( details,  0.3,    { left:0, height:to.height, width:323 } )
+    .set($("#mask"),             { zIndex:90, className:""})
+    .set($("#details"),          { height:162, opacity:0, width:162 } )
+    .set($("#details"),          { className:"" })
+    .to( $("#details"),  0.2,    { opacity:1} )
+    .to( $("#details"),  0.3,    { left:0, height:210, width:323 } )
     .addLabel("fullWdith")
-    .to( mask,        0.5, { opacity:0.80 },        "fullWidth-=0.3" )
-    .to( details,     0.3, { top:18, height:512 },  "fullWidth-=0.05" )
+    .to( $("#mask"),        0.5, { opacity:0.80 },        "fullWidth-=0.3" )
+    .to( $("#details"),     0.3, { top:18, height:512 },  "fullWidth-=0.05" )
     .addLabel("slideIn")
-    .set(green,            { zIndex:92, opacity:1.0, top:21, className:"" })
-    .to( green,       0.2, { top:0 },                "slideIn" )
-    .to( title,       0.6, { height:131 },           "fullWdith")
-    .to( info,        0.5, { height:56 },            "fullWdith+=0.2")
-    .to( title_cnt,   0.8, { opacity:1 },            "fullWdith+=0.3")
-    .to( pause,       0.4, { opacity:1, scale:1.0 }, "fullWidth+=0.4")
-    .to( info_cnt,    1.0, { opacity:1 },            "fullWdith+=0.6");
+    .set($("#details > #green"),            { zIndex:92, opacity:1.0, top:21, className:"" })
+    .to( $("#details > #green"),       0.2, { top:0 },                "slideIn" )
+    .to( $("#details > #tile"),       0.6, { height:131 },           "fullWdith")
+    .to( $("#details > #info"),        0.5, { height:56 },            "fullWdith+=0.2")
+    .to( $("#details > #title > div.content"),   0.8, { opacity:1 },            "fullWdith+=0.3")
+    .to( $("#details > #pause"),       0.4, { opacity:1, scale:1.0 }, "fullWidth+=0.4")
+    .to( $("#details > #info > div.content"),    1.0, { opacity:1 },            "fullWdith+=0.6");
 ```            
 
 We can this express the same API and transitions as an HTML-based DSL:
