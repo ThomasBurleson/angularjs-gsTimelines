@@ -19,8 +19,6 @@ Each application will be implemented with the three (3) Animation libraries show
 
 Consider the JavaScript usages of the Greensock TimeLine API below:
 
-> See [Koda #2 Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj) - Javascript-based version
-
 ```js
 var zoom = new TimelineLite({paused:true}),
     unzoom = new TimelineLite({paused:true});
@@ -46,7 +44,7 @@ zoom.timeScale(1)
     .to( $("#details > #info > div.content"), 1.0, { opacity:1 },            "fullWdith+=0.6");
 ```            
 
-We can this express the same API and transitions as an HTML-based DSL:
+We can this express this same transition as an HTML-based DSL:
 
 ```xml
 
