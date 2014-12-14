@@ -47,7 +47,7 @@ zoom.timeScale(1)
 We can this express this same transition as an HTML-based DSL:
 
 ```xml
-
+<!-- Animation DSL -->
 <timeline state="enter"
           time-scale="1"
           resolve="preloadImages(source)"
@@ -83,6 +83,7 @@ We can this express this same transition as an HTML-based DSL:
 
   </timeline>
 
+<!-- UI View Elements --> 
 <div id="stage" ng-app="kodaline" ng-controller="TimelineController" >
 
     <!-- Tile Grid View -->
