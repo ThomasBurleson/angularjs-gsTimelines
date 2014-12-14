@@ -2,7 +2,7 @@
 
 ## Summary
 
-The goal is the development of a *next-generation* Animation features for AngularJS... with functionality and power to easily develop rich UX; as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) app.
+The goal is the development of a *next-generation* Animation features for AngularJS... with functionality and power to easily develop rich UX... as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) app.
 
 New Animation API requirements and a viable **DSL** (domain-specific-language layered on top of AngularJS ngAnimate) will be derived from experiments and explorations of real-world UX animation samples using the following three (3) Animation libraries:
 
