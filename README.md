@@ -85,7 +85,9 @@ We can this express this same transition as an HTML-based DSL:
 
 ```
 
-This DSL is much more expressive and - in fact - is intended to be specified with the *.html. Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
+This DSL is much more expressive and, more importantly, is embedded within the *.html markup. 
+
+> Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
 
 ---
 
