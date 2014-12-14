@@ -51,7 +51,7 @@ We can this express this same transition as an HTML-based DSL:
 
 <body ng-app="kodaline">
 
-<!-- Animation DSL -->
+ <!-- Animation DSL -->
 
  <timeline state="enter"
           time-scale="1"
@@ -85,10 +85,9 @@ We can this express this same transition as an HTML-based DSL:
       <step target="#details > #info > div.content"  style="opacity:0;"   duration="0.4" position="fullWidth+=0.6" />
 
     </timeline>
-
  </timeline>
 
-<!-- UI View Elements --> 
+ <!-- UI View Elements --> 
 
  <div id="stage" ng-controller="TimelineController" >
 
