@@ -53,7 +53,7 @@ We can this express this same transition as an HTML-based DSL:
 
 <!-- Animation DSL -->
 
-<timeline state="enter"
+ <timeline state="enter"
           time-scale="1"
           resolve="preloadImages(source)"
           cache="true" >
@@ -86,11 +86,11 @@ We can this express this same transition as an HTML-based DSL:
 
     </timeline>
 
-  </timeline>
+ </timeline>
 
 <!-- UI View Elements --> 
 
-<div id="stage" ng-controller="TimelineController" >
+ <div id="stage" ng-controller="TimelineController" >
 
     <!-- Tile Grid View -->
     <div id="status" class="status"></div>
