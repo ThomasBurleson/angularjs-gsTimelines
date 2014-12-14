@@ -85,9 +85,11 @@ We can this express this same transition as an HTML-based DSL:
 
 ```
 
-This DSL is much more expressive and, more importantly, is embedded within the *.html markup. And some of the parameters (eg. Line #69) support AngularJS interpolation symbols and data-binding.
+This DSL is much more expressive and, more importantly, is embedded within the *.html markup. 
 
-> Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
+>And some of the parameters (eg. Line #69) support AngularJS interpolation symbols and data-binding.
+
+Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
 
 ---
 
