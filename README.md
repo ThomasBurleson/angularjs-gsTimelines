@@ -85,7 +85,7 @@ We can this express this same transition as an HTML-based DSL:
 
 ```
 
-This DSL is much more expressive and, more importantly, is embedded within the ** HTML ** markup. 
+This DSL is much more expressive and, more importantly, is embedded within the **HTML** markup. 
 
 >And some of the parameters (eg. Line #69) support AngularJS interpolation symbols and data-binding.
 
