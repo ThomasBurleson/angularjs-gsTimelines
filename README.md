@@ -57,7 +57,6 @@ We can this express this same transition as an HTML-based DSL:
           time-scale="1"
           resolve="preloadImages(source)"
           cache="true" >
-
     <!-- timelines for #mask and #details run in parallel -->
 
     <timeline target="#mask" position="">
@@ -66,7 +65,6 @@ We can this express this same transition as an HTML-based DSL:
       <step duration="0.5"                           style="opacity:0.8;" position="300" />
 
     </timeline>
-
     <timeline target="#details" position="">
 
       <!-- frame #details as overlay above thumbnail of tile `source` element -->
