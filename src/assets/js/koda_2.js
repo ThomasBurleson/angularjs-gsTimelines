@@ -17,6 +17,10 @@
      *   - Use slider to manually sequence through transition frames
      * - Support to drag on image to manually sequence through transitions
      *
+     *  //cdnjs.cloudflare.com/ajax/libs/gsap/1.14.2/TweenMax.min.js
+     *  //cdnjs.cloudflare.com/ajax/libs/q.js/1.1.2/q.js
+     *  //ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.js
+     *
      */
     angular.module("kodaline",['ng'])
            .factory( "tiles", TileDataModel )
@@ -84,10 +88,10 @@
                     timeline(transitions.enter);
 
                     details.onclick = hideDetails = function() {
-                        timeline().timeScale(1.4).reverse();
+                        timeline().timeScale(1.8).reverse();
                     };
 
-                    timeline().timeScale(1.0).restart();
+                    timeline().timeScale(1.4).restart();
                 });
             });
         }
@@ -139,10 +143,10 @@
 
             zoom.timeScale(1)
                 .set(mask,             { zIndex:90, className:""})
-                .set(details,          options.from )
-                .to( details,  0.2,    { className:"", opacity:1} )
-                .to( details,  0.3,    { left:0, height:to.height, width:323 } )
-                .addLabel("fullWdith")
+                .set(details,          angular.extend( options.from,{className:'',opacity:0} ) )
+                .to( details,  0.3,    { opacity:1} )
+                .to( details,  0.3,    { left:0, height:to.height, width:329 } )
+                .addLabel("fullWidth")
                 .to( mask,        0.5, { opacity:0.80 },        "fullWidth-=0.3" )
                 .to( details,     0.3, { top:18, height:512 },  "fullWidth-=0.05" )
                 .addLabel("slideIn")
@@ -385,12 +389,12 @@
             {
                 from: {
                     left:0,
-                    top: 74,
-                    width: 162,
+                    top: 75,
+                    width: 160,
                     height: 164
                 },
                 to : {
-                    height : 210
+                    height : 216
                 },
                 thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_kodaline_v3.png",
                 albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_kodaline.png",
@@ -399,13 +403,13 @@
             },
             {
                 from: {
-                    left:163,
-                    top: 74,
-                    width: 161,
-                    height: 164
+                    left:165,
+                    top: 75,
+                    width: 160,
+                    height: 166
                 },
                 to : {
-                    height : 210
+                    height : 216
                 },
                 thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_moby_v3.png",
                 albumSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_moby_v2.png",
@@ -415,12 +419,12 @@
             {
                 from: {
                     left:0,
-                    top: 239,
-                    width: 161,
-                    height: 223
+                    top: 240,
+                    width: 159,
+                    height: 221
                 },
                 to : {
-                    height : 223
+                    height : 229
                 },
                 thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_supermodel.png",
                 albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_supermodel.png",
@@ -430,13 +434,13 @@
             },
             {
                 from: {
-                    left: 163,
-                    top: 239,
-                    width: 161,
+                    left: 164,
+                    top: 240,
+                    width: 160,
                     height: 223
                 },
                 to : {
-                    height : 223
+                    height : 229
                 },
                 thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_goulding.png",
                 albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_goulding.png",

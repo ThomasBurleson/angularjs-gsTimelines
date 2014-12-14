@@ -142,7 +142,7 @@
                 .set(details,          options.from )
                 .to( details,  0.2,    { className:"", opacity:1} )
                 .to( details,  0.3,    { left:0, height:to.height, width:323 } )
-                .addLabel("fullWdith")
+                .addLabel("fullWidth")
                 .to( mask,        0.5, { opacity:0.80 },        "fullWidth-=0.3" )
                 .to( details,     0.3, { top:18, height:512 },  "fullWidth-=0.05" )
                 .addLabel("slideIn")

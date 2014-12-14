@@ -1,4 +1,8 @@
 $(function(){
+  //cdnjs.cloudflare.com/ajax/libs/gsap/1.14.2/TweenMax.min.js
+  //cdnjs.cloudflare.com/ajax/libs/q.js/1.1.2/q.js
+  //ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.js
+
     var hideDetails;
 
     scaleStage();
