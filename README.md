@@ -4,7 +4,7 @@
 
 The goal is the development of a next-generation of Animation features for AngularJS... with functionality and power to easily develop UX as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) app.
 
-New animation requirements and a viable DSL (layered on top of AngularJS ngAnimate) will be derived from experiments and explorations of real-world UX animation samples using the following three (3) Animation libraries:
+New Animation API requirements and a viable **DSL** (domain-specific-language layered on top of AngularJS ngAnimate) will be derived from experiments and explorations of real-world UX animation samples using the following three (3) Animation libraries:
 
 *  [Greensock GSAP](https://github.com/greensock/GreenSock-JS)
 *  [Polymer WedAnimations](https://www.polymer-project.org/platform/web-animations.html), [GitHub  WebAnimations](https://github.com/web-animations/web-animations-js)
@@ -14,6 +14,94 @@ For these experiments, two (2) real-world UX applications were selected from Mat
 ![dsl_ideas](https://cloud.githubusercontent.com/assets/210413/5424470/0d8c746e-82b6-11e4-92ba-3c76a5b89807.jpg)
 
 Each application will be implemented with the three (3) Animation libraries show above. These implementations will be used to identify core animation APIs and features. And that API will, in turn, be used to derive a XML-based Animation DSL.
+
+#### From Javascript to DSL 
+
+Consider the JavaScript usages of the Greensock TimeLine API below:
+
+> See [Koda #2 Live Demo](http://codepen.io/ThomasBurleson/pen/OPMgqj) - Javascript-based version
+
+```js
+var mask = document.getElementById("mask"),
+    details = document.getElementById("details"),
+    green = document.getElementById("green_status"),
+    pause = document.getElementById("pause"),
+    title = document.getElementById("title"),
+    info = document.getElementById("info"),
+    title_cnt = title.children[0],
+    info_cnt  = info.children[0];
+
+var zoom = new TimelineLite({paused:true}),
+    unzoom = new TimelineLite({paused:true});
+
+var from = options.from,
+    to   = options.to;
+
+// Do zoom to show Kodaline details...
+
+zoom.timeScale(1)
+    .set(mask,             { zIndex:90, className:""})
+    .set(details,          options.from )
+    .set(details,          { className:"" })
+    .to( details,  0.2,    { opacity:1} )
+    .to( details,  0.3,    { left:0, height:to.height, width:323 } )
+    .addLabel("fullWdith")
+    .to( mask,        0.5, { opacity:0.80 },        "fullWidth-=0.3" )
+    .to( details,     0.3, { top:18, height:512 },  "fullWidth-=0.05" )
+    .addLabel("slideIn")
+    .set(green,            { zIndex:92, opacity:1.0, top:21, className:"" })
+    .to( green,       0.2, { top:0 },                "slideIn" )
+    .to( title,       0.6, { height:131 },           "fullWdith")
+    .to( info,        0.5, { height:56 },            "fullWdith+=0.2")
+    .to( title_cnt,   0.8, { opacity:1 },            "fullWdith+=0.3")
+    .to( pause,       0.4, { opacity:1, scale:1.0 }, "fullWidth+=0.4")
+    .to( info_cnt,    1.0, { opacity:1 },            "fullWdith+=0.6");
+```            
+
+We can this express the same API and transitions as an HTML-based DSL:
+
+```xml
+
+<timeline state="enter"
+          time-scale="1"
+          resolve="preloadImages(source)"
+          cache="true" >
+
+    <!-- timelines for #mask and #details run in parallel -->
+
+    <timeline target="#mask" position="">
+
+      <step style="z-index:90;" class="" />
+      <step duration="0.5" style="opacity:0.8;" position="300" />
+
+    </timeline>
+
+    <timeline target="#details" position="">
+
+      <!-- frame #details as overlay above thumbnail of tile `source` element -->
+
+      <step style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" class="" />
+      <step style="left:0; height:210; width:323;" duration="0.3"  />
+      <step mark-position="fullWidth"/>
+      <step style="top:18; height:512" duration="300" position="fullWidth-=0.3"/>
+      <step mark-position="slideIn"/>
+      <step target="#details > #green" style="z-index:92; opacity:1; top:21;" class="" />
+      <step target="#details > #green"               style="top:0;" />
+      <step target="#details > #title"               style="height:131;"  duration="200" position="fullWidth" />
+      <step target="#details > #info"                style="height:56;"   duration="0.6" position="fullWidth+=0.2" />
+      <step target="#details > #title > div.content" style="opacity:1.0;" duration="500" position="fullWidth+=0.3" />
+      <step target="#details > #pause"               style="opacity:0.8;" duration="800" position="fullWidth+=0.4" />
+      <step target="#details > #info > div.content"  style="opacity:0;"   duration="0.4" position="fullWidth+=0.6" />
+
+    </timeline>
+
+  </timeline>
+
+```
+
+This DSL is much more expressive and - in fact - is intended to be specified with the *.html. Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
+
+---
 
 ## The Koda Application
 
