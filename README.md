@@ -17,7 +17,7 @@ Each application will be implemented with the three (3) Animation libraries show
 
 #### From Javascript to DSL 
 
-Consider the JavaScript usages of the Greensock TimeLine API below:
+Consider the Koda JavaScript use of the Greensock TimeLine API:
 
 ```js
 var zoom = new TimelineLite({paused:true}),
