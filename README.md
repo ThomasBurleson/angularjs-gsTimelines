@@ -25,15 +25,6 @@ Consider the JavaScript usages of the Greensock TimeLine API below:
 var zoom = new TimelineLite({paused:true}),
     unzoom = new TimelineLite({paused:true});
 
-var mask = document.getElementById("mask"),
-    details = document.getElementById("details"),
-    green = document.getElementById("green_status"),
-    pause = document.getElementById("pause"),
-    title = document.getElementById("title"),
-    info = document.getElementById("info"),
-    title_cnt = title.children[0],
-    info_cnt  = info.children[0];
-
 // Do zoom to show Kodaline details...
 
 zoom.timeScale(1)
@@ -46,13 +37,13 @@ zoom.timeScale(1)
     .to( $("#mask"),        0.5, { opacity:0.80 },        "fullWidth-=0.3" )
     .to( $("#details"),     0.3, { top:18, height:512 },  "fullWidth-=0.05" )
     .addLabel("slideIn")
-    .set($("#details > #green"),            { zIndex:92, opacity:1.0, top:21, className:"" })
-    .to( $("#details > #green"),       0.2, { top:0 },                "slideIn" )
-    .to( $("#details > #tile"),       0.6, { height:131 },           "fullWdith")
-    .to( $("#details > #info"),        0.5, { height:56 },            "fullWdith+=0.2")
-    .to( $("#details > #title > div.content"),   0.8, { opacity:1 },            "fullWdith+=0.3")
-    .to( $("#details > #pause"),       0.4, { opacity:1, scale:1.0 }, "fullWidth+=0.4")
-    .to( $("#details > #info > div.content"),    1.0, { opacity:1 },            "fullWdith+=0.6");
+    .set($("#details > #green"),                   { zIndex:92, opacity:1.0, top:21, className:"" })
+    .to( $("#details > #green"),              0.2, { top:0 },                "slideIn" )
+    .to( $("#details > #tile"),               0.6, { height:131 },           "fullWdith")
+    .to( $("#details > #info"),               0.5, { height:56 },            "fullWdith+=0.2")
+    .to( $("#details > #title > div.content"),0.8, { opacity:1 },            "fullWdith+=0.3")
+    .to( $("#details > #pause"),              0.4, { opacity:1, scale:1.0 }, "fullWidth+=0.4")
+    .to( $("#details > #info > div.content"), 1.0, { opacity:1 },            "fullWdith+=0.6");
 ```            
 
 We can this express the same API and transitions as an HTML-based DSL:
