@@ -2,8 +2,6 @@
 
 The goal is to identify an HTML-level DSL that conforms in power and features to the Javascript API typically used for animations and UX transitions. 
 
-Quick Link:  [Full-version of Koda DSL](koda_timelines.xml)
-
 #### From Javascript to DSL 
 
 Consider the JavaScript usages of the Greensock TimeLine API below:
