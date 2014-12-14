@@ -114,7 +114,7 @@ We can this express this same transition as an HTML-based DSL:
 
 ```
 
-Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
+Instead of the current separation of animation logic (and element manipulation) to `<script>.js`, we can express both the UI and the UX transitions within the UI layers of the client: `<html>.html`.
 
 Some of the parameters (eg. Line #69) support AngularJS interpolation symbols and data-binding. This is powerful feature over the javascript-approach... timelines will be automatically updated when scope variables are modified. This, in turn, means that the timeline can be applied to 1..n targets. In the case of Koda, the timeline is applied to any of the gridlist tiles.
 
