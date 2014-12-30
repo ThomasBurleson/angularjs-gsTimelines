@@ -1,8 +1,42 @@
 (function(){
     "use strict";
 
+    /**
+     * GSAP TimelineLite AngularJS module that supports
+     * a custom DSL for animation definitions
+     *
+     * @usage
+     * <gs-timeline id="zoom"  time-scale="1" >
+     *
+     *   <gs-step target="#mask"      style="zIndex:-10;className:''"  duration="0.001" />
+     *   <gs-step target="#details"   style="zIndex:-15;className:''"  duration="0.001" />
+     *
+     *   <gs-step target="#mask"      style="zIndex:90;" duration="0.001" />
+     *   <gs-step target="#details"   style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}};"  duration="0.001"/>
+     *
+     *   <gs-step target="#details"   style="opacity:1;" duration="0.4" />
+     *   <gs-step target="#details"   style="left:0; height:{{selectedTile.to.height}}; width:329;" duration="0.5"  />
+     *
+     *       <gs-step mark-position="fullWidth"/>
+     *
+     *   <gs-step target="#mask"      style="opacity:0.80;"                   duration="0.5" position="fullWidth-=0.3"/>
+     *   <gs-step target="#details"   style="opacity:1; top:18; height:512;"  duration="0.3" position="fullWidth-=0.1"/>
+     *
+     *       <gs-step mark-position="slideIn"/>
+     *
+     *   <gs-step target="#details > #green"               style="zIndex:92; opacity:1; top:21; className:'';" />
+     *   <gs-step target="#details > #green"               style="top:0;"       duration="0.2" position="slideIn"/>
+     *   <gs-step target="#details > #title"               style="height:131;"  duration="0.6" position="fullWidth" />
+     *   <gs-step target="#details > #info"                style="height:56;"   duration="0.5" position="fullWidth+=0.2" />
+     *   <gs-step target="#details > #title > div.content" style="opacity:1.0;" duration="0.8" position="fullWidth+=0.3" />
+     *   <gs-step target="#details > #pause"               style="opacity:1; scale:1.0;" duration="0.4" position="fullWidth+=0.4" />
+     *   <gs-step target="#details > #info > div.content"  style="opacity:1;"   duration="0.4" position="fullWidth+=0.6" />
+     *
+     *  </gs-timeline>
+     *
+     */
     angular.module('gsTimelines', [ 'ng' ])
-        .service(  '$timelines', TimelineBuilder )
+        .service(  '$timeline', TimelineBuilder )
         .directive('gsTimeline',  TimelineDirective )
         .directive('gsStep',      StepDirective );
 
@@ -21,13 +55,33 @@
                 register     : register,
                 makeTimeline : makeTimeline
             },
+
             // Special lookup or accessor function
-            $timeline = function (id){
-                return angular.isDefined(id) ? self.id(id) : self;
+
+            $timeline = function (id, callbacks ){
+                if ( angular.isDefined(id) ){
+                    var promise = self.id(id);
+
+                    // Add 1 or more event callbacks to the animation?
+                    if ( callbacks) {
+                        promise = promise.then(function(tl){
+                            //var events = ["onComplete", "onReverseComplete", "onUpdate"];
+                            var events = getKeys(callbacks);
+
+                            events.forEach(function(key){
+                               tl.eventCallback(key, callbacks[key] || angular.noop, ["{self}"] );
+                            });
+
+                            return tl;
+                        });
+                    }
+                    return promise;
+                }
+                return self;
             };
 
             // Attach special direct search and make functions to the published
-            // API for `$timelines` service
+            // API for `$timeline` service
 
             angular.forEach(self,function(fn,key){
                 $timeline[key] = fn;
@@ -54,7 +108,6 @@
 
             var timeline = source.timeline || new TimelineLite({paused: true, data: {id: source.id || counter++ }});
                 timeline.clear(true).timeScale( source.timeScale );
-                timeline.eventCallback("onUpdate", source.onUpdate || angular.noop, ["{self}"] );
 
             source.timeline = timeline;
             source.steps.forEach(function(step, index) {
@@ -113,12 +166,6 @@
                         $log.debug( "add child timeline( '{data.id}' )".supplant(it) );
                     }
                 });
-
-                timeline.eventCallback("onUpdate", function onTimeLineUpdate(tl)
-                {
-                    $log.debug( "timeline( '{data.id}' ).onUpdate(...)".supplant(tl) );
-
-                }, ["{self}"]);
 
                 return timeline;
             }
@@ -259,6 +306,22 @@
         function stripQuotes(source) {
             return source.replace(/\"/g,"").replace(/\'/g,"");
         }
+
+        /**
+         * Get array of object properties
+         * @param source
+         * @returns {keys}
+         */
+        function getKeys(source) {
+            var results = [];
+            for (var key in source ) {
+                if ( source.hasOwnProperty(key) ) {
+                    results.push(key);
+                }
+            }
+
+            return results;
+        }
     }
 
 
@@ -270,7 +333,7 @@
      * @param $scope
      * @constructor
      */
-    function TimeLineController($scope, $element, $q, $timelines) {
+    function TimeLineController($scope, $element, $q, $timeline) {
         var self         = this,
             timeline     = null,
             children     = [ ],
@@ -282,7 +345,7 @@
         self.addStep  = onStepChanged;  // Publish method for StepDirective
         self.addChild = onAddTimeline;  // Publish method for TimelineDirective
 
-        // Publish accessors for $timelines::makeTimeline()
+        // Publish accessors for $timeline::makeTimeline()
 
         // ******************************************************************
         // Internal Builder Methods
@@ -312,7 +375,7 @@
                      if ( children.length || steps.length ) {
 
                          // Build or update the TimelineLite instance
-                         timeline = $timelines.makeTimeline({
+                         timeline = $timeline.makeTimeline({
                              timeline : timeline,
                              steps    : steps,
                              children : children,
@@ -321,7 +384,7 @@
                          });
 
                          // Register for easy lookups later...
-                         $timelines.register( timeline, $scope.id, $scope.state );
+                         $timeline.register( timeline, $scope.id, $scope.state );
                      }
 
                      // Add to parent as child timeline (if parent exists)
@@ -417,7 +480,7 @@
     * @returns {{restrict: string, controller: string, link: Function}}
     * @constructor
     */
-   function TimelineDirective($timeout, $timelines) {
+   function TimelineDirective($timeout, $timeline) {
        var counter = 1;
 
        return {
@@ -463,7 +526,7 @@
                          if ( current === undefined ) return;
                          if ( state   === ""        ) return;
 
-                         $timelines(scope.id).then(function( timeline ){
+                         $timeline(scope.id).then(function( timeline ){
 
                             if ( current == state ) timeline.restart();
                             else if (current == "") timeline.reverse();

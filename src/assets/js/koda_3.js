@@ -29,7 +29,7 @@
      * KodaController constructor
      * @constructor
      */
-    function KodaController( $scope, $element, $timeout, $log, $timelines, tiles) {
+    function KodaController( $scope, $element, $timeout, $log, $timeline, tiles) {
 
         $scope.showDetails = showDetails;
         $scope.hideDetails = angular.noop;
@@ -53,12 +53,17 @@
          */
         function showDetails(tileIndex) {
             var selectedTile = tiles[tileIndex];
-
+            var onComplete = function(direction, action) {
+                  action = action || "finished";
+                  return function(tl) {
+                      $log.debug( "tl('{0}') {1}...".supplant([direction, action]));
+                  };
+                };
             var unZoom = function() {
                   $scope.$apply(function(){
 
                     // Reverse the `zoom` animation
-                    $timelines("zoom").then(function(timeline){
+                    $timeline("zoom").then(function(timeline){
                        $scope.hideDetails = angular.noop;
 
                        timeline.reverse();
@@ -66,12 +71,21 @@
                   });
                 },
                 doZoom = function() {
+                    // Prepare event callbacks for logging...
+                    var eventCallbacks = {
+                            onComplete        : onComplete("zoom"),
+                            onReverseComplete : onComplete("unzoom"),
+                            onUpdate          : onComplete("zoom", "update")
+                        };
+
                     // Update databindings in <timeline> markup
                     // to use the selected tile...
+
                     $scope.selectedTile = angular.extend({}, selectedTile);
 
                     // start the `zoom` animation
-                    $timelines("zoom").then(function(timeline){
+
+                    $timeline("zoom", eventCallbacks ).then(function(timeline){
                         timeline.restart();
                     });
                 };
