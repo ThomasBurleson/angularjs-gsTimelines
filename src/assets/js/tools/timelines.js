@@ -63,9 +63,10 @@
                     var promise = self.id(id);
 
                     // Add 1 or more event callbacks to the animation?
+                    // events : ["onComplete", "onReverseComplete", "onUpdate"]
+
                     if ( callbacks) {
                         promise = promise.then(function(tl){
-                            //var events = ["onComplete", "onReverseComplete", "onUpdate"];
                             var events = getKeys(callbacks);
 
                             events.forEach(function(key){
