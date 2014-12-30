@@ -59,6 +59,9 @@
             // Special lookup or accessor function
 
             $timeline = function (id, callbacks ){
+
+                // Is this an implicit lookup?
+
                 if ( angular.isDefined(id) ){
                     var promise = self.id(id);
 
@@ -78,6 +81,9 @@
                     }
                     return promise;
                 }
+
+                // Not a lookup, so return the API
+
                 return self;
             };
 
@@ -274,19 +280,18 @@
          */
         function toJSON(style) {
            var result = { };
-           var pairs = style ? style.split(";") : [ ];
+           var pairs = !style ? [ ] : style.replace(/\s+/g,"").split(/;|,/g);
 
            pairs.forEach(function(it) {
-              it = it.trim();
-              if ( it.length ) {
-                  it = it.split(":");
-                  var key = it[0];
-                  var value = it[1];
+             if ( it.length ) {
+               it = it.split(":");
+               var key = it[0];
+               var value = it[1];
 
-                  if ( String(value).length ) {
-                    result[ stripQuotes(key) ] = stripQuotes(value);
-                  }
-              }
+               if ( String(value).length ) {
+                 result[ stripQuotes(key) ] = stripQuotes(value);
+               }
+             }
            });
 
            return result;
