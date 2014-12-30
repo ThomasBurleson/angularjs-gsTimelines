@@ -264,14 +264,6 @@
 
         // Publish accessors for $timelines::buildTimeline()
 
-        self.target   = function(){ return $scope.target;            };
-        self.timeScale= function(){ return +$scope.timeScale || 1.0; };
-        self.position = function(){ return +$scope.position  || 0.0; };
-
-        self.steps    = function(){ return steps;                    };
-        self.timeline = function(){ return $q.when(timeline);        };
-
-
         // ******************************************************************
         // Internal Builder Methods
         // ******************************************************************
@@ -282,8 +274,6 @@
          * rebuilding.
          */
         function asyncRebuild() {
-
-            self.timeline = getTimelinePromise; // Publish deferred timeline accessor
 
             bouncedRebuild = bouncedRebuild || debounce(rebuildTimeline, 10);
             pendingRebuild = pendingRebuild || $q.defer();
@@ -303,11 +293,11 @@
 
                          // Build or update the TimelineLite instance
                          timeline = $timelines.instanceOf({
+                             timeline : timeline,
                              steps    : steps,
-                             timeScale: self.timeScale(),
-                             target   : self.target(),
                              children : children,
-                             timeline : timeline
+                             target   : $scope.target,
+                             timeScale: +$scope.timeScale || 1.0
                          });
 
                          // Register for easy lookups later...
@@ -315,7 +305,7 @@
                      }
 
                      // Add to parent as child timeline (if parent exists)
-                     parentCntrl && parentCntrl.addChild( timeline );
+                     parentCntrl && parentCntrl.addChild( timeline, +$scope.position  || 0.0 );
 
                      // Now resolve any pending requests with the up-to-date `timeline`
                      pendingRebuild.resolve( timeline );
@@ -324,25 +314,7 @@
                      pendingRebuild = null;
                  }
              }
-
-            /**
-             * Get a promise for the current or updated timeline
-             */
-             function getTimelinePromise() {
-                var deferred = $q.defer();
-
-                    if ( pendingRebuild ) {
-                        pendingRebuild.promise.then( deferred.resolve, deferred.reject );
-                    }
-                    else {
-                        deferred.resolve( timeline );
-                    }
-
-                return deferred.promise;
-             }
         }
-
-
 
         /**
          * Add a child timeline instance to this timeline parent
