@@ -21,15 +21,15 @@
      *  //ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.js
      *
      */
-    angular.module("kodaline",['TimelineDSL','ng'])
-        .factory( "tiles", TileDataModel )
-        .controller("KodaController",       KodaController )
+    angular.module("kodaline",['gsTimelines','ng'])
+        .factory(   "tiles",          TileDataModel )
+        .controller("KodaController", KodaController )
 
     /**
      * KodaController constructor
      * @constructor
      */
-    function KodaController( $scope, $element, $timeout, $timelines, tiles) {
+    function KodaController( $scope, $element, $timeout, $log, $timelines, tiles) {
 
         $scope.showDetails = showDetails;
         $scope.hideDetails = angular.noop;
@@ -52,37 +52,38 @@
          *
          */
         function showDetails(tileIndex) {
-            var source = tiles[tileIndex];
+            var selectedTile = tiles[tileIndex];
+
             var unZoom = function() {
                   $scope.$apply(function(){
-                        $timelines
-                            .id("zoom")
-                            .then(function(timeline){
-                                timeline.reverse();
-                                $scope.hideDetails = angular.noop;
-                            });
+
+                    // Reverse the `zoom` animation
+                    $timelines("zoom").then(function(timeline){
+                       $scope.hideDetails = angular.noop;
+
+                       timeline.reverse();
                     });
+                  });
                 },
                 doZoom = function() {
                     // Update databindings in <timeline> markup
-                    $scope.source = angular.extend({}, source);
+                    // to use the selected tile...
+                    $scope.selectedTile = angular.extend({}, selectedTile);
 
-                    // Find
-                    $timelines
-                      .id("zoom")
-                      .then(function(timeline){
-                          timeline.restart();
-                      });
+                    // start the `zoom` animation
+                    $timelines("zoom").then(function(timeline){
+                        timeline.restart();
+                    });
                 };
 
             // Load images for the tile to be zoomed...
 
-            loadTileImages(source).then(function()
+            loadTileImages(selectedTile).then(function()
             {
-                $timeout(function(){
-                    doZoom();
-                    $scope.hideDetails = unZoom;
-                },20);
+                // Push to scope for use by autoClose()
+                $scope.hideDetails = unZoom;
+
+                doZoom();
             });
         }
 
@@ -95,12 +96,13 @@
          * Load all the full-size images in the background...
          */
         function loadImages() {
+            var preloads = tiles.slice(1);
             try {
 
                 // Sequentially load the tiles (not parallel)
                 // NOTE: we are using a hidden `img src` to do the pre-loading
 
-                return tiles.reduce(function(promise, tile ){
+                return preloads.reduce(function(promise, tile ){
                     return promise.then(function(){
                         return loadTileImages(tile ,"#backgroundLoader").then(function(){
                             return 0; // first tile index
@@ -116,13 +118,13 @@
          * Preload background and foreground images before transition start
          * Only load() 1x using the `imageLoaded` flag
          */
-        function loadTileImages(source, selector) {
+        function loadTileImages(tile, selector) {
             var deferred = Q.defer();
             // Update the background image for the `title` div
 
             if ( !selector ) {
-                $("#stage div#title > .content").css("background-image", "url(" + source.titleSrc + ")");
-                $("#stage div#info  > .content").css("background-image", "url(" + source.infoSrc + ")");
+                $("#stage div#title > .content").css("background-image", "url(" + tile.titleSrc + ")");
+                $("#stage div#info  > .content").css("background-image", "url(" + tile.infoSrc + ")");
             }
 
             // Use a promise to start the transition ONCE the full album image has
@@ -130,24 +132,29 @@
 
             selector = selector || "#details > img";
 
-            if ( !source.imageLoaded ) {
-                $(selector)
-                    .load(function(){
-                        // Manually track load status
-                        source.imageLoaded = true;
+            $log.debug( "loadTileImages( {0} ).src = {1}".supplant([selector || "", tile.albumSrc]));
+            $log.debug( "preloaded == " + tile.imageLoaded);
 
-                        $timeout(function(){
-                            deferred.resolve(source.transitions);
-                        },40,false);
+            if ( !tile.imageLoaded ) {
 
-                    })
-                    .attr("src", source.albumSrc);
+                $(selector).one( "load", function(){
+                    $log.debug( " $('{0}').loaded() ".supplant([selector]) );
+
+                    // Manually track load status
+                    tile.imageLoaded = true;
+
+                    $timeout(function(){
+                        deferred.resolve(tile);
+                    }, 70);
+                })
+                .attr("src", tile.albumSrc);
+
             } else {
-                $(selector).attr("src", source.albumSrc);
+                $(selector).attr("src", tile.albumSrc);
 
                 $timeout(function(){
-                    deferred.resolve(source.transitions);
-                },40,false);
+                    deferred.resolve(tile);
+                }, 70);
             }
 
             return deferred.promise;
@@ -201,6 +208,9 @@
     /**
      * Tile DataModel factory for model data used in Tile animations
      * @constructor
+     * 
+     * CDN Prefix:     http://solutionoptimist-bucket.s3.amazonaws.com/kodaline
+     * Local Prefix:   ./assets/images/koda
      */
     function TileDataModel() {
         return [
@@ -214,10 +224,10 @@
                 to : {
                     height : 216
                 },
-                thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_kodaline_v3.png",
-                albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_kodaline.png",
-                titleSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/title_kodaline.png",
-                infoSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/info_kodaline.png"
+                thumbSrc: "./assets/images/koda/thumb_kodaline_v3.png",
+                albumSrc: "./assets/images/koda/album_kodaline.png",
+                titleSrc : "./assets/images/koda/title_kodaline.png",
+                infoSrc : "./assets/images/koda/info_kodaline.png"
             },
             {
                 from: {
@@ -229,10 +239,10 @@
                 to : {
                     height : 216
                 },
-                thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_moby_v3.png",
-                albumSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_moby_v2.png",
-                titleSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/title_moby.png",
-                infoSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/info_moby.png"
+                thumbSrc: "./assets/images/koda/thumb_moby_v3.png",
+                albumSrc : "./assets/images/koda/album_moby_v2.png",
+                titleSrc : "./assets/images/koda/title_moby.png",
+                infoSrc : "./assets/images/koda/info_moby.png"
             },
             {
                 from: {
@@ -244,10 +254,10 @@
                 to : {
                     height : 229
                 },
-                thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_supermodel.png",
-                albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_supermodel.png",
-                titleSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/title_supermodel.png",
-                infoSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/info_supermodel.png"
+                thumbSrc: "./assets/images/koda/thumb_supermodel.png",
+                albumSrc: "./assets/images/koda/album_supermodel.png",
+                titleSrc : "./assets/images/koda/title_supermodel.png",
+                infoSrc : "./assets/images/koda/info_supermodel.png"
 
             },
             {
@@ -260,10 +270,10 @@
                 to : {
                     height : 229
                 },
-                thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_goulding.png",
-                albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_goulding.png",
-                titleSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/title_goulding.png",
-                infoSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/info_goulding.png"
+                thumbSrc: "./assets/images/koda/thumb_goulding.png",
+                albumSrc: "./assets/images/koda/album_goulding.png",
+                titleSrc : "./assets/images/koda/title_goulding.png",
+                infoSrc : "./assets/images/koda/info_goulding.png"
             },
             {
                 from: {
@@ -275,10 +285,10 @@
                 to : {
                     height : 216
                 },
-                thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_kodaline_v3.png",
-                albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_kodaline.png",
-                titleSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/title_kodaline.png",
-                infoSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/info_kodaline.png"
+                thumbSrc: "./assets/images/koda/thumb_kodaline_v3.png",
+                albumSrc: "./assets/images/koda/album_kodaline.png",
+                titleSrc : "./assets/images/koda/title_kodaline.png",
+                infoSrc : "./assets/images/koda/info_kodaline.png"
             }
         ];
     }

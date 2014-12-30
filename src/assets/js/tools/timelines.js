@@ -1,31 +1,153 @@
-    angular.module('TimelineDSL', [ 'ng' ])
+(function(){
+    "use strict";
+
+    angular.module('gsTimelines', [ 'ng' ])
         .service(  '$timelines', TimelineBuilder )
-        .directive('timeline',  TimelineDirective )
-        .directive('step',      StepDirective );
+        .directive('gsTimeline',  TimelineDirective )
+        .directive('gsStep',      StepDirective );
 
 
     /**
-     * Service to build a GSAP TimelineLite instance based on <timeline> and nested <step>
+     * Service to build a GSAP TimelineLite instance based on <gs-timeline> and nested <gs-step>
      * directive settings...
      */
     function TimelineBuilder($log, $rootScope, $q ) {
         var counter = 0,
             targets = { },
             cache   = { },
-            self;
+            self    = {
+                state        : findByState,
+                id           : findById,
+                register     : register,
+                makeTimeline : makeTimeline
+            },
+            // Special lookup or accessor function
+            $timeline = function (id){
+                return angular.isDefined(id) ? self.id(id) : self;
+            };
 
-        // Publish API for `$timelines` service
+            // Attach special direct search and make functions to the published
+            // API for `$timelines` service
 
-        return self = {
-            state      : findByState,
-            id         : findById,
-            register   : register,
-            instanceOf : build
-        };
+            angular.forEach(self,function(fn,key){
+                $timeline[key] = fn;
+            });
+
+
+        // Publish the service with its API
+
+        return $timeline;
 
         // ******************************************************************
         // Internal Methods
         // ******************************************************************
+
+        /**
+         * Make or update a TimelineLite instance
+         *
+         * @param source TimelineController
+         * @param flushTargets Boolean to rebuild the query selectors
+         * @returns {*} GSAP TimelineLite instance
+         */
+        function makeTimeline(source, flushTargets) {
+            targets = flushTargets ? { } : targets;
+
+            var timeline = source.timeline || new TimelineLite({paused: true, data: {id: source.id || counter++ }});
+                timeline.clear(true).timeScale( source.timeScale );
+                timeline.eventCallback("onUpdate", source.onUpdate || angular.noop, ["{self}"] );
+
+            source.timeline = timeline;
+            source.steps.forEach(function(step, index) {
+
+                var element     = querySelector(step.target);
+                var frameLabel  = keyValue(step, "markPosition");
+                var position    = keyValue(step, "position", "");
+                var styles      = toJSON(keyValue(step, "style"));
+                var hasDuration = !!keyValue(step, "duration");
+                var duration    = hasDuration ? keyValue(step, "duration") : 0;
+
+                if ( frameLabel )   timeline.addLabel( frameLabel );
+                if ( hasDuration )  timeline.to(element,  +duration, styles,  position );
+                else                timeline.set(element, styles );
+
+            });
+            source.children.forEach(function(it){
+                if ( it.timeline ) {
+                    timeline.add(it.timeline, it.position);
+
+                    // Unpause children timelines
+                    it.timeline.paused(false);
+                }
+            });
+
+            return logBuild(source);
+
+            // ******************************************************************
+            // Internal Debug Methods
+            // ******************************************************************
+
+            function logBuild( source ) {
+                var timeline = source.timeline;
+
+                $log.debug( "---------------------".supplant(timeline) );
+                $log.debug( "rebuild timeline( {data.id} )".supplant(timeline) );
+                $log.debug( "---------------------".supplant(timeline) );
+
+                source.steps.forEach(function(step, index) {
+
+                    var element     = querySelector(step.target);
+                    var frameLabel  = keyValue(step, "markPosition");
+                    var position    = keyValue(step, "position", "");
+                    var styles      = toJSON(keyValue(step, "style"));
+                    var hasDuration = !!keyValue(step, "duration");
+                    var duration    = hasDuration ? keyValue(step, "duration") : 0;
+
+                    if ( frameLabel )       $log.debug( "addLabel( '{0}' )"                       .supplant( [frameLabel] ));
+                    else if ( hasDuration ) $log.debug( "timeline.set( '{0}', {1},  {2}, '{3}' )" .supplant( [step.target, duration, JSON.stringify(styles), position ] ));
+                    else                    $log.debug( "timeline.set( '{0}', '{1}' )"            .supplant( [step.target, JSON.stringify(styles)] ));
+
+                });
+
+                source.children.forEach(function(it){
+                    if ( it.timeline ) {
+                        $log.debug( "add child timeline( '{data.id}' )".supplant(it) );
+                    }
+                });
+
+                timeline.eventCallback("onUpdate", function onTimeLineUpdate(tl)
+                {
+                    $log.debug( "timeline( '{data.id}' ).onUpdate(...)".supplant(tl) );
+
+                }, ["{self}"]);
+
+                return timeline;
+            }
+
+            // ******************************************************************
+            // Internal Builder Methods
+            // ******************************************************************
+
+            /**
+             * Find DOM element associated with query selector
+             * Use the fallback timeline target if the step target `selector` is not
+             * specified.
+             *
+             * @param selector
+             * @returns {*}
+             */
+            function querySelector( selector ) {
+                selector = selector || source.target;
+
+                var element = targets[selector];
+                if ( !element ) {
+
+                    // Cache the jQuery querySelector for reuse
+                    targets[selector] = element = $(selector);
+                }
+
+                return element;
+            }
+        }
 
         /**
          * Provide a async lookup to return a timeline after
@@ -93,112 +215,10 @@
             }
         }
 
-        /**
-         * Build a TimelineLite instance
-         *
-         * @param source TimelineController
-         * @param flushTargets Boolean to rebuild the query selectors
-         * @returns {*} GSAP TimelineLite instance
-         */
-        function build(source, flushTargets) {
-            targets = flushTargets ? { } : targets;
 
-            var timeline = source.timeline || new TimelineLite({paused: true, data: {id: source.id || counter++ }});
-                timeline.clear(true).timeScale( source.timeScale );
-                timeline.eventCallback("onUpdate", source.onUpdate || angular.noop, ["{self}"] );
-
-            source.timeline = timeline;
-            source.steps.forEach(function(step, index) {
-
-                var element     = querySelector(step.target);
-                var frameLabel  = keyValue(step, "markPosition");
-                var position    = keyValue(step, "position", "");
-                var styles      = toJSON(keyValue(step, "style"));
-                var hasDuration = !!keyValue(step, "duration");
-                var duration    = hasDuration ? keyValue(step, "duration") : 0;
-
-                if ( frameLabel )   timeline.addLabel( frameLabel );
-                if ( hasDuration )  timeline.to(element,  +duration, styles,  position );
-                else                timeline.set(element, styles );
-
-            });
-            source.children.forEach(function(it){
-                if ( it.timeline ) {
-                    timeline.add(it.timeline, it.position);
-
-                    // Unpause children timelines
-                    it.timeline.paused(false);
-                }
-            });
-
-            return logBuild(source);
-
-            // ******************************************************************
-            // Internal Debug Methods
-            // ******************************************************************
-
-            function logBuild( source ) {
-                var timeline = source.timeline;
-
-                $log.debug( "---------------------".supplant(timeline) );
-                $log.debug( "rebuild timeline( {data.id} )".supplant(timeline) );
-                $log.debug( "---------------------".supplant(timeline) );
-
-                source.steps.forEach(function(step, index) {
-
-                    var element     = querySelector(step.target);
-                    var frameLabel  = keyValue(step, "markPosition");
-                    var position    = keyValue(step, "position", "");
-                    var styles      = toJSON(keyValue(step, "style"));
-                    var hasDuration = !!keyValue(step, "duration");
-                    var duration    = hasDuration ? keyValue(step, "duration") : 0;
-
-                    if ( frameLabel )  $log.debug( "addLabel( '{0}' )"                    .supplant( [frameLabel] ));
-                    if ( hasDuration ) $log.debug( "timeline.set( '{0}', {1},  {2}, '{3}' )" .supplant( [step.target, duration, JSON.stringify(styles), position ] ));
-                    else               $log.debug( "timeline.set( '{0}', '{1}' )"            .supplant( [step.target, JSON.stringify(styles)] ));
-
-                });
-
-                source.children.forEach(function(it){
-                    if ( it.timeline ) {
-
-                    }
-                });
-
-                timeline.eventCallback("onUpdate", function onTimeLineUpdate(tl)
-                {
-                    $log.debug("timeline " + tl.data.id + " update()");
-
-                }, ["{self}"]);
-
-                return timeline;
-            }
-
-            // ******************************************************************
-            // Internal Builder Methods
-            // ******************************************************************
-
-            /**
-             * Find DOM element associated with query selector
-             * Use the fallback timeline target if the step target `selector` is not
-             * specified.
-             *
-             * @param selector
-             * @returns {*}
-             */
-            function querySelector( selector ) {
-                selector = selector || source.target;
-
-                var element = targets[selector];
-                if ( !element ) {
-
-                    // Cache the jQuery querySelector for reuse
-                    targets[selector] = element = $(selector);
-                }
-
-                return element;
-            }
-        }
+        // ******************************************************************
+        // Utility Methods
+        // ******************************************************************
 
         /**
          * Convert markup styles to JSON style map
@@ -262,7 +282,7 @@
         self.addStep  = onStepChanged;  // Publish method for StepDirective
         self.addChild = onAddTimeline;  // Publish method for TimelineDirective
 
-        // Publish accessors for $timelines::buildTimeline()
+        // Publish accessors for $timelines::makeTimeline()
 
         // ******************************************************************
         // Internal Builder Methods
@@ -292,7 +312,7 @@
                      if ( children.length || steps.length ) {
 
                          // Build or update the TimelineLite instance
-                         timeline = $timelines.instanceOf({
+                         timeline = $timelines.makeTimeline({
                              timeline : timeline,
                              steps    : steps,
                              children : children,
@@ -408,8 +428,6 @@
            controller : TimeLineController,
            link : function (scope, element, attr, controller)
            {
-               var parentCntl = element.parent().controller('timeline');
-
                // Manually access these static properties
 
                scope.id        = attr.id        || ("timeline_" + counter++);
@@ -419,6 +437,8 @@
                scope.target    = attr.target;
 
                // Build watchers to trigger animations or nest timelines...
+
+               var parentCntl = element.parent().controller('timeline');
 
                if ( !parentCntl ) autoStart();
 
@@ -436,21 +456,19 @@
                  if ( state.length ) {
                      // Watch for the scope `state` change... to start or reverse the animations
 
-                     parent = scope.$parent;
-                     parent.state = parent.state || undefined;
+                     var parent = scope.$parent;
+                         parent.state = parent.state || undefined;
 
                      parent.$watch('state', function(current, old){
                          if ( current === undefined ) return;
                          if ( state   === ""        ) return;
 
-                         $timelines
-                            .find(scope.id)
-                            .then(function( timeline ){
+                         $timelines(scope.id).then(function( timeline ){
 
-                                if ( current == state ) timeline.restart();
-                                else if (current == "") timeline.reverse();
+                            if ( current == state ) timeline.restart();
+                            else if (current == "") timeline.reverse();
 
-                            });
+                         });
 
                      });
                  }
@@ -470,11 +488,11 @@
      *
      * @example:
      *
-     *      <step   class=""
+     *      <gs-step   class=""
      *              duration="0.3"
      *              position="0.1"
      *              style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" >
-     *      </step>
+     *      </gs-step>
      */
     function StepDirective() {
         return {
@@ -486,7 +504,7 @@
                 position     : "@?",
                 style        : "@"
             },
-            require : "^timeline",
+            require : "^gsTimeline",
             link : function LinkStepDirective(scope, element, attr, ctrl) {
 
                 scope.target = attr.target;
@@ -498,4 +516,4 @@
         };
     }
 
-
+})();
