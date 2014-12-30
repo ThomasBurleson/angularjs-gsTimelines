@@ -23,29 +23,31 @@
      *
      */
     angular.module("kodaline",['ng'])
-           .factory( "tiles", TileDataModel )
-           .controller("TimelineController",       TimelineController )
-           .controller("TimelineSliderController", TimelineSliderController );
+        .factory( "tiles", TileDataModel )
+        .controller("TimelineController",       TimelineController )
+        .controller("TimelineSliderController", TimelineSliderController );
 
     /**
      * TimelineController constructor
      * @constructor
      */
     function TimelineController( $scope, tiles, $q ) {
-        var hideDetails;
 
         $scope.timeline = null;
         $scope.showDetails = showDetails;
+        $scope.hideDetails = angular.noop;
 
 
         scaleStage();
         $('body').keydown( autoClose );
+        $('#mask').mousedown( autoClose );
 
         loadImages()
             .then( getTransitions )
             .then( function(transitions){
                 // set default or initial timeline
-                timeline(transitions.enter);
+                showDetails(0);
+
             });
 
         // **************************************************
@@ -70,6 +72,8 @@
             } else {
                 $scope.timeline = tl;
             }
+
+            return $scope.timeline;
         }
         /**
          * Open Details view upon tile clicks
@@ -87,7 +91,7 @@
 
                     timeline(transitions.enter);
 
-                    details.onclick = hideDetails = function() {
+                    $scope.hideDetails = details.onclick = function() {
                         timeline().timeScale(1.8).reverse();
                     };
 
@@ -225,10 +229,16 @@
 
         /**
          * Auto-close details view upon ESCAPE keydowns
+         * or detected clicks on allowed containers (such as mask
+         * or details view).
          */
         function autoClose(e) {
-            if (e.keyCode == 27) {
-                (hideDetails || angular.noop)();
+            var respond = (e.type == keydown) && (e.keyCode == 27);
+                respond = respond || (e.type == "mousedown");
+                respond = respond || (e.type == "click");
+
+            if ( respond ) {
+                ($scope.hideDetails || angular.noop)();
                 e.preventDefault();
             }
         }
@@ -316,6 +326,8 @@
             manualDrag = active;
             if ( active == true ) {
                 $scope.timeline.pause();
+            } else if ( $scope.timeline.position < 0.01 ) {
+                $scope.hideDetails();
             }
         };
 
@@ -446,6 +458,21 @@
                 albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_goulding.png",
                 titleSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/title_goulding.png",
                 infoSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/info_goulding.png"
+            },
+            {
+                from: {
+                    left:0,
+                    top: 75,
+                    width: 160,
+                    height: 164
+                },
+                to : {
+                    height : 216
+                },
+                thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_kodaline_v3.png",
+                albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_kodaline.png",
+                titleSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/title_kodaline.png",
+                infoSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/info_kodaline.png"
             }
         ];
     }

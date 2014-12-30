@@ -1,4 +1,3 @@
-(function(){
     /**
      * Purpose:
      *
@@ -12,7 +11,7 @@
      * - Dynamically modify timescale so unzoom is faster
      * - Use of global keypress to unzoom/reverse the timeline
      * - Use tile data model to define dynamic zoom from/to information
-     * - Plugin use of Timeline Slider controls; independent of TimelineController
+     * - Plugin use of Timeline Slider controls; independent of KodaController
      *   - Sync Slider to transition timeline
      *   - Use slider to manually sequence through transition frames
      * - Support to drag on image to manually sequence through transitions
@@ -22,36 +21,69 @@
      *  //ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.js
      *
      */
-    angular.module("kodaline",['ng'])
-        .factory( "tiles", TileDataService )
-        .controller("TimelineController",       TimelineController );
+    angular.module("kodaline",['TimelineDSL','ng'])
+        .factory( "tiles", TileDataModel )
+        .controller("KodaController",       KodaController )
 
     /**
-     * TimelineController constructor
+     * KodaController constructor
      * @constructor
      */
-    function TimelineController( $scope, tiles, $q ) {
-        var hideDetails;
+    function KodaController( $scope, $element, $timeout, $timelines, tiles) {
 
-        $scope.timeline = null;
         $scope.showDetails = showDetails;
+        $scope.hideDetails = angular.noop;
 
 
         scaleStage();
         $('body').keydown( autoClose );
-        loadImages();
+        $('#mask').mousedown( autoClose );
+        $('#details').mousedown( autoClose );
 
-        // **************************************************
-        // Build Animation Timelines
-        // **************************************************
+        showDetails(0);
+        loadImages();
 
         /**
          * Open Details view upon tile clicks
          * Run custom `Show Details` view transitions
          *
+         * NOTE: This programmatically finds the timeline animation
+         * and runs `restart()` or `reverse()`
+         *
          */
         function showDetails(tileIndex) {
-            prepareTile( tiles[tileIndex] );
+            var source = tiles[tileIndex];
+            var unZoom = function() {
+                  $scope.$apply(function(){
+                        $timelines
+                            .id("zoom")
+                            .then(function(timeline){
+                                timeline.reverse();
+                                $scope.hideDetails = angular.noop;
+                            });
+                    });
+                },
+                doZoom = function() {
+                    // Update databindings in <timeline> markup
+                    $scope.source = angular.extend({}, source);
+
+                    // Find
+                    $timelines
+                      .id("zoom")
+                      .then(function(timeline){
+                          timeline.restart();
+                      });
+                };
+
+            // Load images for the tile to be zoomed...
+
+            loadTileImages(source).then(function()
+            {
+                $timeout(function(){
+                    doZoom();
+                    $scope.hideDetails = unZoom;
+                },20);
+            });
         }
 
 
@@ -66,11 +98,11 @@
             try {
 
                 // Sequentially load the tiles (not parallel)
-                // NOTE: we are using the same `img src` to do the loading
+                // NOTE: we are using a hidden `img src` to do the pre-loading
 
                 return tiles.reduce(function(promise, tile ){
                     return promise.then(function(){
-                        return prepareTile(tile).then(function(){
+                        return loadTileImages(tile ,"#backgroundLoader").then(function(){
                             return 0; // first tile index
                         });
                     });
@@ -84,28 +116,38 @@
          * Preload background and foreground images before transition start
          * Only load() 1x using the `imageLoaded` flag
          */
-        function prepareTile(source) {
-
+        function loadTileImages(source, selector) {
             var deferred = Q.defer();
             // Update the background image for the `title` div
 
-            $("#stage div#title > .content").css("background-image", "url(" + source.titleSrc + ")");
-            $("#stage div#info  > .content").css("background-image", "url(" + source.infoSrc + ")");
+            if ( !selector ) {
+                $("#stage div#title > .content").css("background-image", "url(" + source.titleSrc + ")");
+                $("#stage div#info  > .content").css("background-image", "url(" + source.infoSrc + ")");
+            }
 
             // Use a promise to start the transition ONCE the full album image has
             // already loaded and the img `src` attribute has been updated...
 
+            selector = selector || "#details > img";
+
             if ( !source.imageLoaded ) {
-                $("#details > img")
+                $(selector)
                     .load(function(){
                         // Manually track load status
                         source.imageLoaded = true;
-                        deferred.resolve(source.transitions);
+
+                        $timeout(function(){
+                            deferred.resolve(source.transitions);
+                        },40,false);
+
                     })
                     .attr("src", source.albumSrc);
             } else {
-                $("#details > img").attr("src", source.albumSrc);
-                deferred.resolve(source.transitions);
+                $(selector).attr("src", source.albumSrc);
+
+                $timeout(function(){
+                    deferred.resolve(source.transitions);
+                },40,false);
             }
 
             return deferred.promise;
@@ -116,6 +158,16 @@
         // ************************************************************
 
 
+        /**
+         * Auto-close details view upon ESCAPE keydowns
+         */
+        function autoClose(e) {
+            if ((e.keyCode == 27) || (e.type == "mousedown")) {
+                ($scope.hideDetails || angular.noop)();
+                e.preventDefault();
+            }
+        }
+
 
         /**
          * Startup viewport scaling for UX; this will increase
@@ -123,10 +175,9 @@
          * PROPORTIONAL_FIT_INSIDE
          */
         function scaleStage() {
-            var showSlider = !isMobile();
             var win = {
                     width : $(window).width()-20,
-                    height: $(window).height()-(showSlider ? 160 : 20)
+                    height: $(window).height()-20
                 },
                 stage = {
                     width : 323,
@@ -137,31 +188,21 @@
                     win.width/stage.width
                 );
 
-            if ( showSlider ) $("#timeline-slider").removeClass("hidden");
-
             // Scale and FadeIn entire stage for better UX
 
             new TimelineLite()
                 .set('#stage', {scale:scaling, transformOrigin:"0 0 0" })
                 .to("#stage", 0.5, {opacity:1});
 
-            /**
-             * Check if we are rendering on a mobile device... Needed so we do not show
-             * the `timeline slider` control
-             */
-            function isMobile() {
-                return navigator.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod}/i);
-            }
         }
 
     }
-
 
     /**
      * Tile DataModel factory for model data used in Tile animations
      * @constructor
      */
-    function TileDataService() {
+    function TileDataModel() {
         return [
             {
                 from: {
@@ -223,8 +264,22 @@
                 albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_goulding.png",
                 titleSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/title_goulding.png",
                 infoSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/info_goulding.png"
+            },
+            {
+                from: {
+                    left:0,
+                    top: 75,
+                    width: 160,
+                    height: 164
+                },
+                to : {
+                    height : 216
+                },
+                thumbSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_kodaline_v3.png",
+                albumSrc: "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_kodaline.png",
+                titleSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/title_kodaline.png",
+                infoSrc : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/info_kodaline.png"
             }
         ];
     }
 
-})();
