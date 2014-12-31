@@ -16,7 +16,7 @@
      * KodaController constructor
      * @constructor
      */
-    function KodaController( $scope, tilesModel, $timeline, $timeout, $log ) {
+    function KodaController( $scope, tilesModel, $timeline, $timeout, $q, $log ) {
 
         $scope.preload     = makeLoaderFor("#details > img", true);
         $scope.showDetails = showDetails;
@@ -114,12 +114,12 @@
 
                 return preloads.reduce(function(promise, tile ){
                     return promise.then(function(){
-                        return loadTileImages(tile , loader).then(function(){
+                        return loader(tile).then(function(){
                             return 0; // first tile index
                         });
                     });
 
-                }, Q.when(true))
+                }, $q.when(true))
 
             } catch( e ) { ; }
         }
@@ -136,7 +136,7 @@
             return function loadsImagesFor(tile) {
                 tile = tile || tilesModel[0];
 
-                var deferred = Q.defer();
+                var deferred = $q.defer();
                 var element = $(selector);
 
                 if ( !!includeContent ) {
