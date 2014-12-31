@@ -532,7 +532,7 @@
                         var fn       = $parse(attr["resolve"], /* interceptorFn */ null, /* expensiveChecks */ true);
 
                         controller.addResolve( function(){
-                            $log.debug( "resolving( '{resolve}' )".supplant(attr) );
+                            //$log.debug( "resolving( '{resolve}' )".supplant(attr) );
                             return fn(context);
                         });
                     }
