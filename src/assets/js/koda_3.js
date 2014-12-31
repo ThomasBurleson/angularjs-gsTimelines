@@ -221,14 +221,11 @@
      * Local Prefix:   ./assets/images/koda
      */
     function TileDataModel() {
-        return [
+        var model = [
             {
                 className : "tile1",
-                from: {
-                },
-                to : {
-                    height : 216
-                },
+                from: {               },
+                to  : { height : 216  },
                 thumbSrc: "./assets/images/koda/thumb_kodaline_v3.png",
                 albumSrc: "./assets/images/koda/album_kodaline.png",
                 titleSrc : "./assets/images/koda/title_kodaline.png",
@@ -236,11 +233,8 @@
             },
             {
                 className : "tile2",
-                from: {
-                },
-                to : {
-                    height : 216
-                },
+                from: {               },
+                to  : { height : 216  },
                 thumbSrc: "./assets/images/koda/thumb_moby_v3.png",
                 albumSrc : "./assets/images/koda/album_moby_v2.png",
                 titleSrc : "./assets/images/koda/title_moby.png",
@@ -248,11 +242,8 @@
             },
             {
                 className : "tile3",
-                from: {
-                },
-                to : {
-                    height : 229
-                },
+                from: {               },
+                to  : { height : 229  },
                 thumbSrc: "./assets/images/koda/thumb_supermodel.png",
                 albumSrc: "./assets/images/koda/album_supermodel.png",
                 titleSrc : "./assets/images/koda/title_supermodel.png",
@@ -261,28 +252,45 @@
             },
             {
                 className : "tile4",
-                from: {
-                },
-                to : {
-                    height : 229
-                },
+                from: {               },
+                to  : { height : 229  },
                 thumbSrc: "./assets/images/koda/thumb_goulding.png",
                 albumSrc: "./assets/images/koda/album_goulding.png",
                 titleSrc : "./assets/images/koda/title_goulding.png",
                 infoSrc : "./assets/images/koda/info_goulding.png"
             },
             {
-                from: {
-                },
-                to : {
-                    height : 216
-                },
+                from: {               },
+                to  : { height : 216  },
                 thumbSrc: "./assets/images/koda/thumb_kodaline_v3.png",
                 albumSrc: "./assets/images/koda/album_kodaline.png",
                 titleSrc : "./assets/images/koda/title_kodaline.png",
                 infoSrc : "./assets/images/koda/info_kodaline.png"
             }
         ];
+
+        return CDNify(model);
+
+        /**
+         * Replace localhost URLs with CDN URLs
+         * @param items
+         * @returns {*}
+         * @constructor
+         */
+        function CDNify(items) {
+            var prefixLocal = "./assets/images/koda/";
+            var prefixCDN   = "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline";
+
+            items.forEach(function(it){
+
+                it.thumbSrc.replace( prefixLocal, prefixCDN );
+                it.albumSrc.replace( prefixLocal, prefixCDN );
+                it.titleSrc.replace( prefixLocal, prefixCDN );
+                it.infoSrc.replace( prefixLocal, prefixCDN );
+            });
+
+            return items;
+        }
     }
 
 })();
