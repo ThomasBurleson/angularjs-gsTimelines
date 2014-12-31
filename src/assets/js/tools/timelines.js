@@ -31,7 +31,7 @@
      *
      */
     angular.module('gsTimelines', [ 'ng' ])
-        .service(  '$timeline', TimelineBuilder )
+        .service(  '$timeline',   TimelineBuilder )
         .directive('gsTimeline',  TimelineDirective )
         .directive('gsStep',      StepDirective )
         .directive('gsScale',     ScaleDirective);
@@ -41,7 +41,7 @@
      * Service to build a GSAP TimelineLite instance based on <gs-timeline> and nested <gs-step>
      * directive settings...
      */
-    function TimelineBuilder($log, $rootScope, $q ) {
+    function TimelineBuilder($log, $rootScope, $q) {
         var counter = 0,
             targets = { },
             cache   = { },
@@ -52,6 +52,35 @@
                 makeTimeline : makeTimeline
             },
 
+            // Add 1 or more event callbacks to the animation?
+            // events : ["onComplete", "onReverseComplete", "onUpdate"]
+
+            registerCallbacks = function(callbacks) {
+                return function(tl) {
+                    if ( callbacks) {
+                        var events = getKeys(callbacks);
+
+                        events.forEach(function(key){
+                           tl.eventCallback(key, callbacks[key] || angular.noop, ["{self}"] );
+                        });
+                    }
+
+                    // publish/provide the TimelineLite instance
+                    return tl;
+                }
+            },
+
+            // Chain step to resolve AFTER the timeline is ready
+            // but BEFORE the timeline is delivered externally
+
+            resolveWhenReady = function(tl) {
+                var callback = tl.$$resolveWith || angular.noop;
+                return  $q.when( callback() )
+                          .then( function() {
+                            return tl;
+                          });
+            },
+
             // Special lookup or accessor function
 
             $timeline = function ( id, callbacks ){
@@ -59,24 +88,9 @@
                 // Is this an implicit lookup?
 
                 if ( angular.isDefined(id) ){
-                    var promise = self.id(id);
-
-                    // Add 1 or more event callbacks to the animation?
-                    // events : ["onComplete", "onReverseComplete", "onUpdate"]
-
-                    if ( callbacks) {
-                        promise = promise.then(function(tl){
-                            var events = getKeys(callbacks);
-
-                            events.forEach(function(key){
-                               tl.eventCallback(key, callbacks[key] || angular.noop, ["{self}"] );
-                            });
-
-                            // publish/provide the TimelineLite instance
-                            return tl;
-                        });
-                    }
-                    return promise;
+                    return findById(id)
+                               .then( registerCallbacks(callbacks) )
+                               .then( resolveWhenReady );
                 }
 
                 // Not a lookup, so return the API
@@ -108,12 +122,16 @@
          * @returns {*} GSAP TimelineLite instance
          */
         function makeTimeline(source, flushTargets) {
+            source  = source || { steps:[ ], children: [ ] };
             targets = flushTargets ? { } : targets;
 
             var timeline = source.timeline || new TimelineLite({paused: true, data: {id: source.id || counter++ }});
-                timeline.clear(true).timeScale( source.timeScale );
+                timeline.clear(true).timeScale( source.timeScale || 1.0 );
 
             source.timeline = timeline;
+            source.steps    = source.steps || [ ];
+            source.children = source.children || [ ];
+
             source.steps.forEach(function(step, index) {
 
                 var element     = querySelector(step.target);
@@ -128,6 +146,7 @@
                 else                timeline.set(element, styles );
 
             });
+
             source.children.forEach(function(it){
                 if ( it.timeline ) {
                     timeline.add(it.timeline, it.position);
@@ -146,9 +165,9 @@
             function logBuild( source ) {
                 var timeline = source.timeline;
 
-                $log.debug( "---------------------".supplant(timeline) );
+                $log.debug( "---------------------" );
                 $log.debug( "rebuild timeline( {data.id} )".supplant(timeline) );
-                $log.debug( "---------------------".supplant(timeline) );
+                $log.debug( "---------------------" );
 
                 source.steps.forEach(function(step, index) {
 
@@ -335,17 +354,18 @@
      * @param $scope
      * @constructor
      */
-    function TimeLineController($scope, $element, $q, $timeline) {
+    function TimeLineController($scope, $element, $q, $timeout, $timeline) {
         var self         = this,
             timeline     = null,
             children     = [ ],
             steps        = [ ],
             pendingRebuild = null,
             bouncedRebuild = null,
+            debounce       = $debounce($timeout,20),
             parentCntrl    = $element.parent().controller('timeline');
 
-        self.addStep  = onStepChanged;  // Publish method for StepDirective
-        self.addChild = onAddTimeline;  // Publish method for TimelineDirective
+        self.addStep     = onStepChanged;  // Used by StepDirective
+        self.addChild    = onAddTimeline;  // Used by TimelineDirective
 
         // Publish accessors for $timeline::makeTimeline()
 
@@ -360,7 +380,7 @@
          */
         function asyncRebuild() {
 
-            bouncedRebuild = bouncedRebuild || debounce(rebuildTimeline, 10);
+            bouncedRebuild = bouncedRebuild || debounce( rebuildTimeline, 10 );
             pendingRebuild = pendingRebuild || $q.defer();
 
             // Keep debouncing...
@@ -453,32 +473,6 @@
             }
         }
 
-
-        /**
-         * Returns a function, that, as long as it continues to be invoked, will not
-         * be triggered. The function will be called after it stops being called for
-         * <wait> milliseconds.
-         *
-         * @param func
-         * @param wait
-         * @param scope
-         * @returns {Function}
-         */
-        function debounce(func, wait, scope) {
-          var timeout;
-
-          return function debounced() {
-            var context = scope || this, args = arguments;
-
-            clearTimeout(timeout);
-
-            timeout = setTimeout(function() {
-              timeout = null;
-              func.apply(context, args);
-            }, wait);
-
-          };
-        }
     }
 
 
@@ -487,16 +481,14 @@
     * @returns {{restrict: string, controller: string, link: Function}}
     * @constructor
     */
-   function TimelineDirective($timeout, $timeline) {
+   function TimelineDirective($parse, $timeline, $q) {
        var counter = 1;
 
        return {
            restrict: "E",
-           scope : {
-               resolve : "&?"
-           },
+           scope : { },
            controller : TimeLineController,
-           link : function (scope, element, attr, controller)
+           link : function (scope, element, attr, controller )
            {
                // Manually access these static properties
 
@@ -509,13 +501,29 @@
                // Build watchers to trigger animations or nest timelines...
 
                var parentCntl = element.parent().controller('timeline');
-
                if ( !parentCntl ) autoStart();
 
+               // prepareResolve();
 
                // ******************************************************************
                // Internal Methods
                // ******************************************************************
+
+               /**
+                * Prepare the `resolve` expression to be evaluated AFTER $digest() and BEFORE
+                * the timeline instances are reconstructed...
+                */
+               function prepareResolve() {
+                    if ( angular.isDefined(attr.resolve) )
+                    {
+                        var context  = scope.$parent;
+                        var fn       = $parse(attr["resolve"], /* interceptorFn */ null, /* expensiveChecks */ true);
+
+                        controller.resolveWith( function(){
+                            return fn(context);
+                        });
+                    }
+               }
 
                /**
                 *  Watch the `state` variable and autostart the Timeline instance when state
@@ -623,5 +631,41 @@
             }
         };
     }
+
+    // *****************************************************
+    // Utility Methods
+    // *****************************************************
+
+    /**
+     * Returns a function, that, as long as it continues to be invoked, will not
+     * be triggered. The function will be called after it stops being called for
+     * <wait> milliseconds.
+     *
+     * @param func
+     * @param wait
+     * @param scope
+     * @returns {Function}
+     *
+     */
+    function $debounce( $timeout ) {
+
+        return function debounce(func, wait, scope) {
+          var timer;
+
+          return function debounced() {
+            var context = scope,
+                args = Array.prototype.slice.call(arguments);
+
+            $timeout.cancel(timer);
+            timer = $timeout(function() {
+
+                timer = undefined;
+                func.apply(context, args);
+
+            }, wait || 10 );
+          };
+        }
+    }
+
 
 })();

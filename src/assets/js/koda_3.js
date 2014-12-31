@@ -20,10 +20,7 @@
 
         enableAutoClose();
         preloadImages();
-
-        // Auto show zoom details for tile #1
-
-        showDetails(0);
+        autoZoom(0)
 
 
         // ************************************************************
@@ -42,13 +39,7 @@
          *
          */
         function showDetails(tileIndex) {
-            var $apply = function(fn) {
-                    // Use $scope.$apply() when fn trigger is outside Ng scope
-                    return function() {
-                        $scope.$apply(fn);
-                    }
-                },
-                onComplete = function(direction, action) {
+            var onComplete = function(direction, action) {
                   action = action || "finished";
                   return function(tl) {
                       $log.debug( "tl('{0}') {1}...".supplant([direction, action]));
@@ -60,42 +51,55 @@
                   onReverseComplete : onComplete("unzoom"),
                   onUpdate          : onComplete("zoom", "update")
                 },
-
-                // Reverse the `zoom` animation
                 unZoom = function() {
-                    $timeline("zoom").then(function(timeline){
-                       $scope.hideDetails = angular.noop;
+                    // Reverse the `zoom` animation
+                    $scope.$apply(function(){
+                        $timeline("zoom").then(function(timeline){
+                           $scope.hideDetails = angular.noop;
 
-                       timeline.reverse();
+                           timeline.reverse();
+                        });
                     });
                 },
-
-                // start the `zoom` animation
                 doZoom = function() {
-                    // Update databindings in <timeline> markup
-                    // to use the selected tile...
+                    // start the `zoom` animation
+                    // NOTE: digest() is not used, since showDetails() is triggered by ng-click
+                    var start   = function(tl) {
+                            tl.restart();
+                        },
+                        prefill = function(tl) {
+                            var load = makeLoaderFor("#details > img", true);
+                            return load( selectedTile ).then( function(){
+                                return tl;
+                            });
+                        };
+
+                    // Push to scope for use by autoClose()
+                    // Update databindings in <timeline> markup to use the selected tile...
+
+                    $scope.hideDetails = unZoom;
                     $scope.selectedTile = angular.extend({}, selectedTile);
 
-                    $timeline( "zoom", eventCallbacks ).then(function(timeline){
-                        timeline.restart();
-                    });
-                },
+                    $timeline( "zoom", eventCallbacks )
+                        .then( prefill )
+                        .then( start );
+                };
 
-                // Load images for the tile to be zoomed...
-                loader = makeLoaderFor("#details > img", true),
+            var selectedTile = tilesModel[tileIndex];
 
-                // Get selected tile's data model
-                selectedTile = tilesModel[tileIndex];
-
-            loader(selectedTile).then(function()
-            {
-                // Push to scope for use by autoClose()
-                $scope.hideDetails = $apply(unZoom);
-
-                doZoom();
-            });
+            doZoom();
         }
 
+
+        /**
+         * Auto show zoom details for tile #1
+         * @param tileIndex
+         */
+        function autoZoom(tileIndex) {
+            $timeout(function(){
+                showDetails(tileIndex, true);
+            }, 30 );
+        }
 
         // ************************************************************
         // Image Features
@@ -136,6 +140,8 @@
             return function loadsImagesFor(tile) {
                 var deferred = Q.defer();
 
+                tile = tile || tilesModel[0];
+
                 $log.debug( "loadTileImages( {0} ).src = {1}".supplant([selector || "", tile.albumSrc]));
                 $log.debug( "preloaded == " + tile.imageLoaded);
 
@@ -151,19 +157,13 @@
 
                         // Manually track load status
                         tile.imageLoaded = true;
-
-                        $timeout(function(){
-                            deferred.resolve(tile);
-                        }, 70);
+                        deferred.resolve(tile);
                     })
                     .attr("src", tile.albumSrc);
 
                 } else {
                     $(selector).attr("src", tile.albumSrc);
-
-                    $timeout(function(){
-                        deferred.resolve(tile);
-                    }, 70);
+                    deferred.resolve(tile);
                 }
 
                 return deferred.promise;
@@ -192,6 +192,23 @@
             if ((e.keyCode == 27) || (e.type == "mousedown")) {
                 ($scope.hideDetails || angular.noop)();
                 e.preventDefault();
+            }
+        }
+
+        /**
+         * Use $scope.$apply() when fn trigger is outside Ng scope
+         * @param $scope
+         * @returns {Function}
+         */
+        function makeDigest( $scope ) {
+            return function digest(fn) {
+                return function startDigest() {
+                    var args = Array.prototype.slice.call(arguments);
+
+                    $scope.$apply(function() {
+                        fn.apply(null, args);
+                    });
+                }
             }
         }
 
