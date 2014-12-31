@@ -66,7 +66,7 @@
                     // Push `hideDetails` to $scope for use by autoClose()
                     // Trigger databindings in the `<gs-timeline />` markup to use the selected tile...
 
-                    $scope.hideDetails = unZoom;
+                    $scope.hideDetails  = unZoom;
                     $scope.selectedTile = updateBounds(selectedTile, $event);
 
                     // Lookup animation for `zoom` and register
@@ -117,8 +117,7 @@
                 tile.from.width  = $event.currentTarget.offsetWidth - 1;
                 tile.from.height = $event.currentTarget.offsetHeight - 1;
             }
-
-         return tile;
+            return tile;
         }
 
         /**
