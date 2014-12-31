@@ -1,3 +1,6 @@
+(function(){
+    "use strict";
+
     /**
      * Purpose:
      *
@@ -15,6 +18,7 @@
      */
     function KodaController( $scope, tilesModel, $timeline, $timeout, $log ) {
 
+        $scope.preload     = makeLoaderFor("#details > img", true);
         $scope.showDetails = showDetails;
         $scope.hideDetails = angular.noop;
 
@@ -39,53 +43,45 @@
          *
          */
         function showDetails(tileIndex) {
-            var onComplete = function(direction, action) {
+            var selectedTile = tilesModel[tileIndex],
+
+                makeNotify = function(direction, action) {
                   action = action || "finished";
                   return function(tl) {
                       $log.debug( "tl('{0}') {1}...".supplant([direction, action]));
                   };
                 },
-                eventCallbacks = {
-                  // Prepare event callbacks for logging...
-                  onComplete        : onComplete("zoom"),
-                  onReverseComplete : onComplete("unzoom"),
-                  onUpdate          : onComplete("zoom", "update")
-                },
                 unZoom = function() {
                     // Reverse the `zoom` animation
                     $scope.$apply(function(){
-                        $timeline("zoom").then(function(timeline){
+                        $timeline("zoom").then(function(animation){
                            $scope.hideDetails = angular.noop;
 
-                           timeline.reverse();
+                            animation.reverse();
                         });
                     });
                 },
                 doZoom = function() {
-                    // start the `zoom` animation
-                    // NOTE: digest() is not used, since showDetails() is triggered by ng-click
-                    var start   = function(tl) {
-                            tl.restart();
-                        },
-                        prefill = function(tl) {
-                            var load = makeLoaderFor("#details > img", true);
-                            return load( selectedTile ).then( function(){
-                                return tl;
-                            });
-                        };
-
-                    // Push to scope for use by autoClose()
-                    // Update databindings in <timeline> markup to use the selected tile...
+                    // Push `hideDetails` to $scope for use by autoClose()
+                    // Trigger databindings in the `<gs-timeline />` markup to use the selected tile...
 
                     $scope.hideDetails = unZoom;
-                    $scope.selectedTile = angular.extend({}, selectedTile);
+                    $scope.selectedTile = selectedTile;
 
-                    $timeline( "zoom", eventCallbacks )
-                        .then( prefill )
-                        .then( start );
+                    // Lookup animation for `zoom` and register
+                    // optional event callbacks for logging before starting...
+
+                    $timeline( "zoom", {
+
+                      onComplete        : makeNotify("zoom"),
+                      onReverseComplete : makeNotify("unzoom"),
+                      onUpdate          : makeNotify("zoom", "update")
+
+                    }).then( function(animation){
+                        animation.restart();
+                    });
                 };
 
-            var selectedTile = tilesModel[tileIndex];
 
             doZoom();
         }
@@ -134,25 +130,24 @@
          */
         function makeLoaderFor(selector, includeContent) {
 
-            // Use a promise to start the transition ONCE the full album image has
-            // already loaded and the img `src` attribute has been updated...
+            // Use a promise to delay the start of the transition until the full album image has
+            // loaded and the img `src` attribute has been updated...
 
             return function loadsImagesFor(tile) {
-                var deferred = Q.defer();
-
                 tile = tile || tilesModel[0];
 
-                $log.debug( "loadTileImages( {0} ).src = {1}".supplant([selector || "", tile.albumSrc]));
-                $log.debug( "preloaded == " + tile.imageLoaded);
+                var deferred = Q.defer();
+                var element = $(selector);
 
                 if ( !!includeContent ) {
                     $("#stage div#title > .content").css("background-image", "url(" + tile.titleSrc + ")");
                     $("#stage div#info  > .content").css("background-image", "url(" + tile.infoSrc + ")");
                 }
 
-                if ( !tile.imageLoaded ) {
+                if ( tile.imageLoaded != true ) {
+                    $log.debug( "loading $( {0} ).src = {1}".supplant([selector || "", tile.albumSrc]));
 
-                    $(selector).one( "load", function(){
+                    element.one( "load", function(){
                         $log.debug( " $('{0}').loaded() ".supplant([selector]) );
 
                         // Manually track load status
@@ -162,7 +157,10 @@
                     .attr("src", tile.albumSrc);
 
                 } else {
-                    $(selector).attr("src", tile.albumSrc);
+                    if (element.attr("src") != tile.albumSrc) {
+                        $log.debug( "updating $({0}).src = '{1}'".supplant([selector || "", tile.albumSrc]));
+                        element.attr("src", tile.albumSrc);
+                    }
                     deferred.resolve(tile);
                 }
 
@@ -192,23 +190,6 @@
             if ((e.keyCode == 27) || (e.type == "mousedown")) {
                 ($scope.hideDetails || angular.noop)();
                 e.preventDefault();
-            }
-        }
-
-        /**
-         * Use $scope.$apply() when fn trigger is outside Ng scope
-         * @param $scope
-         * @returns {Function}
-         */
-        function makeDigest( $scope ) {
-            return function digest(fn) {
-                return function startDigest() {
-                    var args = Array.prototype.slice.call(arguments);
-
-                    $scope.$apply(function() {
-                        fn.apply(null, args);
-                    });
-                }
             }
         }
 
@@ -302,3 +283,4 @@
         ];
     }
 
+})();

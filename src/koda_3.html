@@ -5,9 +5,13 @@
 </head>
 <body ng-app="kodaline" ng-controller="KodaController" >
 
-    <!-- on `zoom`, show the full details for the selected Tile/thumbnail -->
+    <!--
+        On `zoom`, show the full details for the selected Tile/thumbnail
 
-    <gs-timeline id="zoom" time-scale="1.4" >
+        Note the use a resolve with `preload(selectedTile)`...
+        this is used to prefill the images before before the animation begins.
+    -->
+    <gs-timeline id="zoom" time-scale="1.4" resolve="preload(selectedTile)" >
         <gs-step target="#mask"      style="zIndex:-10;className:''"  duration="0.001" />
         <gs-step target="#details"   style="zIndex:-15;className:''"  duration="0.001" />
         <gs-step target="#mask"      style="zIndex:90" duration="0.001" />

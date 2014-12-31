@@ -9,24 +9,25 @@
      *       in querySelector()...
      *
      * @usage
-     * <gs-timeline id="zoom"  time-scale="1" >
-     *   <gs-step target="#mask"      style="zIndex:-10;className:''"  duration="0.001" />
-     *   <gs-step target="#details"   style="zIndex:-15;className:''"  duration="0.001" />
-     *   <gs-step target="#mask"      style="zIndex:90;" duration="0.001" />
-     *   <gs-step target="#details"   style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}};"  duration="0.001"/>
-     *   <gs-step target="#details"   style="opacity:1;" duration="0.4" />
-     *   <gs-step target="#details"   style="left:0; height:{{selectedTile.to.height}}; width:329;" duration="0.5"  />
-     *   <gs-step mark-position="fullWidth"/>
-     *   <gs-step target="#mask"      style="opacity:0.80;"                   duration="0.5" position="fullWidth-=0.3"/>
-     *   <gs-step target="#details"   style="opacity:1; top:18; height:512;"  duration="0.3" position="fullWidth-=0.1"/>
-     *   <gs-step mark-position="slideIn"/>
-     *   <gs-step target="#details > #green"               style="zIndex:92; opacity:1; top:21; className:'';" />
-     *   <gs-step target="#details > #green"               style="top:0;"       duration="0.2" position="slideIn"/>
-     *   <gs-step target="#details > #title"               style="height:131;"  duration="0.6" position="fullWidth" />
-     *   <gs-step target="#details > #info"                style="height:56;"   duration="0.5" position="fullWidth+=0.2" />
-     *   <gs-step target="#details > #title > div.content" style="opacity:1.0;" duration="0.8" position="fullWidth+=0.3" />
-     *   <gs-step target="#details > #pause"               style="opacity:1; scale:1.0;" duration="0.4" position="fullWidth+=0.4" />
-     *   <gs-step target="#details > #info > div.content"  style="opacity:1;"   duration="0.4" position="fullWidth+=0.6" />
+     * <gs-timeline id="zoom" time-scale="1" resolve="preload(selectedTile)" >
+     *    <gs-step target="#mask"      style="zIndex:-10;className:''"  duration="0.001" />
+     *    <gs-step target="#details"   style="zIndex:-15;className:''"  duration="0.001" />
+     *    <gs-step target="#mask"      style="zIndex:90" duration="0.001" />
+     *    <gs-step target="#details"   style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}}"  duration="0.01"/>
+     *    <gs-step target="#details"   style="opacity:1.0" duration="0.3" />
+     *    <gs-step mark-position="fullThumb"/>
+     *    <gs-step target="#details"   style="delay:0.2; left:0; height:{{selectedTile.to.height}}; width:329" duration="0.5"  />
+     *    <gs-step mark-position="fullWidth"/>
+     *    <gs-step target="#mask"      style="opacity:0.80"                   duration="0.5" position="fullWidth-=0.3"/>
+     *    <gs-step target="#details"   style="opacity:1; top:18; height:512"  duration="0.3" position="fullWidth+=0.1"/>
+     *    <gs-step mark-position="slideIn"/>
+     *    <gs-step target="#details > #green"  style="zIndex:92; opacity:1; top:21; className:''" />
+     *    <gs-step target="#details > #green"  style="top:0"       duration="0.2" position="slideIn"/>
+     *    <gs-step target="#details > #title"  style="height:131"  duration="0.6" position="fullWidth" />
+     *    <gs-step target="#details > #info"   style="height:56"   duration="0.5" position="fullWidth+=0.2" />
+     *    <gs-step target="#details > #title > div.content" style="opacity:1.0" duration="0.8" position="fullWidth+=0.3" />
+     *    <gs-step target="#details > #pause"               style="opacity:1; scale:1.0" duration="0.4" position="fullWidth+=0.4" />
+     *    <gs-step target="#details > #info > div.content"  style="opacity:1"   duration="0.4" position="fullWidth+=0.6" />
      *  </gs-timeline>
      *
      */
@@ -73,12 +74,12 @@
             // Chain step to resolve AFTER the timeline is ready
             // but BEFORE the timeline is delivered externally
 
-            resolveWhenReady = function(tl) {
+            resolveBeforeReady = function(tl) {
                 var callback = tl.$$resolveWith || angular.noop;
-                return  $q.when( callback() )
-                          .then( function() {
-                            return tl;
-                          });
+
+                return  $q.when( callback() ).then(function(){
+                          return tl;
+                        });
             },
 
             // Special lookup or accessor function
@@ -90,7 +91,7 @@
                 if ( angular.isDefined(id) ){
                     return findById(id)
                                .then( registerCallbacks(callbacks) )
-                               .then( resolveWhenReady );
+                               .then( resolveBeforeReady );
                 }
 
                 // Not a lookup, so return the API
@@ -166,7 +167,7 @@
                 var timeline = source.timeline;
 
                 $log.debug( "---------------------" );
-                $log.debug( "rebuild timeline( {data.id} )".supplant(timeline) );
+                $log.debug( "rebuild $timeline('{data.id}')".supplant(timeline) );
                 $log.debug( "---------------------" );
 
                 source.steps.forEach(function(step, index) {
@@ -361,11 +362,12 @@
             steps        = [ ],
             pendingRebuild = null,
             bouncedRebuild = null,
-            debounce       = $debounce($timeout,20),
+            debounce       = $debounce( $timeout ),
             parentCntrl    = $element.parent().controller('timeline');
 
         self.addStep     = onStepChanged;  // Used by StepDirective
         self.addChild    = onAddTimeline;  // Used by TimelineDirective
+        self.addResolve  = onAddResolve;   // Used by TimelineDirective
 
         // Publish accessors for $timeline::makeTimeline()
 
@@ -451,6 +453,16 @@
         }
 
         /**
+         * Add hidden resolve callback to the timeline; which will be
+         * resolved PRIOR to the resolve of the `$timeline( id )` promise.
+         *
+         * @param callback
+         */
+        function onAddResolve( callback ) {
+            timeline = timeline || $timeline.makeTimeline();
+            timeline.$$resolveWith = callback;
+        }
+        /**
          * When properties of a child step changes,
          * we need to rebuild the timeline...
          * @param step
@@ -481,7 +493,7 @@
     * @returns {{restrict: string, controller: string, link: Function}}
     * @constructor
     */
-   function TimelineDirective($parse, $timeline, $q) {
+   function TimelineDirective($parse, $timeline, $log) {
        var counter = 1;
 
        return {
@@ -503,7 +515,7 @@
                var parentCntl = element.parent().controller('timeline');
                if ( !parentCntl ) autoStart();
 
-               // prepareResolve();
+               prepareResolve();
 
                // ******************************************************************
                // Internal Methods
@@ -519,7 +531,8 @@
                         var context  = scope.$parent;
                         var fn       = $parse(attr["resolve"], /* interceptorFn */ null, /* expensiveChecks */ true);
 
-                        controller.resolveWith( function(){
+                        controller.addResolve( function(){
+                            $log.debug( "resolving( '{resolve}' )".supplant(attr) );
                             return fn(context);
                         });
                     }
@@ -639,7 +652,7 @@
     /**
      * Returns a function, that, as long as it continues to be invoked, will not
      * be triggered. The function will be called after it stops being called for
-     * <wait> milliseconds.
+     * <wait> milliseconds. The callback will be invoked and the $digest() process initiated.
      *
      * @param func
      * @param wait
