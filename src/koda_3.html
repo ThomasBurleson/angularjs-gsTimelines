@@ -11,12 +11,13 @@
         <gs-step target="#mask"      style="zIndex:-10;className:''"  duration="0.001" />
         <gs-step target="#details"   style="zIndex:-15;className:''"  duration="0.001" />
         <gs-step target="#mask"      style="zIndex:90" duration="0.001" />
-        <gs-step target="#details"   style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}}"  duration="0.001"/>
-        <gs-step target="#details"   style="opacity:1" duration="0.4" />
-        <gs-step target="#details"   style="left:0; height:{{selectedTile.to.height}}; width:329" duration="0.5"  />
+        <gs-step target="#details"   style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}}"  duration="0.01"/>
+        <gs-step target="#details"   style="opacity:1.0" duration="0.3" />
+        <gs-step mark-position="fullThumb"/>
+        <gs-step target="#details"   style="delay:0.2; left:0; height:{{selectedTile.to.height}}; width:329" duration="0.5"  />
         <gs-step mark-position="fullWidth"/>
         <gs-step target="#mask"      style="opacity:0.80"                   duration="0.5" position="fullWidth-=0.3"/>
-        <gs-step target="#details"   style="opacity:1; top:18; height:512"  duration="0.3" position="fullWidth-=0.1"/>
+        <gs-step target="#details"   style="opacity:1; top:18; height:512"  duration="0.3" position="fullWidth+=0.1"/>
         <gs-step mark-position="slideIn"/>
         <gs-step target="#details > #green"  style="zIndex:92; opacity:1; top:21; className:''" />
         <gs-step target="#details > #green"  style="top:0"       duration="0.2" position="slideIn"/>
@@ -28,7 +29,6 @@
     </gs-timeline>
 
     <div id="stage" gs-scale >
-
         <!-- Tile Grid View -->
         <div id="status" class="status"></div>
         <div id="header"></div>
@@ -58,7 +58,6 @@
                 <img src="http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pause.png" class="pause">
             </div>
         </div>
-
         <div class="hidden">
            <img id="backgroundLoader" class="hidden" />
         </div>
