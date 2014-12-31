@@ -2,100 +2,95 @@
      * Purpose:
      *
      * Use GSAP `TimelineLite` to demonstrate use of animation timelines to build complex transitions.
-     * Explore the API usages & complexities of functionality required to create the desired effects and UX.
-     *
-     * Some other considerations:
-     *
-     * - Load images in background so zoom works quickly
-     * - Use promises to delay transitions until the images are ready
-     * - Dynamically modify timescale so unzoom is faster
-     * - Use of global keypress to unzoom/reverse the timeline
-     * - Use tile data model to define dynamic zoom from/to information
-     * - Plugin use of Timeline Slider controls; independent of KodaController
-     *   - Sync Slider to transition timeline
-     *   - Use slider to manually sequence through transition frames
-     * - Support to drag on image to manually sequence through transitions
-     *
-     *  //cdnjs.cloudflare.com/ajax/libs/gsap/1.14.2/TweenMax.min.js
-     *  //cdnjs.cloudflare.com/ajax/libs/q.js/1.1.2/q.js
-     *  //ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.js
+     * Use GSAP-AngularJS Timeline DSL to parse and build timeline transitions
      *
      */
     angular.module("kodaline",['gsTimelines','ng'])
-        .factory(   "tiles",          TileDataModel )
+        .factory(   "tilesModel",     TileDataModel )
         .controller("KodaController", KodaController )
 
     /**
      * KodaController constructor
      * @constructor
      */
-    function KodaController( $scope, $element, $timeout, $log, $timeline, tiles) {
+    function KodaController( $scope, tilesModel, $timeline, $timeout, $log ) {
 
         $scope.showDetails = showDetails;
         $scope.hideDetails = angular.noop;
 
+        enableAutoClose();
+        preloadImages();
 
-        scaleStage();
-        $('body').keydown( autoClose );
-        $('#mask').mousedown( autoClose );
-        $('#details').mousedown( autoClose );
+        // Auto show zoom details for tile #1
 
         showDetails(0);
-        loadImages();
+
+
+        // ************************************************************
+        // Show Tile features
+        // ************************************************************
 
         /**
          * Open Details view upon tile clicks
          * Run custom `Show Details` view transitions
          *
-         * NOTE: This programmatically finds the timeline animation
-         * and runs `restart()` or `reverse()`
+         * NOTE:
+         *
+         * This programatically uses the $timeline() locator to
+         * find the timeline animation instance and manually runs
+         * the `restart()` or `reverse()` processes.
          *
          */
         function showDetails(tileIndex) {
-            var selectedTile = tiles[tileIndex];
-            var onComplete = function(direction, action) {
+            var $apply = function(fn) {
+                    // Use $scope.$apply() when fn trigger is outside Ng scope
+                    return function() {
+                        $scope.$apply(fn);
+                    }
+                },
+                onComplete = function(direction, action) {
                   action = action || "finished";
                   return function(tl) {
                       $log.debug( "tl('{0}') {1}...".supplant([direction, action]));
                   };
-                };
-            var unZoom = function() {
-                  $scope.$apply(function(){
+                },
+                eventCallbacks = {
+                  // Prepare event callbacks for logging...
+                  onComplete        : onComplete("zoom"),
+                  onReverseComplete : onComplete("unzoom"),
+                  onUpdate          : onComplete("zoom", "update")
+                },
 
-                    // Reverse the `zoom` animation
+                // Reverse the `zoom` animation
+                unZoom = function() {
                     $timeline("zoom").then(function(timeline){
                        $scope.hideDetails = angular.noop;
 
                        timeline.reverse();
                     });
-                  });
                 },
-                doZoom = function() {
-                    // Prepare event callbacks for logging...
-                    var eventCallbacks = {
-                            onComplete        : onComplete("zoom"),
-                            onReverseComplete : onComplete("unzoom"),
-                            onUpdate          : onComplete("zoom", "update")
-                        };
 
+                // start the `zoom` animation
+                doZoom = function() {
                     // Update databindings in <timeline> markup
                     // to use the selected tile...
-
                     $scope.selectedTile = angular.extend({}, selectedTile);
 
-                    // start the `zoom` animation
-
-                    $timeline("zoom", eventCallbacks ).then(function(timeline){
+                    $timeline( "zoom", eventCallbacks ).then(function(timeline){
                         timeline.restart();
                     });
-                };
+                },
 
-            // Load images for the tile to be zoomed...
+                // Load images for the tile to be zoomed...
+                loader = makeLoaderFor("#details > img", true),
 
-            loadTileImages(selectedTile).then(function()
+                // Get selected tile's data model
+                selectedTile = tilesModel[tileIndex];
+
+            loader(selectedTile).then(function()
             {
                 // Push to scope for use by autoClose()
-                $scope.hideDetails = unZoom;
+                $scope.hideDetails = $apply(unZoom);
 
                 doZoom();
             });
@@ -109,8 +104,9 @@
         /**
          * Load all the full-size images in the background...
          */
-        function loadImages() {
-            var preloads = tiles.slice(1);
+        function preloadImages() {
+            var preloads = tilesModel.slice(1);
+            var loader   = makeLoaderFor("#backgroundLoader");
             try {
 
                 // Sequentially load the tiles (not parallel)
@@ -118,7 +114,7 @@
 
                 return preloads.reduce(function(promise, tile ){
                     return promise.then(function(){
-                        return loadTileImages(tile ,"#backgroundLoader").then(function(){
+                        return loadTileImages(tile , loader).then(function(){
                             return 0; // first tile index
                         });
                     });
@@ -132,52 +128,62 @@
          * Preload background and foreground images before transition start
          * Only load() 1x using the `imageLoaded` flag
          */
-        function loadTileImages(tile, selector) {
-            var deferred = Q.defer();
-            // Update the background image for the `title` div
-
-            if ( !selector ) {
-                $("#stage div#title > .content").css("background-image", "url(" + tile.titleSrc + ")");
-                $("#stage div#info  > .content").css("background-image", "url(" + tile.infoSrc + ")");
-            }
+        function makeLoaderFor(selector, includeContent) {
 
             // Use a promise to start the transition ONCE the full album image has
             // already loaded and the img `src` attribute has been updated...
 
-            selector = selector || "#details > img";
+            return function loadsImagesFor(tile) {
+                var deferred = Q.defer();
 
-            $log.debug( "loadTileImages( {0} ).src = {1}".supplant([selector || "", tile.albumSrc]));
-            $log.debug( "preloaded == " + tile.imageLoaded);
+                $log.debug( "loadTileImages( {0} ).src = {1}".supplant([selector || "", tile.albumSrc]));
+                $log.debug( "preloaded == " + tile.imageLoaded);
 
-            if ( !tile.imageLoaded ) {
+                if ( !!includeContent ) {
+                    $("#stage div#title > .content").css("background-image", "url(" + tile.titleSrc + ")");
+                    $("#stage div#info  > .content").css("background-image", "url(" + tile.infoSrc + ")");
+                }
 
-                $(selector).one( "load", function(){
-                    $log.debug( " $('{0}').loaded() ".supplant([selector]) );
+                if ( !tile.imageLoaded ) {
 
-                    // Manually track load status
-                    tile.imageLoaded = true;
+                    $(selector).one( "load", function(){
+                        $log.debug( " $('{0}').loaded() ".supplant([selector]) );
+
+                        // Manually track load status
+                        tile.imageLoaded = true;
+
+                        $timeout(function(){
+                            deferred.resolve(tile);
+                        }, 70);
+                    })
+                    .attr("src", tile.albumSrc);
+
+                } else {
+                    $(selector).attr("src", tile.albumSrc);
 
                     $timeout(function(){
                         deferred.resolve(tile);
                     }, 70);
-                })
-                .attr("src", tile.albumSrc);
+                }
 
-            } else {
-                $(selector).attr("src", tile.albumSrc);
-
-                $timeout(function(){
-                    deferred.resolve(tile);
-                }, 70);
+                return deferred.promise;
             }
-
-            return deferred.promise;
         }
+
 
         // ************************************************************
         // Other Features - autoClose and Scaling
         // ************************************************************
 
+        /**
+         * Add Escape key and mousedown listeners to autoclose/reverse the
+         * zoom animations...
+         */
+        function enableAutoClose() {
+            $('body').keydown( autoClose );
+            $('#mask').mousedown( autoClose );
+            $('#details').mousedown( autoClose );
+        }
 
         /**
          * Auto-close details view upon ESCAPE keydowns
@@ -187,34 +193,6 @@
                 ($scope.hideDetails || angular.noop)();
                 e.preventDefault();
             }
-        }
-
-
-        /**
-         * Startup viewport scaling for UX; this will increase
-         * the stage size to fill the window area with
-         * PROPORTIONAL_FIT_INSIDE
-         */
-        function scaleStage() {
-            var win = {
-                    width : $(window).width()-20,
-                    height: $(window).height()-20
-                },
-                stage = {
-                    width : 323,
-                    height: 574
-                },
-                scaling = Math.min(
-                    win.height/stage.height,
-                    win.width/stage.width
-                );
-
-            // Scale and FadeIn entire stage for better UX
-
-            new TimelineLite()
-                .set('#stage', {scale:scaling, transformOrigin:"0 0 0" })
-                .to("#stage", 0.5, {opacity:1});
-
         }
 
     }

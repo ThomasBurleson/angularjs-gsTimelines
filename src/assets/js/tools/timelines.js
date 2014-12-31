@@ -5,25 +5,21 @@
      * GSAP TimelineLite AngularJS module that supports
      * a custom DSL for animation definitions
      *
+     * NOTE: Currently this module has some dependencies upon jQuery() features
+     *       in querySelector()...
+     *
      * @usage
      * <gs-timeline id="zoom"  time-scale="1" >
-     *
      *   <gs-step target="#mask"      style="zIndex:-10;className:''"  duration="0.001" />
      *   <gs-step target="#details"   style="zIndex:-15;className:''"  duration="0.001" />
-     *
      *   <gs-step target="#mask"      style="zIndex:90;" duration="0.001" />
      *   <gs-step target="#details"   style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}};"  duration="0.001"/>
-     *
      *   <gs-step target="#details"   style="opacity:1;" duration="0.4" />
      *   <gs-step target="#details"   style="left:0; height:{{selectedTile.to.height}}; width:329;" duration="0.5"  />
-     *
-     *       <gs-step mark-position="fullWidth"/>
-     *
+     *   <gs-step mark-position="fullWidth"/>
      *   <gs-step target="#mask"      style="opacity:0.80;"                   duration="0.5" position="fullWidth-=0.3"/>
      *   <gs-step target="#details"   style="opacity:1; top:18; height:512;"  duration="0.3" position="fullWidth-=0.1"/>
-     *
-     *       <gs-step mark-position="slideIn"/>
-     *
+     *   <gs-step mark-position="slideIn"/>
      *   <gs-step target="#details > #green"               style="zIndex:92; opacity:1; top:21; className:'';" />
      *   <gs-step target="#details > #green"               style="top:0;"       duration="0.2" position="slideIn"/>
      *   <gs-step target="#details > #title"               style="height:131;"  duration="0.6" position="fullWidth" />
@@ -31,14 +27,14 @@
      *   <gs-step target="#details > #title > div.content" style="opacity:1.0;" duration="0.8" position="fullWidth+=0.3" />
      *   <gs-step target="#details > #pause"               style="opacity:1; scale:1.0;" duration="0.4" position="fullWidth+=0.4" />
      *   <gs-step target="#details > #info > div.content"  style="opacity:1;"   duration="0.4" position="fullWidth+=0.6" />
-     *
      *  </gs-timeline>
      *
      */
     angular.module('gsTimelines', [ 'ng' ])
         .service(  '$timeline', TimelineBuilder )
         .directive('gsTimeline',  TimelineDirective )
-        .directive('gsStep',      StepDirective );
+        .directive('gsStep',      StepDirective )
+        .directive('gsScale',     ScaleDirective);
 
 
     /**
@@ -58,7 +54,7 @@
 
             // Special lookup or accessor function
 
-            $timeline = function (id, callbacks ){
+            $timeline = function ( id, callbacks ){
 
                 // Is this an implicit lookup?
 
@@ -76,6 +72,7 @@
                                tl.eventCallback(key, callbacks[key] || angular.noop, ["{self}"] );
                             });
 
+                            // publish/provide the TimelineLite instance
                             return tl;
                         });
                     }
@@ -178,7 +175,7 @@
             }
 
             // ******************************************************************
-            // Internal Builder Methods
+            // Internal DOM Query Method
             // ******************************************************************
 
             /**
@@ -195,7 +192,7 @@
                 var element = targets[selector];
                 if ( !element ) {
 
-                    // Cache the jQuery querySelector for reuse
+                    // Cache the querySelector DOM element for reuse
                     targets[selector] = element = $(selector);
                 }
 
@@ -325,7 +322,6 @@
                     results.push(key);
                 }
             }
-
             return results;
         }
     }
@@ -379,6 +375,11 @@
 
                  try {
                      if ( children.length || steps.length ) {
+
+                         // No rebuilding while active...
+                         if ( timeline && timeline.isActive() ) {
+                             timeline.kill();
+                         }
 
                          // Build or update the TimelineLite instance
                          timeline = $timeline.makeTimeline({
@@ -550,17 +551,17 @@
      * @ngdoc directive
      *
      * Steps can only be defined as children of a Timeline. Steps are used to label frames, set styles,
-     * or animation 1..n sets of properties for a specific duration.
+     * or animate 1..n sets of properties for a specific duration.
      *
      * @returns {{restrict: string, scope: {style: string, duration: string, position: string, markPosition: string, clazz: string}, require: string[], link: LinkStepDirective}}
      * @constructor
      *
      * @example:
      *
-     *      <gs-step   class=""
-     *              duration="0.3"
-     *              position="0.1"
-     *              style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" >
+     *      <gs-step  className=""
+     *                duration="0.3"
+     *                position="0.1"
+     *                style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" >
      *      </gs-step>
      */
     function StepDirective() {
@@ -580,6 +581,44 @@
                 scope.$watch('style', function onChangeStep() {
                     ctrl.addStep(scope);
                 });
+
+            }
+        };
+    }
+
+
+    /**
+     * @ngdoc directive
+     * Scale the attached element to the window inner bounds.
+     *
+     * Startup viewport scaling for UX; this will increase
+     * the stage size to fill the window area with
+     * PROPORTIONAL_FIT_INSIDE
+     *
+     */
+    function ScaleDirective($window) {
+        return {
+            restrict : "A",
+            link : function LinkStepDirective(scope, element, attr) {
+                var win = {
+                        width : $window.innerWidth-20,
+                        height: $window.innerHeight-20
+                    },
+                    stage = {
+                        width : 323,
+                        height: 574
+                    },
+                    scaling = Math.min(
+                        win.height/stage.height,
+                        win.width/stage.width
+                    ),
+                    selector = '#' + attr.id;
+
+                // Scale and FadeIn entire stage for better UX
+
+                new TimelineLite()
+                    .set(selector, {scale:scaling, transformOrigin:"0 0 0" })
+                    .to(selector, 0.5, {opacity:1});
 
             }
         };
