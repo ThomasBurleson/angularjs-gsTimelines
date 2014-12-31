@@ -45,6 +45,7 @@ body {
 }
 
 #stage > div#green_status {
+    z-index: -15;
     top: 21px;
     width: 323px;
     height: 18px;

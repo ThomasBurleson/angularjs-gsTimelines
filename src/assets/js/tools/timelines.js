@@ -126,6 +126,7 @@
             source  = source || { steps:[ ], children: [ ] };
             targets = flushTargets ? { } : targets;
 
+            var querySelector = makeQuery( source,  targets );
             var timeline = source.timeline || new TimelineLite({paused: true, data: {id: source.id || counter++ }});
                 timeline.clear(true).timeScale( source.timeScale || 1.0 );
 
@@ -135,7 +136,7 @@
 
             source.steps.forEach(function(step, index) {
 
-                var element     = querySelector(step.target);
+                var element     = querySelector( step.target );
                 var frameLabel  = keyValue(step, "markPosition");
                 var position    = keyValue(step, "position", "");
                 var styles      = toJSON(keyValue(step, "style"));
@@ -157,67 +158,7 @@
                 }
             });
 
-            return logBuild(source);
-
-            // ******************************************************************
-            // Internal Debug Methods
-            // ******************************************************************
-
-            function logBuild( source ) {
-                var timeline = source.timeline;
-
-                $log.debug( "---------------------" );
-                $log.debug( "rebuild $timeline('{data.id}')".supplant(timeline) );
-                $log.debug( "---------------------" );
-
-                source.steps.forEach(function(step, index) {
-
-                    var element     = querySelector(step.target);
-                    var frameLabel  = keyValue(step, "markPosition");
-                    var position    = keyValue(step, "position", "");
-                    var styles      = toJSON(keyValue(step, "style"));
-                    var hasDuration = !!keyValue(step, "duration");
-                    var duration    = hasDuration ? keyValue(step, "duration") : 0;
-
-                    if ( frameLabel )       $log.debug( "addLabel( '{0}' )"                       .supplant( [frameLabel] ));
-                    else if ( hasDuration ) $log.debug( "timeline.set( '{0}', {1},  {2}, '{3}' )" .supplant( [step.target, duration, JSON.stringify(styles), position ] ));
-                    else                    $log.debug( "timeline.set( '{0}', '{1}' )"            .supplant( [step.target, JSON.stringify(styles)] ));
-
-                });
-
-                source.children.forEach(function(it){
-                    if ( it.timeline ) {
-                        $log.debug( "add child timeline( '{data.id}' )".supplant(it) );
-                    }
-                });
-
-                return timeline;
-            }
-
-            // ******************************************************************
-            // Internal DOM Query Method
-            // ******************************************************************
-
-            /**
-             * Find DOM element associated with query selector
-             * Use the fallback timeline target if the step target `selector` is not
-             * specified.
-             *
-             * @param selector
-             * @returns {*}
-             */
-            function querySelector( selector ) {
-                selector = selector || source.target;
-
-                var element = targets[selector];
-                if ( !element ) {
-
-                    // Cache the querySelector DOM element for reuse
-                    targets[selector] = element = $(selector);
-                }
-
-                return element;
-            }
+            return logBuild(source, targets, $log);
         }
 
         /**
@@ -278,71 +219,11 @@
             if ( timeline && id && id.length ) {
 
                 cache[ id ] = timeline;
-
                 if ( angular.isDefined(state) )
                 {
                     timeline.$$state = state;
                 }
             }
-        }
-
-
-        // ******************************************************************
-        // Utility Methods
-        // ******************************************************************
-
-        /**
-         * Convert markup styles to JSON style map
-         * @param keyValues
-         */
-        function toJSON(style) {
-           var result = { };
-           var pairs = !style ? [ ] : style.replace(/\s+/g,"").split(/;|,/g);
-
-           pairs.forEach(function(it) {
-             if ( it.length ) {
-               it = it.split(":");
-               var key = it[0];
-               var value = it[1];
-
-               if ( String(value).length ) {
-                 result[ stripQuotes(key) ] = stripQuotes(value);
-               }
-             }
-           });
-
-           return result;
-        }
-
-        /**
-         * Check map for valid string value...
-         * @returns {*} String || defVal
-         */
-        function keyValue(map, key, defVal) {
-            return angular.isDefined(map[key]) && (map[key].length > 0) ? map[key] : defVal;
-        }
-
-        /**
-         * Strip any "" or '' quotes
-         * @returns {String}
-         */
-        function stripQuotes(source) {
-            return source.replace(/\"/g,"").replace(/\'/g,"");
-        }
-
-        /**
-         * Get array of object properties
-         * @param source
-         * @returns {keys}
-         */
-        function getKeys(source) {
-            var results = [];
-            for (var key in source ) {
-                if ( source.hasOwnProperty(key) ) {
-                    results.push(key);
-                }
-            }
-            return results;
         }
     }
 
@@ -360,7 +241,6 @@
             timeline     = null,
             children     = [ ],
             steps        = [ ],
-            pendingRebuild = null,
             bouncedRebuild = null,
             debounce       = $debounce( $timeout ),
             parentCntrl    = $element.parent().controller('timeline');
@@ -381,50 +261,38 @@
          * rebuilding.
          */
         function asyncRebuild() {
-
-            bouncedRebuild = bouncedRebuild || debounce( rebuildTimeline, 10 );
-            pendingRebuild = pendingRebuild || $q.defer();
+            bouncedRebuild = bouncedRebuild || debounce( rebuildTimeline );
 
             // Keep debouncing...
-
             bouncedRebuild();
 
             /**
              * Rebuild the timeline when the steps or children timelines are changed...
              */
              function rebuildTimeline() {
-                 if ( !pendingRebuild ) return;
 
-                 try {
-                     if ( children.length || steps.length ) {
-
-                         // No rebuilding while active...
-                         if ( timeline && timeline.isActive() ) {
-                             timeline.kill();
-                         }
-
-                         // Build or update the TimelineLite instance
-                         timeline = $timeline.makeTimeline({
-                             timeline : timeline,
-                             steps    : steps,
-                             children : children,
-                             target   : $scope.target,
-                             timeScale: +$scope.timeScale || 1.0
-                         });
-
-                         // Register for easy lookups later...
-                         $timeline.register( timeline, $scope.id, $scope.state );
+                 if ( children.length || steps.length ) {
+                     // No rebuilding while active...
+                     if ( timeline && timeline.isActive() ) {
+                         timeline.kill();
                      }
 
-                     // Add to parent as child timeline (if parent exists)
-                     parentCntrl && parentCntrl.addChild( timeline, +$scope.position  || 0.0 );
-
-                     // Now resolve any pending requests with the up-to-date `timeline`
-                     pendingRebuild.resolve( timeline );
-
-                 } finally {
-                     pendingRebuild = null;
+                     // Build or update the TimelineLite instance
+                     timeline = $timeline.makeTimeline({
+                         timeline : timeline,
+                         steps    : steps,
+                         children : children,
+                         target   : $scope.target,
+                         timeScale: +$scope.timeScale || 1.0
+                     });
                  }
+
+                 // Register for easy lookups later...
+                 $timeline.register( timeline, $scope.id, $scope.state );
+
+                 // Add to parent as child timeline (if parent exists)
+                 parentCntrl && parentCntrl.addChild( timeline, +$scope.position  || 0.0 );
+
              }
         }
 
@@ -645,9 +513,138 @@
         };
     }
 
+
+    // ******************************************************************
+    // Internal Debug Methods
+    // ******************************************************************
+
+    /**
+     * Output the build steps and details to the console...
+     *
+     * @param source
+     * @param targets
+     * @param $log
+     * @returns {*|TimelineLite}
+     */
+    function logBuild( source, targets, $log ) {
+        var querySelector = makeQuery( source,  targets );
+        var timeline = source.timeline;
+
+        $log.debug( "---------------------" );
+        $log.debug( "rebuild $timeline('{data.id}')".supplant(timeline) );
+        $log.debug( "---------------------" );
+
+        source.steps.forEach(function(step, index) {
+
+            var element     = querySelector(step.target);
+            var frameLabel  = keyValue(step, "markPosition");
+            var position    = keyValue(step, "position", "");
+            var styles      = toJSON(keyValue(step, "style"));
+            var hasDuration = !!keyValue(step, "duration");
+            var duration    = hasDuration ? keyValue(step, "duration") : 0;
+
+            if ( frameLabel )       $log.debug( "addLabel( '{0}' )"                       .supplant( [frameLabel] ));
+            else if ( hasDuration ) $log.debug( "timeline.set( '{0}', {1},  {2}, '{3}' )" .supplant( [step.target, duration, JSON.stringify(styles), position ] ));
+            else                    $log.debug( "timeline.set( '{0}', '{1}' )"            .supplant( [step.target, JSON.stringify(styles)] ));
+
+        });
+
+        source.children.forEach(function(it){
+            if ( it.timeline ) {
+                $log.debug( "add child timeline( '{data.id}' )".supplant(it) );
+            }
+        });
+
+        return timeline;
+    }
+
+    // ******************************************************************
+    // Internal DOM Query Method
+    // ******************************************************************
+
+    /**
+     * Find DOM element associated with query selector
+     * Use the fallback timeline target if the step target `selector` is not
+     * specified.
+     *
+     * @param selector
+     * @returns {*}
+     */
+    function makeQuery( source, targets ){
+
+        // Publish query method...
+        return function querySelector( selector ) {
+            selector = selector || source.target;
+
+            var element = targets[selector];
+            if ( !element ) {
+
+                // Cache the querySelector DOM element for reuse
+                targets[selector] = element = $(selector);
+            }
+
+            return element;
+        }
+    }
+
     // *****************************************************
     // Utility Methods
     // *****************************************************
+
+
+    /**
+     * Convert markup styles to JSON style map
+     * @param keyValues
+     */
+    function toJSON(style) {
+       var result = { };
+       var pairs = !style ? [ ] : style.replace(/\s+/g,"").split(/;|,/g);
+
+       pairs.forEach(function(it) {
+         if ( it.length ) {
+           it = it.split(":");
+           var key = it[0];
+           var value = it[1];
+
+           if ( String(value).length ) {
+             result[ stripQuotes(key) ] = stripQuotes(value);
+           }
+         }
+       });
+
+       return result;
+    }
+
+    /**
+     * Check map for valid string value...
+     * @returns {*} String || defVal
+     */
+    function keyValue(map, key, defVal) {
+        return angular.isDefined(map[key]) && (map[key].length > 0) ? map[key] : defVal;
+    }
+
+    /**
+     * Strip any "" or '' quotes
+     * @returns {String}
+     */
+    function stripQuotes(source) {
+        return source.replace(/\"/g,"").replace(/\'/g,"");
+    }
+
+    /**
+     * Get array of object properties
+     * @param source
+     * @returns {keys}
+     */
+    function getKeys(source) {
+        var results = [];
+        for (var key in source ) {
+            if ( source.hasOwnProperty(key) ) {
+                results.push(key);
+            }
+        }
+        return results;
+    }
 
     /**
      * Returns a function, that, as long as it continues to be invoked, will not

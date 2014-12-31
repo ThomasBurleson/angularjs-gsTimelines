@@ -18,13 +18,16 @@
      */
     function KodaController( $scope, tilesModel, $timeline, $timeout, $q, $log ) {
 
+        $scope.allTiles    = [].concat(tilesModel);
         $scope.preload     = makeLoaderFor("#details > img", true);
         $scope.showDetails = showDetails;
         $scope.hideDetails = angular.noop;
 
         enableAutoClose();
         preloadImages();
-        autoZoom(0)
+
+        // Auto zoom first tile
+        autoZoom( tilesModel[0] );
 
 
         // ************************************************************
@@ -42,10 +45,8 @@
          * the `restart()` or `reverse()` processes.
          *
          */
-        function showDetails(tileIndex) {
-            var selectedTile = tilesModel[tileIndex],
-
-                makeNotify = function(direction, action) {
+        function showDetails(selectedTile, $event) {
+            var makeNotify = function(direction, action) {
                   action = action || "finished";
                   return function(tl) {
                       $log.debug( "tl('{0}') {1}...".supplant([direction, action]));
@@ -66,7 +67,7 @@
                     // Trigger databindings in the `<gs-timeline />` markup to use the selected tile...
 
                     $scope.hideDetails = unZoom;
-                    $scope.selectedTile = selectedTile;
+                    $scope.selectedTile = updateBounds(selectedTile, $event);
 
                     // Lookup animation for `zoom` and register
                     // optional event callbacks for logging before starting...
@@ -91,9 +92,9 @@
          * Auto show zoom details for tile #1
          * @param tileIndex
          */
-        function autoZoom(tileIndex) {
+        function autoZoom(tile) {
             $timeout(function(){
-                showDetails(tileIndex, true);
+                showDetails(tile, true);
             }, 30 );
         }
 
@@ -102,17 +103,35 @@
         // ************************************************************
 
         /**
+         * Update the tile bounds data based on current tile settings.
+         * The `tile.from` RECT is used by the animations...
+         *
+         * @param tile
+         * @param $event
+         * @returns {*}
+         */
+        function updateBounds(tile, $event) {
+            if ( $event && $event.currentTarget ) {
+                tile.from.left   = $event.currentTarget.offsetLeft + 1;
+                tile.from.top    = $event.currentTarget.offsetTop + 1;
+                tile.from.width  = $event.currentTarget.offsetWidth - 1;
+                tile.from.height = $event.currentTarget.offsetHeight - 1;
+            }
+
+         return tile;
+        }
+
+        /**
          * Load all the full-size images in the background...
          */
         function preloadImages() {
-            var preloads = tilesModel.slice(1);
-            var loader   = makeLoaderFor("#backgroundLoader");
             try {
+                var loader   = makeLoaderFor("#backgroundLoader");
 
                 // Sequentially load the tiles (not parallel)
                 // NOTE: we are using a hidden `img src` to do the pre-loading
 
-                return preloads.reduce(function(promise, tile ){
+                return tilesModel.reduce(function(promise, tile ){
                     return promise.then(function(){
                         return loader(tile).then(function(){
                             return 0; // first tile index
@@ -205,11 +224,8 @@
     function TileDataModel() {
         return [
             {
+                className : "tile1",
                 from: {
-                    left:0,
-                    top: 75,
-                    width: 160,
-                    height: 164
                 },
                 to : {
                     height : 216
@@ -220,11 +236,8 @@
                 infoSrc : "./assets/images/koda/info_kodaline.png"
             },
             {
+                className : "tile2",
                 from: {
-                    left:165,
-                    top: 75,
-                    width: 160,
-                    height: 166
                 },
                 to : {
                     height : 216
@@ -235,11 +248,8 @@
                 infoSrc : "./assets/images/koda/info_moby.png"
             },
             {
+                className : "tile3",
                 from: {
-                    left:0,
-                    top: 240,
-                    width: 159,
-                    height: 221
                 },
                 to : {
                     height : 229
@@ -251,11 +261,8 @@
 
             },
             {
+                className : "tile4",
                 from: {
-                    left: 164,
-                    top: 240,
-                    width: 160,
-                    height: 223
                 },
                 to : {
                     height : 229
@@ -267,10 +274,6 @@
             },
             {
                 from: {
-                    left:0,
-                    top: 75,
-                    width: 160,
-                    height: 164
                 },
                 to : {
                     height : 216
