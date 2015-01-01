@@ -623,10 +623,7 @@
      * @returns {*|TimelineLite}
      */
     function logBuild( source, targets, $log ) {
-        var querySelector = makeQuery( source,  targets );
-        var timeline = source.timeline;
-
-        $log.debug( ">> TimelineBuilder::makeTimeline() invoked by $timeline('{data.id}')".supplant(timeline) );
+        $log.debug( ">> TimelineBuilder::makeTimeline() invoked by $timeline('{data.id}')".supplant(source.timeline) );
 
         source.steps.forEach(function(step, index) {
 
@@ -648,7 +645,7 @@
             }
         });
 
-        return timeline;
+        return source.timeline;
     }
 
     // ******************************************************************

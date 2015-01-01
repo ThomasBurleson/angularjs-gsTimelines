@@ -48,12 +48,17 @@
         function showDetails(selectedTile, $event) {
             var makeNotify = function(direction, action) {
                   return function(tl) {
-                      $log.debug( "tl('{0}') {1}...".supplant([direction, action || "finished"]));
+                      $log.debug( "tl('{0}') {1}".supplant([direction, action || "finished"]));
                   };
                 },
                 unZoom = function() {
                     // Reverse the `zoom` animation
                     $scope.$apply(function(){
+                        $timeline( "zoom", {
+                            onUpdate          : makeNotify("zoom", "reversing..."),
+                            onReverseComplete : makeNotify("zoom", "reversed."),
+                        });
+
                         $scope.state = "";
                         $scope.hideDetails = angular.noop;
                     });
@@ -63,9 +68,8 @@
                     // Trigger databindings in the `<gs-timeline />` markup to use the selected tile...
 
                     $timeline( "zoom", {
-                        onComplete        : makeNotify("zoom"),
-                        onReverseComplete : makeNotify("unzoom"),
-                        onUpdate          : makeNotify("zoom", "update")
+                        onUpdate          : makeNotify("zoom", "updating..."),
+                        onComplete        : makeNotify("zoom", "complete.")
                     });
 
                     // Perform animation via state change
