@@ -106,7 +106,7 @@
                 // Ensure the key exists before $watch()
                 parent.state = parent.state || undefined;
 
-            $log.debug( "TimelineStates::watchState( '{0}' )".supplant([state]) );
+            $log.debug( "TimelineStates::watchState( state = '{0}' )".supplant([state]) );
 
             // Watch for state changes and fire the associated timeline
             var unwatch = parent.$watch('state', function(current, old){
@@ -115,7 +115,7 @@
 
                 controller.timeline().then(function(timeline){
 
-                    $log.debug( "TimelineStates::triggerTimeline( '{0}' )".supplant([current]) );
+                    $log.debug( ">> TimelineStates::triggerTimeline( state = '{0}' )".supplant([current]) );
 
                     if ( current === state ) timeline.restart();
                     else if (current === "") timeline.reverse();
@@ -626,13 +626,10 @@
         var querySelector = makeQuery( source,  targets );
         var timeline = source.timeline;
 
-        $log.debug( "---------------------" );
-        $log.debug( "TimelineBuilder:: rebuild $timeline('{data.id}')".supplant(timeline) );
-        $log.debug( "---------------------" );
+        $log.debug( ">> TimelineBuilder::makeTimeline() invoked by $timeline('{data.id}')".supplant(timeline) );
 
         source.steps.forEach(function(step, index) {
 
-            var element     = querySelector(step.target);
             var frameLabel  = keyValue(step, "markPosition");
             var position    = keyValue(step, "position", "");
             var styles      = toJSON(keyValue(step, "style"));
