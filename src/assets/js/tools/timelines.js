@@ -9,29 +9,31 @@
      *       in querySelector()...
      *
      * @usage
-     * <gs-timeline id="zoom" time-scale="1" resolve="preload(selectedTile)" >
-     *    <gs-step target="#mask"      style="zIndex:-10;className:''"  duration="0.001" />
-     *    <gs-step target="#details"   style="zIndex:-15;className:''"  duration="0.001" />
-     *    <gs-step target="#mask"      style="zIndex:90" duration="0.001" />
+     * <gs-timeline id="zoom" time-scale="1.4" resolve="preload(selectedTile)" >
+     *    <gs-step target="#mask"         style="zIndex:-10;className:''"               duration="0.001" />
+     *    <gs-step target="#details"      style="zIndex:-11;className:''"               duration="0.001" />
+     *    <gs-step target="#green_status" style="zIndex:-13;className:''"               duration="0.001" />
+     *    <gs-step target="#mask"         style="zIndex:90"                             duration="0.001" />
      *    <gs-step target="#details"   style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}}"  duration="0.01"/>
-     *    <gs-step target="#details"   style="opacity:1.0" duration="0.3" />
+     *    <gs-step target="#details"   style="opacity:1.0"                              duration="0.3" />
      *    <gs-step mark-position="fullThumb"/>
      *    <gs-step target="#details"   style="delay:0.2; left:0; height:{{selectedTile.to.height}}; width:329" duration="0.5"  />
      *    <gs-step mark-position="fullWidth"/>
-     *    <gs-step target="#mask"      style="opacity:0.80"                   duration="0.5" position="fullWidth-=0.3"/>
-     *    <gs-step target="#details"   style="opacity:1; top:18; height:512"  duration="0.3" position="fullWidth+=0.1"/>
+     *    <gs-step target="#mask"      style="opacity:0.80"                              duration="0.5"   position="fullWidth-=0.3"/>
+     *    <gs-step target="#details"   style="opacity:1; top:18; height:512"             duration="0.3"   position="fullWidth+=0.1"/>
      *    <gs-step mark-position="slideIn"/>
-     *    <gs-step target="#details > #green"  style="zIndex:92; opacity:1; top:21; className:''" />
-     *    <gs-step target="#details > #green"  style="top:0"       duration="0.2" position="slideIn"/>
-     *    <gs-step target="#details > #title"  style="height:131"  duration="0.6" position="fullWidth" />
-     *    <gs-step target="#details > #info"   style="height:56"   duration="0.5" position="fullWidth+=0.2" />
-     *    <gs-step target="#details > #title > div.content" style="opacity:1.0" duration="0.8" position="fullWidth+=0.3" />
-     *    <gs-step target="#details > #pause"               style="opacity:1; scale:1.0" duration="0.4" position="fullWidth+=0.4" />
-     *    <gs-step target="#details > #info > div.content"  style="opacity:1"   duration="0.4" position="fullWidth+=0.6" />
-     *  </gs-timeline>
+     *    <gs-step target="#green_status"      style="zIndex:91; opacity:1; top:21;"     duration="0.001" position="slideIn"/>
+     *    <gs-step target="#green_status"      style="top:0"                             duration="0.2"   position="slideIn"/>
+     *    <gs-step target="#details > #title"  style="height:131"                        duration="0.6"   position="fullWidth" />
+     *    <gs-step target="#details > #info"   style="height:56"                         duration="0.5"   position="fullWidth+=0.2" />
+     *    <gs-step target="#details > #title > div.content" style="opacity:1.0"          duration="0.8"   position="fullWidth+=0.3" />
+     *    <gs-step target="#details > #info > div.content"  style="opacity:1"            duration="0.4"   position="fullWidth+=0.6" />
+     *    <gs-step target="#details > #pause"               style="opacity:1; scale:1.0" duration="0.4"   position="fullWidth+=0.4" />
+     * </gs-timeline>
      *
      */
     angular.module('gsTimelines', [ 'ng' ])
+        .service(  '$$gsStates',  TimelineStates  )
         .service(  '$timeline',   TimelineBuilder )
         .directive('gsTimeline',  TimelineDirective )
         .directive('gsStep',      StepDirective )
@@ -39,6 +41,99 @@
 
 
     /**
+     * @ngdoc service
+     * @private
+     *
+     * Internal State management for Timelines
+     * Used to watch states and auto-trigger `timeline` animations (restart() or reverse())
+     *
+     * NOTE: currently this is a CRUDE architecture that does not account for hierarchical states
+     * and complex animation chains...
+     */
+    function TimelineStates($log)
+    {
+        var self, registry = { };
+
+        return self = {
+            addTimeline : function addTimeline(data) {
+                var state = data.state;
+
+                if ( state && state.length ) {
+                    registry[ state ] = data;
+
+                    if ( !data.parentController ) {
+                        data.unwatch = watchState( state );
+                    }
+                }
+            }
+        };
+
+        // ******************************************
+        // Internal Accessor
+        // ******************************************
+
+        /**
+         * Get the scope for the specified `state`
+         */
+        function scopeFor(state) {
+            var data = registry[state];
+            return data ? data.scope : undefined;
+        }
+
+        /**
+         * Get the controller for the specified `state`;
+         * which provides deferred access to a ready timeline
+         */
+        function controllerFor(state){
+            var data = registry[state];
+            return data ? data.controller : undefined;
+        }
+
+        // ******************************************
+        // Internal Methods
+        // ******************************************
+
+        /**
+         *  Watch the `state` variable and autostart the Timeline instance when state
+         *  changes
+         */
+        function watchState(state) {
+            // Watch for the scope `state` change... to start or reverse the animations
+
+            var controller = controllerFor(state);
+            var parent = scopeFor(state).$parent;
+
+                // Ensure the key exists before $watch()
+                parent.state = parent.state || undefined;
+
+            $log.debug( "TimelineStates::watchState( '{0}' )".supplant([state]) );
+
+            // Watch for state changes and fire the associated timeline
+            var unwatch = parent.$watch('state', function(current, old){
+                if ( current === undefined ) return;
+                if ( state   === ""        ) return;
+
+                controller.timeline().then(function(timeline){
+
+                    $log.debug( "TimelineStates::triggerTimeline( '{0}' )".supplant([current]) );
+
+                    if ( current === state ) timeline.restart();
+                    else if (current === "") timeline.reverse();
+
+                });
+            });
+
+            // Auto unwatch when the scope is destroyed..
+            parent.$on( "$destroy", unwatch );
+
+            return unwatch;
+        }
+
+    }
+
+    /**
+     * @ngdoc service
+     *
      * Service to build a GSAP TimelineLite instance based on <gs-timeline> and nested <gs-step>
      * directive settings...
      */
@@ -128,7 +223,9 @@
 
             var querySelector = makeQuery( source,  targets );
             var timeline = source.timeline || new TimelineLite({paused: true, data: {id: source.id || counter++ }});
+
                 timeline.clear(true).timeScale( source.timeScale || 1.0 );
+                timeline.data.id = source.id || timeline.data.id;
 
             source.timeline = timeline;
             source.steps    = source.steps || [ ];
@@ -241,6 +338,7 @@
             timeline     = null,
             children     = [ ],
             steps        = [ ],
+            pendingRebuild = null,
             bouncedRebuild = null,
             debounce       = $debounce( $timeout ),
             parentCntrl    = $element.parent().controller('timeline');
@@ -249,7 +347,12 @@
         self.addChild    = onAddTimeline;  // Used by TimelineDirective
         self.addResolve  = onAddResolve;   // Used by TimelineDirective
 
-        // Publish accessors for $timeline::makeTimeline()
+        /**
+         * Deferred external accessor to `timeline` to support asyncRebuild(s).
+         */
+        self.timeline    = function() {
+            return pendingRebuild ? pendingRebuild.promise : $q.when(timeline);
+        };
 
         // ******************************************************************
         // Internal Builder Methods
@@ -261,6 +364,7 @@
          * rebuilding.
          */
         function asyncRebuild() {
+            pendingRebuild = pendingRebuild || $q.defer();
             bouncedRebuild = bouncedRebuild || debounce( rebuildTimeline );
 
             // Keep debouncing...
@@ -270,28 +374,37 @@
              * Rebuild the timeline when the steps or children timelines are changed...
              */
              function rebuildTimeline() {
+                 try {
+                     if ( children.length || steps.length ) {
 
-                 if ( children.length || steps.length ) {
-                     // No rebuilding while active...
-                     if ( timeline && timeline.isActive() ) {
-                         timeline.kill();
+                         // No rebuilding while active...
+                         if ( timeline && timeline.isActive() ) {
+                             timeline.kill();
+                         }
+
+                         // Build or update the TimelineLite instance
+                         timeline = $timeline.makeTimeline({
+                             id       : $scope.id,
+                             timeline : timeline,
+                             steps    : steps,
+                             children : children,
+                             target   : $scope.target,
+                             timeScale: +$scope.timeScale || 1.0
+                         });
                      }
 
-                     // Build or update the TimelineLite instance
-                     timeline = $timeline.makeTimeline({
-                         timeline : timeline,
-                         steps    : steps,
-                         children : children,
-                         target   : $scope.target,
-                         timeScale: +$scope.timeScale || 1.0
-                     });
+                     // Register for easy lookups later...
+                     $timeline.register( timeline, $scope.id, $scope.state );
+
+                     // Add to parent as child timeline (if parent exists)
+                     parentCntrl && parentCntrl.addChild( timeline, +$scope.position  || 0.0 );
+
+                     // Then resolve promise (for external requests)
+                     pendingRebuild.resolve( timeline );
+
                  }
-
-                 // Register for easy lookups later...
-                 $timeline.register( timeline, $scope.id, $scope.state );
-
-                 // Add to parent as child timeline (if parent exists)
-                 parentCntrl && parentCntrl.addChild( timeline, +$scope.position  || 0.0 );
+                 catch( e ) { pendingRebuild.reject(e); }
+                 finally    { pendingRebuild = null;    }
 
              }
         }
@@ -357,11 +470,13 @@
 
 
     /**
-    * @ngdoc directive
-    * @returns {{restrict: string, controller: string, link: Function}}
-    * @constructor
-    */
-   function TimelineDirective($parse, $timeline, $log) {
+     * @ngdoc directive
+     * Timeline Directive contains 0..n steps and 0..n child timelines
+     *
+     * @returns {{restrict: string, controller: string, link: Function}}
+     * @constructor
+     */
+   function TimelineDirective($parse, $$gsStates) {
        var counter = 1;
 
        return {
@@ -378,10 +493,13 @@
                scope.state     = attr.state;
                scope.target    = attr.target;
 
-               // Build watchers to trigger animations or nest timelines...
-
-               var parentCntl = element.parent().controller('timeline');
-               if ( !parentCntl ) autoStart();
+               // Register this timeline with Timeline State management
+               $$gsStates.addTimeline({
+                  scope            : scope,
+                  state            : attr.state,
+                  controller       : controller,
+                  parentController : element.parent().controller('timeline')
+               });
 
                prepareResolve();
 
@@ -400,37 +518,12 @@
                         var fn       = $parse(attr["resolve"], /* interceptorFn */ null, /* expensiveChecks */ true);
 
                         controller.addResolve( function(){
-                            //$log.debug( "resolving( '{resolve}' )".supplant(attr) );
+                            // fn() may return a promise or value;
+                            // both are wrapped in $q.when(<value>)
+
                             return fn(context);
                         });
                     }
-               }
-
-               /**
-                *  Watch the `state` variable and autostart the Timeline instance when state
-                *  changes
-                */
-               function autoStart() {
-                 var state  = attr.state || "";
-                 if ( state.length ) {
-                     // Watch for the scope `state` change... to start or reverse the animations
-
-                     var parent = scope.$parent;
-                         parent.state = parent.state || undefined;
-
-                     parent.$watch('state', function(current, old){
-                         if ( current === undefined ) return;
-                         if ( state   === ""        ) return;
-
-                         $timeline(scope.id).then(function( timeline ){
-
-                            if ( current == state ) timeline.restart();
-                            else if (current == "") timeline.reverse();
-
-                         });
-
-                     });
-                 }
                }
            }
        };
@@ -438,6 +531,7 @@
 
     /**
      * @ngdoc directive
+     * Step Directive
      *
      * Steps can only be defined as children of a Timeline. Steps are used to label frames, set styles,
      * or animate 1..n sets of properties for a specific duration.
@@ -478,6 +572,8 @@
 
     /**
      * @ngdoc directive
+     * Scale Directive
+     *
      * Scale the attached element to the window inner bounds.
      *
      * Startup viewport scaling for UX; this will increase
@@ -531,7 +627,7 @@
         var timeline = source.timeline;
 
         $log.debug( "---------------------" );
-        $log.debug( "rebuild $timeline('{data.id}')".supplant(timeline) );
+        $log.debug( "TimelineBuilder:: rebuild $timeline('{data.id}')".supplant(timeline) );
         $log.debug( "---------------------" );
 
         source.steps.forEach(function(step, index) {

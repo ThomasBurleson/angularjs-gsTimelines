@@ -9,8 +9,8 @@
      *
      */
     angular.module("kodaline",['gsTimelines','ng'])
-        .factory(   "tilesModel",     TileDataModel )
         .controller("KodaController", KodaController )
+        .factory(   "tilesModel",     TileDataModel )
 
     /**
      * KodaController constructor
@@ -87,7 +87,6 @@
             doZoom();
         }
 
-
         /**
          * Auto show zoom details for tile #1
          * @param tileIndex
@@ -95,7 +94,7 @@
         function autoZoom(tile) {
             $timeout(function(){
                 showDetails(tile, true);
-            }, 30 );
+            }, 100 );
         }
 
         // ************************************************************
