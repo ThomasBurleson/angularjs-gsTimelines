@@ -50,7 +50,7 @@
      * NOTE: currently this is a CRUDE architecture that does not account for hierarchical states
      * and complex animation chains...
      */
-    function TimelineStates($log)
+    function TimelineStates($timeline, $log)
     {
         var self, registry = { };
 
@@ -487,7 +487,7 @@
            {
                // Manually access these static properties
 
-               scope.id        = attr.id        || ("timeline_" + counter++);
+               scope.id        = attr.id        || attr.state || ("timeline_" + counter++);
                scope.position  = attr.position  || 0;
                scope.timeScale = attr.timeScale || 1.0;
                scope.state     = attr.state;
