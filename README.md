@@ -117,9 +117,8 @@ This DSL is much more expressive and, more importantly, is embedded within the *
 
 Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
 
-More details on the Animation DLS can be found here: [Animation DSL](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)
-
-Source to the AngularJS-GSAP **$timeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
+*  More details on the Animation DLS can be found here: [Animation DSL](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)
+*  Source to the AngularJS-GSAP **$timeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
 
 ---
 
