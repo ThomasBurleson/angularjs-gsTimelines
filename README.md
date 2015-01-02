@@ -171,7 +171,7 @@ $timeline( "zoom", {
 });
 ```
 
-Koda #3 Only
+Koda #4 Only
 
 - Use of AngularJS-GSAP `$timeline` service (again) but with feature support for Animation States. Now uses state name changes to trigger animations:
 ```js
