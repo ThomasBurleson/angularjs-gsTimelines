@@ -158,7 +158,42 @@ Koda #2 Only
 
 Koda #3 Only
 
-- Support to drag on image to manually sequence through transition frames
+- Use of AngularJS-GSAP `$timeline` service to parse animation DSL (in HTML) and build animations with databindings to scope and data models. Uses programmatic approach to trigger animations:
+```js
+$timeline( "zoom", {
+
+  onComplete        : makeNotify("zoom"),
+  onReverseComplete : makeNotify("unzoom"),
+  onUpdate          : makeNotify("zoom", "update")
+
+}).then( function(animation){
+    animation.restart();
+});
+```
+
+Koda #3 Only
+
+- Use of AngularJS-GSAP `$timeline` service (again) but with feature support for Animation States. Now uses state name changes to trigger animations:
+```js
+$timeline( "zoom", {
+
+  onComplete        : makeNotify("zoom"),
+  onReverseComplete : makeNotify("unzoom"),
+  onUpdate          : makeNotify("zoom", "update")
+
+}).then( function(animation){
+    animation.restart();
+});
+```js
+$timeline( "zoom", {
+    onUpdate          : makeNotify("zoom", "updating..."),
+    onComplete        : makeNotify("zoom", "complete.")
+});
+
+// Perform animation via state change
+$scope.state        = "zoom";
+$scope.selectedTile = selectedTile;
+```
 
 ---
 
