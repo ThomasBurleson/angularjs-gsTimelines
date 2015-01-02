@@ -120,7 +120,33 @@ This DSL is much more expressive and, more importantly, is embedded within the *
 Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
 
 *  More details on the Animation DLS can be found here: [Animation DSL](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)
-*  Source to the AngularJS-GSAP **$timeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
+*  Source to the AngularJS-GSAP **gsTimeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
+
+---
+
+## Animation States
+
+Leveraging the concept of associating views and view layouts with states of the application, transitions of states can be defined that animate elements and their properties. Changes between states can trigger animations...
+
+Such solutions can be seen in the:
+
+*  [Flex States](http://www.adobe.com/devnet/flex/videotraining/exercises/ex4_10.html) in the Flash technology platform.
+*  [Android View States](http://developer.android.com/training/material/animations.html#ViewState) in the Android Developers platform.
+
+With the features provided by **gsTimeline** library, animation states can be consider as specific groupings of transitions. 
+
+The Koda #4 sample uses Animation states to define a `zoom` state that shows the tile details zoomed full screen. Simply set the `$scope.state = 'zoom'` to trigger the animations associated with that state.
+
+```js
+$timeline( "zoom", {
+    onUpdate          : makeNotify("zoom", "updating..."),
+    onComplete        : makeNotify("zoom", "complete.")
+});
+
+// Perform animation via state change
+$scope.state        = "zoom";
+$scope.selectedTile = selectedTile;
+```
 
 ---
 
