@@ -39,14 +39,7 @@
         // ************************************************************
 
         /**
-         * Open Details view upon tile clicks
-         * Run custom `Show Details` view transitions
-         *
-         * NOTE:
-         *
-         * This programatically uses the $timeline() locator to
-         * find the timeline animation instance and manually runs
-         * the `restart()` or `reverse()` processes.
+         * Zoom the `#details` view simply by setting a $scope.state variable
          *
          */
         function showDetails(selectedTile, $event) {
@@ -61,7 +54,7 @@
         }
 
         /**
-         *
+         *  Unzoom the `#details` view simply by clearing the state
          */
         function hideDetails() {
             $timeline( "zoom", {
@@ -71,12 +64,6 @@
 
             $scope.state = '';
         }
-
-        function makeNotify (direction, action) {
-            return function(tl) {
-                $log.debug( "tl('{0}') {1}".supplant([direction, action || "finished"]));
-            };
-        };
 
         // ************************************************************
         // Image Features
@@ -170,6 +157,16 @@
         // ************************************************************
         // Other Features - autoClose and Scaling
         // ************************************************************
+
+        /**
+         * Reusable animation event callback for logging
+         * @returns {Function}
+         */
+        function makeNotify (direction, action) {
+            return function(tl) {
+                $log.debug( "tl('{0}') {1}".supplant([direction, action || "finished"]));
+            };
+        }
 
         /**
          * Add Escape key and mousedown listeners to autoclose/reverse the
