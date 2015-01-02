@@ -197,3 +197,73 @@ http-server -d ./
 ```
 
 Open Browser and navigate to URL `http://localhost:8080/`
+
+By default the `$timeline()` service and process outputs to the console:
+
+```console
+>> TimelineBuilder::makeTimeline() invoked by $timeline('0')
+angular.js:11594TimelineStates::watchState( state = 'zoom' )
+angular.js:11594loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_kodaline.png
+angular.js:11594 $('#backgroundLoader').loaded() 
+angular.js:11594loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_moby_v2.png
+angular.js:11594 $('#backgroundLoader').loaded() 
+angular.js:11594>> TimelineBuilder::makeTimeline() invoked by $timeline('zoom')
+angular.js:11594timeline.set( '#mask', 0.001,  {"zIndex":"-10","className":""}, '' )
+angular.js:11594timeline.set( '#details', 0.001,  {"zIndex":"-11","className":""}, '' )
+angular.js:11594timeline.set( '#green_status', 0.001,  {"zIndex":"-13","className":""}, '' )
+angular.js:11594timeline.set( '#other', 0.001,  {"top":"481","left":"88","opacity":"1.0"}, '' )
+angular.js:11594timeline.set( '#mask', 0.001,  {"zIndex":"90"}, '' )
+angular.js:11594timeline.set( '#details', 0.01,  {"zIndex":"92","opacity":"0.01","top":"-1"}, '' )
+angular.js:11594timeline.set( '#details', 0.3,  {"opacity":"1.0"}, '' )
+angular.js:11594addLabel( 'fullThumb' )
+angular.js:11594timeline.set( '#other', 0.2,  {"top":"532","left":"324"}, '' )
+angular.js:11594timeline.set( '#other', 0.1,  {"opacity":"0"}, 'fullThumb+=0.1' )
+angular.js:11594timeline.set( '#details', 0.5,  {"delay":"0.3","left":"0","width":"329"}, '' )
+angular.js:11594addLabel( 'fullWidth' )
+angular.js:11594timeline.set( '#mask', 0.5,  {"opacity":"0.80"}, 'fullWidth-=0.3' )
+angular.js:11594timeline.set( '#details', 0.3,  {"opacity":"1","top":"18","height":"512"}, 'fullWidth+=0.1' )
+angular.js:11594addLabel( 'slideIn' )
+angular.js:11594timeline.set( '#green_status', 0.001,  {"zIndex":"91","opacity":"1","top":"21"}, 'slideIn' )
+angular.js:11594timeline.set( '#green_status', 0.2,  {"top":"1"}, 'slideIn' )
+angular.js:11594timeline.set( '#details > #title', 0.6,  {"height":"131"}, 'fullWidth' )
+angular.js:11594timeline.set( '#details > #info', 0.5,  {"height":"56"}, 'fullWidth+=0.2' )
+angular.js:11594timeline.set( '#details > #title > div.content', 0.8,  {"opacity":"1.0"}, 'fullWidth+=0.3' )
+angular.js:11594timeline.set( '#details > #info > div.content', 0.4,  {"opacity":"1"}, 'fullWidth+=0.6' )
+angular.js:11594timeline.set( '#details > #pause', 0.4,  {"opacity":"1","scale":"1.0"}, 'fullWidth+=0.4' )
+angular.js:11594loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_supermodel.png
+angular.js:11594 $('#backgroundLoader').loaded() 
+angular.js:11594loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_goulding.png
+angular.js:11594 $('#backgroundLoader').loaded() 
+angular.js:11594loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_goyte.png
+angular.js:11594 $('#backgroundLoader').loaded() 
+angular.js:11594loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_pharrell.png
+angular.js:11594 $('#backgroundLoader').loaded() 
+angular.js:11594updating $(#details > img).src = 'http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_kodaline.png'
+angular.js:11594>> TimelineStates::triggerTimeline( state = 'zoom' )
+angular.js:11594tl('zoom') updating...
+angular.js:11594>> TimelineBuilder::makeTimeline() invoked by $timeline('zoom')
+angular.js:11594timeline.set( '#mask', 0.001,  {"zIndex":"-10","className":""}, '' )
+angular.js:11594timeline.set( '#details', 0.001,  {"zIndex":"-11","className":""}, '' )
+angular.js:11594timeline.set( '#green_status', 0.001,  {"zIndex":"-13","className":""}, '' )
+angular.js:11594timeline.set( '#other', 0.001,  {"top":"481","left":"88","opacity":"1.0"}, '' )
+angular.js:11594timeline.set( '#mask', 0.001,  {"zIndex":"90"}, '' )
+angular.js:11594timeline.set( '#details', 0.01,  {"zIndex":"92","opacity":"0.01","left":"0","top":"73","width":"162","height":"164"}, '' )
+angular.js:11594timeline.set( '#details', 0.3,  {"opacity":"1.0"}, '' )
+angular.js:11594addLabel( 'fullThumb' )
+angular.js:11594timeline.set( '#other', 0.2,  {"top":"532","left":"324"}, '' )
+angular.js:11594timeline.set( '#other', 0.1,  {"opacity":"0"}, 'fullThumb+=0.1' )
+angular.js:11594timeline.set( '#details', 0.5,  {"delay":"0.3","left":"0","height":"216","width":"329"}, '' )
+angular.js:11594addLabel( 'fullWidth' )
+angular.js:11594timeline.set( '#mask', 0.5,  {"opacity":"0.80"}, 'fullWidth-=0.3' )
+angular.js:11594timeline.set( '#details', 0.3,  {"opacity":"1","top":"18","height":"512"}, 'fullWidth+=0.1' )
+angular.js:11594addLabel( 'slideIn' )
+angular.js:11594timeline.set( '#green_status', 0.001,  {"zIndex":"91","opacity":"1","top":"21"}, 'slideIn' )
+angular.js:11594timeline.set( '#green_status', 0.2,  {"top":"1"}, 'slideIn' )
+angular.js:11594timeline.set( '#details > #title', 0.6,  {"height":"131"}, 'fullWidth' )
+angular.js:11594timeline.set( '#details > #info', 0.5,  {"height":"56"}, 'fullWidth+=0.2' )
+angular.js:11594timeline.set( '#details > #title > div.content', 0.8,  {"opacity":"1.0"}, 'fullWidth+=0.3' )
+angular.js:11594timeline.set( '#details > #info > div.content', 0.4,  {"opacity":"1"}, 'fullWidth+=0.6' )
+angular.js:11594timeline.set( '#details > #pause', 0.4,  {"opacity":"1","scale":"1.0"}, 'fullWidth+=0.4' )
+52angular.js:11594 tl('zoom') updating...
+angular.js:11594 tl('zoom') complete.
+```
