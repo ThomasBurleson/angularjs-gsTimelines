@@ -176,16 +176,6 @@ Koda #3 Only
 - Use of AngularJS-GSAP `$timeline` service (again) but with feature support for Animation States. Now uses state name changes to trigger animations:
 ```js
 $timeline( "zoom", {
-
-  onComplete        : makeNotify("zoom"),
-  onReverseComplete : makeNotify("unzoom"),
-  onUpdate          : makeNotify("zoom", "update")
-
-}).then( function(animation){
-    animation.restart();
-});
-```js
-$timeline( "zoom", {
     onUpdate          : makeNotify("zoom", "updating..."),
     onComplete        : makeNotify("zoom", "complete.")
 });
