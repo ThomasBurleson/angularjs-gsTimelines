@@ -142,7 +142,7 @@ Use Greensock's (**GSAP**) `TimelineLite` within a Gridlist application and demo
 
 While exploring the animation API requirements, the implemenation should also consider other functional requirements:
 
-Koda 
+**Koda #1**
 
 - Load images in background so zoom works quickly
 - Use promises to delay transitions until the images are ready
@@ -150,13 +150,13 @@ Koda
 - Use of global keypress to unzoom/reverse the timeline
 - Use data model to dynamically define tile zoom from/to transitions
 
-Koda #2 Only
+**Koda #2 Only**
 
 - Plugin use of Timeline Slider controls; independent of TimelineController
   - Sync Slider to transition timeline
   - Use slider to manually sequence through transition frames
 
-Koda #3 Only
+**Koda #3 Only**
 
 - Use of AngularJS-GSAP `$timeline` service to parse animation DSL (in HTML) and build animations with databindings to scope and data models. Uses programmatic approach to trigger animations:
 ```js
@@ -171,7 +171,7 @@ $timeline( "zoom", {
 });
 ```
 
-Koda #4 Only
+**Koda #4 Only**
 
 - Use of AngularJS-GSAP `$timeline` service (again) but with feature support for Animation States. Now uses state name changes to trigger animations:
 ```js
