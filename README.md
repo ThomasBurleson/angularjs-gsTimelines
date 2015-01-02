@@ -135,7 +135,7 @@ Such solutions can be seen in the:
 
 With the features provided by **gsTimeline** library, animation states can be consider as specific groupings of transitions. 
 
-The Koda #4 sample uses Animation states to define a `zoom` state that shows the tile details zoomed full screen. Simply set the `$scope.state = 'zoom'` to trigger the animations associated with that state.
+The [Koda #4](src/koda_4.html#L14) sample uses Animation states to define a `zoom` state that shows the tile details zoomed full screen. Simply set the `$scope.state = 'zoom'` to trigger the animations associated with that state.
 
 ```js
 $timeline( "zoom", {
