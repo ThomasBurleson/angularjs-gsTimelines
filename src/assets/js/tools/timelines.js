@@ -41,7 +41,7 @@
 
 
     /**
-     * @ngdoc service
+     * @ngdoc service                                                                        å
      * @private
      *
      * Internal State management for Timelines
@@ -50,8 +50,7 @@
      * NOTE: currently this is a CRUDE architecture that does not account for hierarchical states
      * and complex animation chains...
      */
-    function TimelineStates( $timeline, $log )
-    {
+    function TimelineStates( $timeline, $log ) {
         var self, registry = { };
 
         return self = {
@@ -61,6 +60,9 @@
 
                 if ( state && state.length ) {
                     registry[ state ] = data;
+
+                    // Only watch the state in the scope that is a parent
+                    // to root timeline.
 
                     if ( !data.parentController ) {
                         watchState( state );
@@ -502,15 +504,8 @@
                scope.state     = attr.state;
                scope.target    = attr.target;
 
-               // Register this timeline with Timeline State management
-               $$gsStates.addTimeline({
-                  scope            : scope,
-                  state            : attr.state,
-                  controller       : controller,
-                  parentController : element.parent().controller('timeline')
-               });
-
                prepareResolve();
+               prepareStateWatch();
 
                // ******************************************************************
                // Internal Methods
@@ -533,6 +528,23 @@
                             return fn(context);
                         });
                     }
+               }
+
+               /**
+                * Each timeline that has a state should be registered...
+                */
+               function prepareStateWatch() {
+                   if ( angular.isDefined(attr.state) ) {
+
+                       // Register this timeline with Timeline State management
+
+                       $$gsStates.addTimeline({
+                           scope            : scope,
+                           state            : attr.state,
+                           controller       : controller,
+                           parentController : element.parent().controller('timeline')
+                       });
+                   }
                }
            }
        };
