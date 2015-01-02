@@ -119,6 +119,8 @@ Instead of the current separation of animation logic (and element manipulation) 
 
 More details on the Animation DLS can be found here: [Animation DSL](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)
 
+Source to the AngularJS-GSAP **$timeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
+
 ---
 
 ## The Koda Application
