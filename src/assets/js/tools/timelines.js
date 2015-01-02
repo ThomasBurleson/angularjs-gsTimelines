@@ -81,15 +81,6 @@
             return data ? data.scope : undefined;
         }
 
-        /**
-         * Get the controller for the specified `state`;
-         * which provides deferred access to a ready timeline
-         */
-        function controllerFor(state){
-            var data = registry[state];
-            return data ? data.controller : undefined;
-        }
-
         // ******************************************
         // Internal Methods
         // ******************************************
@@ -99,20 +90,20 @@
          *  changes
          */
         function watchState(state) {
-            // Watch for the scope `state` change... to start or reverse the animations
-
-            var controller = controllerFor(state);
-            var parent = scopeFor(state).$parent;
-
-                // Ensure the key exists before $watch()
-                parent.state = parent.state || undefined;
-
             $log.debug( "TimelineStates::watchState( state = '{0}' )".supplant([state]) );
 
+                // Ensure the key exists before $watch()
+            var parent = scopeFor(state).$parent;
+                parent.state = parent.state || undefined;
+
+            // Watch for the scope `state` change... to start or reverse the animations
             // Watch for state changes and fire the associated timeline
+
             var unwatch = parent.$watch('state', function(current, old){
                 if ( current === undefined ) return;
                 if ( state   === ""        ) return;
+
+                // Must use $timeline() to integrate the resolve processing...
 
                 $timeline(state).then(function(timeline){
 
