@@ -42,7 +42,7 @@
          * Zoom the `#details` view simply by setting a $scope.state variable
          *
          */
-        function showDetails(selectedTile, $event) {
+        function showDetails( selectedTile ) {
             $timeline( "zoom", {
                 onUpdate          : makeNotify("zoom", "updating..."),
                 onComplete        : makeNotify("zoom", "complete.")
