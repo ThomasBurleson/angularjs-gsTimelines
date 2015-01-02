@@ -21,13 +21,17 @@
         $scope.allTiles    = [].concat(tilesModel);
         $scope.preload     = makeLoaderFor("#details > img", true);
         $scope.showDetails = showDetails;
-        $scope.hideDetails = angular.noop;
+        $scope.hideDetails = hideDetails;
 
         enableAutoClose();
         preloadImages();
 
-        // Auto zoom first tile
-        autoZoom( tilesModel[0] );
+        // Wait while image loads are started...
+
+        $timeout(function(){
+            // Auto zoom first tile
+            showDetails(tilesModel[0], true);
+        }, 100 );
 
 
         // ************************************************************
@@ -46,52 +50,33 @@
          *
          */
         function showDetails(selectedTile, $event) {
-            var makeNotify = function(direction, action) {
-                  return function(tl) {
-                      $log.debug( "tl('{0}') {1}".supplant([direction, action || "finished"]));
-                  };
-                },
-                unZoom = function() {
-                    // Reverse the `zoom` animation
-                    $scope.$apply(function(){
-                        $timeline( "zoom", {
-                            onUpdate          : makeNotify("zoom", "reversing..."),
-                            onReverseComplete : makeNotify("zoom", "reversed."),
-                        });
+            $timeline( "zoom", {
+                onUpdate          : makeNotify("zoom", "updating..."),
+                onComplete        : makeNotify("zoom", "complete.")
+            });
 
-                        $scope.state = "";
-                        $scope.hideDetails = angular.noop;
-                    });
-                },
-                doZoom = function() {
-                    // Push `hideDetails` to $scope for use by autoClose()
-                    // Trigger databindings in the `<gs-timeline />` markup to use the selected tile...
-
-                    $timeline( "zoom", {
-                        onUpdate          : makeNotify("zoom", "updating..."),
-                        onComplete        : makeNotify("zoom", "complete.")
-                    });
-
-                    // Perform animation via state change
-                    $scope.state        = "zoom";
-                    $scope.hideDetails  = unZoom;
-                    $scope.selectedTile = updateBounds(selectedTile, $event);
-                };
-
-
-            doZoom();
+            // Perform animation via state change
+            $scope.state        = "zoom";
+            $scope.selectedTile = updateBounds(selectedTile, $event);
         }
 
         /**
-         * Auto show zoom details for tile #1
-         * @param tileIndex
+         *
          */
-        function autoZoom(tile) {
-            // Wait while image loads are started...
-            $timeout(function(){
-                showDetails(tile, true);
-            }, 100 );
+        function hideDetails() {
+            $timeline( "zoom", {
+                onUpdate          : makeNotify("zoom", "reversing..."),
+                onReverseComplete : makeNotify("zoom", "reversed.")
+            });
+
+            $scope.state = '';
         }
+
+        function makeNotify (direction, action) {
+            return function(tl) {
+                $log.debug( "tl('{0}') {1}".supplant([direction, action || "finished"]));
+            };
+        };
 
         // ************************************************************
         // Image Features

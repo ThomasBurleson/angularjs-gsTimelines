@@ -11,7 +11,7 @@
     Note the use a resolve with `preload(selectedTile)`...
     this is used to prefill the images before the animation STARTS.
 -->
-<gs-timeline state="zoom" time-scale="1.4" resolve="preload(selectedTile)" >
+<gs-timeline state="zoom" time-scale="1.8" resolve="preload(selectedTile)" >
     <gs-step target="#mask"         style="zIndex:-10;className:''"               duration="0.001"></gs-step>
     <gs-step target="#details"      style="zIndex:-11;className:''"               duration="0.001"></gs-step>
     <gs-step target="#green_status" style="zIndex:-13;className:''"               duration="0.001"></gs-step>
@@ -47,11 +47,11 @@
     <div id="footer"></div>
 
     <!-- Tile Grid Mask -->
-    <div id="mask" class="hidden"></div>
+    <div id="mask" class="hidden" ng-click="hideDetails()"></div>
 
     <!-- Tile Details View -->
     <div id="green_status" class="hidden"></div>
-    <div id="details" class="hidden">
+    <div id="details" class="hidden" ng-click="hideDetails()">
         <img src="" class="scaled">
         <div id="title" >
             <div class="content"></div>

@@ -10,31 +10,31 @@
      *
      * @usage
      * <gs-timeline id="zoom" time-scale="1.4" resolve="preload(selectedTile)" >
-     *    <gs-step target="#mask"         style="zIndex:-10;className:''"               duration="0.001" />
-     *    <gs-step target="#details"      style="zIndex:-11;className:''"               duration="0.001" />
-     *    <gs-step target="#green_status" style="zIndex:-13;className:''"               duration="0.001" />
-     *    <gs-step target="#mask"         style="zIndex:90"                             duration="0.001" />
-     *    <gs-step target="#details"   style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}}"  duration="0.01"/>
-     *    <gs-step target="#details"   style="opacity:1.0"                              duration="0.3" />
+     *    <gs-step target="#mask"         style="zIndex:-10;className:''"           duration="0.001" />
+     *    <gs-step target="#details"      style="zIndex:-11;className:''"           duration="0.001" />
+     *    <gs-step target="#green_status" style="zIndex:-13;className:''"           duration="0.001" />
+     *    <gs-step target="#mask"         style="zIndex:90"                         duration="0.001" />
+     *    <gs-step target="#details"      style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}}"  duration="0.01"/>
+     *    <gs-step target="#details"      style="opacity:1.0"                       duration="0.3" />
      *    <gs-step mark-position="fullThumb"/>
-     *    <gs-step target="#details"   style="delay:0.2; left:0; height:{{selectedTile.to.height}}; width:329" duration="0.5"  />
+     *    <gs-step target="#details"      style="delay:0.2; left:0; height:{{selectedTile.to.height}}; width:329" duration="0.5"  />
      *    <gs-step mark-position="fullWidth"/>
-     *    <gs-step target="#mask"      style="opacity:0.80"                              duration="0.5"   position="fullWidth-=0.3"/>
-     *    <gs-step target="#details"   style="opacity:1; top:18; height:512"             duration="0.3"   position="fullWidth+=0.1"/>
+     *    <gs-step target="#mask"         style="opacity:0.80"                      duration="0.5"   position="fullWidth-=0.3"/>
+     *    <gs-step target="#details"      style="opacity:1; top:18; height:512"     duration="0.3"   position="fullWidth+=0.1"/>
      *    <gs-step mark-position="slideIn"/>
-     *    <gs-step target="#green_status"      style="zIndex:91; opacity:1; top:21;"     duration="0.001" position="slideIn"/>
-     *    <gs-step target="#green_status"      style="top:0"                             duration="0.2"   position="slideIn"/>
-     *    <gs-step target="#details > #title"  style="height:131"                        duration="0.6"   position="fullWidth" />
-     *    <gs-step target="#details > #info"   style="height:56"                         duration="0.5"   position="fullWidth+=0.2" />
-     *    <gs-step target="#details > #title > div.content" style="opacity:1.0"          duration="0.8"   position="fullWidth+=0.3" />
-     *    <gs-step target="#details > #info > div.content"  style="opacity:1"            duration="0.4"   position="fullWidth+=0.6" />
+     *    <gs-step target="#green_status" style="zIndex:91; opacity:1; top:21;"     duration="0.001" position="slideIn"/>
+     *    <gs-step target="#green_status" style="top:0"                             duration="0.2"   position="slideIn"/>
+     *    <gs-step target="#details > #title"               style="height:131"      duration="0.6"   position="fullWidth" />
+     *    <gs-step target="#details > #info"                style="height:56"       duration="0.5"   position="fullWidth+=0.2" />
+     *    <gs-step target="#details > #title > div.content" style="opacity:1.0"     duration="0.8"   position="fullWidth+=0.3" />
+     *    <gs-step target="#details > #info > div.content"  style="opacity:1"       duration="0.4"   position="fullWidth+=0.6" />
      *    <gs-step target="#details > #pause"               style="opacity:1; scale:1.0" duration="0.4"   position="fullWidth+=0.4" />
      * </gs-timeline>
      *
      */
     angular.module('gsTimelines', [ 'ng' ])
-        .service(  '$$gsStates',  TimelineStates  )
         .service(  '$timeline',   TimelineBuilder )
+        .service(  '$$gsStates',  TimelineStates  )
         .directive('gsTimeline',  TimelineDirective )
         .directive('gsStep',      StepDirective )
         .directive('gsScale',     ScaleDirective);
@@ -50,11 +50,12 @@
      * NOTE: currently this is a CRUDE architecture that does not account for hierarchical states
      * and complex animation chains...
      */
-    function TimelineStates($timeline, $log)
+    function TimelineStates( $timeline, $log )
     {
         var self, registry = { };
 
         return self = {
+
             addTimeline : function addTimeline(data) {
                 var state = data.state;
 
@@ -62,7 +63,7 @@
                     registry[ state ] = data;
 
                     if ( !data.parentController ) {
-                        data.unwatch = watchState( state );
+                        watchState( state );
                     }
                 }
             }
@@ -113,20 +114,18 @@
                 if ( current === undefined ) return;
                 if ( state   === ""        ) return;
 
-                controller.timeline().then(function(timeline){
+                $timeline(state).then(function(timeline){
 
                     $log.debug( ">> TimelineStates::triggerTimeline( state = '{0}' )".supplant([current]) );
 
                     if ( current === state ) timeline.restart();
-                    else if (current === "") timeline.reverse();
+                    else                     timeline.reverse();
 
                 });
             });
 
             // Auto unwatch when the scope is destroyed..
             parent.$on( "$destroy", unwatch );
-
-            return unwatch;
         }
 
     }
@@ -137,7 +136,7 @@
      * Service to build a GSAP TimelineLite instance based on <gs-timeline> and nested <gs-step>
      * directive settings...
      */
-    function TimelineBuilder($log, $rootScope, $q) {
+    function TimelineBuilder( $log, $rootScope, $q ) {
         var counter = 0,
             targets = { },
             cache   = { },
@@ -184,7 +183,9 @@
                 // Is this an implicit lookup?
 
                 if ( angular.isDefined(id) ){
-                    return findById(id)
+                    var promise = hasState(id) ? findByState(id) : findById(id);
+
+                    return promise
                                .then( registerCallbacks(callbacks) )
                                .then( resolveBeforeReady );
                 }
@@ -292,7 +293,7 @@
                 $rootScope.$evalAsync( function(){
                     var timeline;
 
-                    cache.forEach(function(it) {
+                    angular.forEach(cache, function(it) {
                         if ( angular.isDefined(it.$$state) ){
                             if ( it.$$state == state )
                             {
@@ -321,6 +322,23 @@
                     timeline.$$state = state;
                 }
             }
+        }
+
+        /**
+         * Scan available timelines to see if any have a matching state
+         * @param state
+         * @returns {boolean|*}
+         */
+        function hasState(state) {
+            angular.forEach(cache, function(it) {
+                if ( angular.isDefined(it.$$state) ){
+                    if ( it.$$state == state )
+                    {
+                        return true;
+                    }
+                }
+            });
+            return false;
         }
     }
 
