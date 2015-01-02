@@ -117,7 +117,8 @@ This DSL is much more expressive and, more importantly, is embedded within the *
 
 Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
 
-More details on the Animation DLS can be found here: [Animation DSL](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)
+*  More details on the Animation DLS can be found here: [Animation DSL](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)
+*  Source to the AngularJS-GSAP **$timeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
 
 ---
 
@@ -132,7 +133,7 @@ Use Greensock's (**GSAP**) `TimelineLite` within a Gridlist application and demo
 | jQuery app with click animation | [koda_1.html](src/koda_1.html) |  [koda_1.js](src/assets/js/koda_1.js) | [CodePen #1](http://codepen.io/ThomasBurleson/pen/OPMgqj) |
 | AngularJS app with Timeline slider controls | [koda_2.html](src/koda_2.html) |  [koda_2.js](src/assets/js/koda_2.js) | [CodePen #2](http://codepen.io/ThomasBurleson/pen/ByKVGg)  |
 | AngularJS app with DSL |  [koda_3.html](src/koda_3.html#L14) |  [koda_3.js](src/assets/js/koda_3.js#L75-83) |  |
-| AngularJS app with DSL & States |  [koda_4.html](src/koda_4.html#L14) |  [koda_4.js](src/assets/js/koda_4.js#L52-53) |  |
+| AngularJS app with DSL & States |  [koda_4.html](src/koda_4.html#L14) |  [koda_4.js](src/assets/js/koda_4.js#L52-53) | [CodePen #4](http://codepen.io/ThomasBurleson/pen/jEVyjr/?editors=101)  |
 <br/>
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
 
@@ -142,7 +143,7 @@ Use Greensock's (**GSAP**) `TimelineLite` within a Gridlist application and demo
 
 While exploring the animation API requirements, the implemenation should also consider other functional requirements:
 
-Koda 
+**Koda #1**
 
 - Load images in background so zoom works quickly
 - Use promises to delay transitions until the images are ready
@@ -150,15 +151,40 @@ Koda
 - Use of global keypress to unzoom/reverse the timeline
 - Use data model to dynamically define tile zoom from/to transitions
 
-Koda #2 Only
+**Koda #2 Only**
 
 - Plugin use of Timeline Slider controls; independent of TimelineController
   - Sync Slider to transition timeline
   - Use slider to manually sequence through transition frames
 
-Koda #3 Only
+**Koda #3 Only**
 
-- Support to drag on image to manually sequence through transition frames
+- Use of AngularJS-GSAP `$timeline` service to parse animation DSL (in HTML) and build animations with databindings to scope and data models. Uses programmatic approach to trigger animations:
+```js
+$timeline( "zoom", {
+
+  onComplete        : makeNotify("zoom"),
+  onReverseComplete : makeNotify("unzoom"),
+  onUpdate          : makeNotify("zoom", "update")
+
+}).then( function(animation){
+    animation.restart();
+});
+```
+
+**Koda #4 Only**
+
+- Use of AngularJS-GSAP `$timeline` service (again) but with feature support for Animation States. Now uses state name changes to trigger animations:
+```js
+$timeline( "zoom", {
+    onUpdate          : makeNotify("zoom", "updating..."),
+    onComplete        : makeNotify("zoom", "complete.")
+});
+
+// Perform animation via state change
+$scope.state        = "zoom";
+$scope.selectedTile = selectedTile;
+```
 
 ---
 
@@ -172,3 +198,77 @@ http-server -d ./
 ```
 
 Open Browser and navigate to URL `http://localhost:8080/`
+
+---
+
+## Debugging
+
+By default the `$timeline()` service and process outputs to the console:
+
+```console
+>> TimelineBuilder::makeTimeline() invoked by $timeline('0')
+TimelineStates::watchState( state = 'zoom' )
+loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_kodaline.png
+ $('#backgroundLoader').loaded() 
+loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_moby_v2.png
+ $('#backgroundLoader').loaded() 
+>> TimelineBuilder::makeTimeline() invoked by $timeline('zoom')
+timeline.set( '#mask', 0.001,  {"zIndex":"-10","className":""}, '' )
+timeline.set( '#details', 0.001,  {"zIndex":"-11","className":""}, '' )
+timeline.set( '#green_status', 0.001,  {"zIndex":"-13","className":""}, '' )
+timeline.set( '#other', 0.001,  {"top":"481","left":"88","opacity":"1.0"}, '' )
+timeline.set( '#mask', 0.001,  {"zIndex":"90"}, '' )
+timeline.set( '#details', 0.01,  {"zIndex":"92","opacity":"0.01","top":"-1"}, '' )
+timeline.set( '#details', 0.3,  {"opacity":"1.0"}, '' )
+addLabel( 'fullThumb' )
+timeline.set( '#other', 0.2,  {"top":"532","left":"324"}, '' )
+timeline.set( '#other', 0.1,  {"opacity":"0"}, 'fullThumb+=0.1' )
+timeline.set( '#details', 0.5,  {"delay":"0.3","left":"0","width":"329"}, '' )
+addLabel( 'fullWidth' )
+timeline.set( '#mask', 0.5,  {"opacity":"0.80"}, 'fullWidth-=0.3' )
+timeline.set( '#details', 0.3,  {"opacity":"1","top":"18","height":"512"}, 'fullWidth+=0.1' )
+addLabel( 'slideIn' )
+timeline.set( '#green_status', 0.001,  {"zIndex":"91","opacity":"1","top":"21"}, 'slideIn' )
+timeline.set( '#green_status', 0.2,  {"top":"1"}, 'slideIn' )
+timeline.set( '#details > #title', 0.6,  {"height":"131"}, 'fullWidth' )
+timeline.set( '#details > #info', 0.5,  {"height":"56"}, 'fullWidth+=0.2' )
+timeline.set( '#details > #title > div.content', 0.8,  {"opacity":"1.0"}, 'fullWidth+=0.3' )
+timeline.set( '#details > #info > div.content', 0.4,  {"opacity":"1"}, 'fullWidth+=0.6' )
+timeline.set( '#details > #pause', 0.4,  {"opacity":"1","scale":"1.0"}, 'fullWidth+=0.4' )
+loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_supermodel.png
+ $('#backgroundLoader').loaded() 
+loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_goulding.png
+ $('#backgroundLoader').loaded() 
+loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_goyte.png
+ $('#backgroundLoader').loaded() 
+loading $( #backgroundLoader ).src = http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_pharrell.png
+ $('#backgroundLoader').loaded() 
+updating $(#details > img).src = 'http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/album_kodaline.png'
+>> TimelineStates::triggerTimeline( state = 'zoom' )
+tl('zoom') updating...
+>> TimelineBuilder::makeTimeline() invoked by $timeline('zoom')
+timeline.set( '#mask', 0.001,  {"zIndex":"-10","className":""}, '' )
+timeline.set( '#details', 0.001,  {"zIndex":"-11","className":""}, '' )
+timeline.set( '#green_status', 0.001,  {"zIndex":"-13","className":""}, '' )
+timeline.set( '#other', 0.001,  {"top":"481","left":"88","opacity":"1.0"}, '' )
+timeline.set( '#mask', 0.001,  {"zIndex":"90"}, '' )
+timeline.set( '#details', 0.01,  {"zIndex":"92","opacity":"0.01","left":"0","top":"73","width":"162","height":"164"}, '' )
+timeline.set( '#details', 0.3,  {"opacity":"1.0"}, '' )
+addLabel( 'fullThumb' )
+timeline.set( '#other', 0.2,  {"top":"532","left":"324"}, '' )
+timeline.set( '#other', 0.1,  {"opacity":"0"}, 'fullThumb+=0.1' )
+timeline.set( '#details', 0.5,  {"delay":"0.3","left":"0","height":"216","width":"329"}, '' )
+addLabel( 'fullWidth' )
+timeline.set( '#mask', 0.5,  {"opacity":"0.80"}, 'fullWidth-=0.3' )
+timeline.set( '#details', 0.3,  {"opacity":"1","top":"18","height":"512"}, 'fullWidth+=0.1' )
+addLabel( 'slideIn' )
+timeline.set( '#green_status', 0.001,  {"zIndex":"91","opacity":"1","top":"21"}, 'slideIn' )
+timeline.set( '#green_status', 0.2,  {"top":"1"}, 'slideIn' )
+timeline.set( '#details > #title', 0.6,  {"height":"131"}, 'fullWidth' )
+timeline.set( '#details > #info', 0.5,  {"height":"56"}, 'fullWidth+=0.2' )
+timeline.set( '#details > #title > div.content', 0.8,  {"opacity":"1.0"}, 'fullWidth+=0.3' )
+timeline.set( '#details > #info > div.content', 0.4,  {"opacity":"1"}, 'fullWidth+=0.6' )
+timeline.set( '#details > #pause', 0.4,  {"opacity":"1","scale":"1.0"}, 'fullWidth+=0.4' )
+tl('zoom') updating...
+tl('zoom') complete.
+```
