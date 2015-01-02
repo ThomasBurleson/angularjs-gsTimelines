@@ -4,6 +4,8 @@
 
 The goal is the development of a *next-generation* Animation layer for AngularJS... with functionality and power to easily develop rich UX... as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) app.
 
+[Meaningful transitions](http://www.google.com/design/spec/animation/meaningful-transitions.html) establish visual continuity with and during transitions between two visual states. Reveal animations provide users visual continuity when you show or hide a group of UI elements... the Koda application developed below use the [Reveal effect](http://developer.android.com/training/material/animations.html#Reveal).
+
 New Animation API requirements and a viable **DSL** (domain-specific-language layered on top of AngularJS ngAnimate) will be derived from experiments and explorations of real-world UX animation samples using the following three (3) Animation libraries:
 
 *  [Greensock GSAP](https://github.com/greensock/GreenSock-JS)
