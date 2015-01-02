@@ -265,6 +265,34 @@
                 albumSrc: "./assets/images/koda/album_kodaline.png",
                 titleSrc : "./assets/images/koda/title_kodaline.png",
                 infoSrc : "./assets/images/koda/info_kodaline.png"
+            },
+            {
+                className : "tile5",
+                from: {
+                    left:0,
+                    top: 404,
+                    width: 162,
+                    height: 162
+                },
+                to  : { height : 216  },
+                thumbSrc: "./assets/images/koda/thumb_goyte.png",
+                albumSrc: "./assets/images/koda/album_goyte.png",
+                titleSrc : "./assets/images/koda/title_goyte.png",
+                infoSrc : "./assets/images/koda/info_goyte_v2.png"
+            },
+            {
+                className : "tile6",
+                from: {
+                    left: 164,
+                    top: 404,
+                    width: 162,
+                    height: 162
+                },
+                to  : { height : 216  },
+                thumbSrc: "./assets/images/koda/thumb_pharrell.png",
+                albumSrc: "./assets/images/koda/album_pharrell.png",
+                titleSrc : "./assets/images/koda/title_pharrell.png",
+                infoSrc : "./assets/images/koda/info_pharrell.png"
             }
         ];
 

@@ -15,11 +15,13 @@
     <gs-step target="#mask"         style="zIndex:-10;className:''"               duration="0.001"></gs-step>
     <gs-step target="#details"      style="zIndex:-11;className:''"               duration="0.001"></gs-step>
     <gs-step target="#green_status" style="zIndex:-13;className:''"               duration="0.001"></gs-step>
+    <gs-step target="#other"        style="top:481;left:88"                       duration="0.001"></gs-step>
     <gs-step target="#mask"         style="zIndex:90"                             duration="0.001"></gs-step>
-    <gs-step target="#details"      style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}}"  duration="0.01"></gs-step>
+    <gs-step target="#details"      style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top-1}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}}"  duration="0.01"></gs-step>
     <gs-step target="#details"      style="opacity:1.0"                           duration="0.3"></gs-step>
     <gs-step mark-position="fullThumb"></gs-step>
-    <gs-step target="#details"      style="delay:0.2; left:0; height:{{selectedTile.to.height}}; width:329" duration="0.5" ></gs-step>
+    <gs-step target="#other"        style="top:532;left:324" duration="0.2" ></gs-step>
+    <gs-step target="#details"      style="delay:0.05; left:0; height:{{selectedTile.to.height}}; width:329" duration="0.5" ></gs-step>
     <gs-step mark-position="fullWidth"></gs-step>
     <gs-step target="#mask"         style="opacity:0.80"                          duration="0.5"   position="fullWidth-=0.3"></gs-step>
     <gs-step target="#details"      style="opacity:1; top:18; height:512"         duration="0.3"   position="fullWidth+=0.1"></gs-step>
@@ -40,7 +42,7 @@
 
     <div ng-repeat="tile in allTiles"
          class="{{tile.className}}"
-         ng-click="showDetails(tile, $event)" >
+         ng-click="showDetails(tile)" >
     </div>
 
     <div id="other"></div>

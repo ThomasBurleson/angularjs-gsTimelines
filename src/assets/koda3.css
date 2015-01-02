@@ -7,14 +7,15 @@ body {
 
 #stage {
     position: relative;
-    height: 634px;
+    height: 574px;
     width: 323px;
     z-index: 0;
     overflow: hidden;
     text-overflow: clip;
-    background-color: rgb(255, 255, 255,0);
+    background-color: #1A0B1A;
     background-size: 100% 100%;
     opacity:0;
+    border: 1px solid #1A0B1A;
 }
 
 #stage > div {
@@ -60,39 +61,57 @@ body {
 }
 
 #stage > div#tile1, #stage > div.tile1 {
+    left:0px;
     top: 74px;
     width: 162px;
     height: 164px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_kodaline_v3.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_kodaline_v6.png);
     cursor: zoom-in;
 }
 
 #stage > div#tile2, #stage > div.tile2 {
-    left: 162px;
+    left: 164px;
     top: 74px;
     width: 161px;
     height: 164px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_moby_v3.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_moby_v6.png);
     cursor: zoom-in;
 }
 
 #stage > div#tile3, #stage > div.tile3 {
-    top: 238px;
+    top: 240px;
     width: 162px;
-    height: 223px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_supermodel.png);
+    height: 162px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_supermodel_v6.png);
     cursor: zoom-in;
 }
 
 #stage > div#tile4, #stage > div.tile4 {
-    left: 162px;
-    top: 238px;
-    width: 161px;
-    height: 223px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_goulding.png);
+    left: 164px;
+    top: 240px;
+    width: 162px;
+    height: 162px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_goulding_v6.png);
     cursor: zoom-in;
 }
 
+
+#stage > div#tile4, #stage > div.tile5 {
+    top: 404px;
+    width: 162px;
+    height: 162px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_goyte_v7.png);
+    cursor: zoom-in;
+}
+
+#stage > div#tile6, #stage > div.tile6 {
+    left: 164px;
+    top: 404px;
+    width: 162px;
+    height: 162px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_pharrell_v7.png);
+    cursor: zoom-in;
+}
 
 #stage > div#details {
     top: 75px;
@@ -134,17 +153,19 @@ body {
 
 
 #stage > div#other {
-    top: 461px;
-    width: 323px;
-    height: 71px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/otherTiles.png);
+    left: 88px;
+    top: 481px;
+    width: 237px;
+    height: 51px;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/otherTiles_v8.png);
 }
 
 #stage > div#footer {
     top: 532px;
-    width: 323px;
+    width: 332px;
     height: 42px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/footer.png);
+    z-index: 150;
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/footer_v4.png);
 }
 
 #stage > div#mask {

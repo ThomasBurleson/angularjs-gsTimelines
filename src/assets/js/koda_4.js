@@ -50,7 +50,7 @@
 
             // Perform animation via state change
             $scope.state        = "zoom";
-            $scope.selectedTile = updateBounds(selectedTile, $event);
+            $scope.selectedTile = selectedTile;
         }
 
         /**
@@ -68,24 +68,6 @@
         // ************************************************************
         // Image Features
         // ************************************************************
-
-        /**
-         * Update the tile bounds data based on current tile settings.
-         * The `tile.from` RECT is used by the animations...
-         *
-         * @param tile
-         * @param $event
-         * @returns {*}
-         */
-        function updateBounds(tile, $event) {
-            if ( $event && $event.currentTarget ) {
-                tile.from.left   = $event.currentTarget.offsetLeft + 1;
-                tile.from.top    = $event.currentTarget.offsetTop + 1;
-                tile.from.width  = $event.currentTarget.offsetWidth - 1;
-                tile.from.height = $event.currentTarget.offsetHeight - 1;
-            }
-            return tile;
-        }
 
         /**
          * Load all the full-size images in the background...
@@ -201,7 +183,12 @@
         var model = [
             {
                 className : "tile1",
-                from: {               },
+                from: {
+                    left:0,
+                    top: 74,
+                    width: 162,
+                    height: 164
+                },
                 to  : { height : 216  },
                 thumbSrc: "./assets/images/koda/thumb_kodaline_v3.png",
                 albumSrc: "./assets/images/koda/album_kodaline.png",
@@ -210,7 +197,12 @@
             },
             {
                 className : "tile2",
-                from: {               },
+                from: {
+                    left: 164,
+                    top: 74,
+                    width: 161,
+                    height: 164
+                },
                 to  : { height : 216  },
                 thumbSrc: "./assets/images/koda/thumb_moby_v3.png",
                 albumSrc : "./assets/images/koda/album_moby_v2.png",
@@ -219,7 +211,12 @@
             },
             {
                 className : "tile3",
-                from: {               },
+                from: {
+                    left:0,
+                    top: 240,
+                    width: 162,
+                    height: 162
+                },
                 to  : { height : 229  },
                 thumbSrc: "./assets/images/koda/thumb_supermodel.png",
                 albumSrc: "./assets/images/koda/album_supermodel.png",
@@ -229,7 +226,12 @@
             },
             {
                 className : "tile4",
-                from: {               },
+                from: {
+                    left: 164,
+                    top: 240,
+                    width: 162,
+                    height: 162
+                },
                 to  : { height : 229  },
                 thumbSrc: "./assets/images/koda/thumb_goulding.png",
                 albumSrc: "./assets/images/koda/album_goulding.png",
@@ -237,16 +239,36 @@
                 infoSrc : "./assets/images/koda/info_goulding.png"
             },
             {
-                from: {               },
+                className : "tile5",
+                from: {
+                    left:0,
+                    top: 404,
+                    width: 162,
+                    height: 162
+                },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_kodaline_v3.png",
-                albumSrc: "./assets/images/koda/album_kodaline.png",
-                titleSrc : "./assets/images/koda/title_kodaline.png",
-                infoSrc : "./assets/images/koda/info_kodaline.png"
+                thumbSrc: "./assets/images/koda/thumb_goyte.png",
+                albumSrc: "./assets/images/koda/album_goyte.png",
+                titleSrc : "./assets/images/koda/title_goyte.png",
+                infoSrc : "./assets/images/koda/info_goyte_v2.png"
+            },
+            {
+                className : "tile6",
+                from: {
+                    left: 164,
+                    top: 404,
+                    width: 162,
+                    height: 162
+                },
+                to  : { height : 216  },
+                thumbSrc: "./assets/images/koda/thumb_pharrell.png",
+                albumSrc: "./assets/images/koda/album_pharrell.png",
+                titleSrc : "./assets/images/koda/title_pharrell.png",
+                infoSrc : "./assets/images/koda/info_pharrell.png"
             }
         ];
 
-        return CDNify(model);
+        return model;       //CDNify(model);
 
         /**
          * Replace localhost URLs with CDN URLs
