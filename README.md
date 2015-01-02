@@ -198,6 +198,10 @@ http-server -d ./
 
 Open Browser and navigate to URL `http://localhost:8080/`
 
+---
+
+## Debugging
+
 By default the `$timeline()` service and process outputs to the console:
 
 ```console
