@@ -161,6 +161,8 @@ body {
 }
 
 #stage > div#footer {
+    border-top: 1px solid black;
+    margin: -1px;
     top: 532px;
     width: 332px;
     height: 42px;
