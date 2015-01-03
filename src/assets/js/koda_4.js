@@ -24,20 +24,10 @@
         $scope.hideDetails = hideDetails;
 
         enableAutoClose();
+
+        toggleZoom( tilesModel[0] );
+
         preloadImages();
-
-        // Wait while image loads are started...
-
-        $timeout(function(){
-            // Auto zoom first tile
-            showDetails(tilesModel[0], true)
-                .then(function(){
-                    $timeout(function(){
-                        hideDetails();
-                    }, 100, false);
-                });
-
-        }, 500 );
 
 
         // ************************************************************
@@ -48,7 +38,7 @@
          * Zoom the `#details` view simply by setting a $scope.state variable
          *
          */
-        function showDetails( selectedTile ) {
+        function showDetails( selectedTile, invokeApply ) {
             var request = promiseToNotify( "zoom", "complete." );
 
             $timeline( "zoom", {
@@ -73,6 +63,25 @@
             });
 
             $scope.state = '';
+        }
+
+
+        /**
+         * Zoom the tile details, pause, and then unzoom
+         * This animation shows the users the UX that will result on
+         * any tile click.
+         *
+         * @param tile
+         */
+        function toggleZoom( tile ) {
+            $scope.preload( tile );
+
+            // Wait while image loads are started...
+            wait( 700 )
+              .then( function() { return showDetails( tile );     })
+              .then( function() { return wait( 100 );             })
+              .then( hideDetails );
+
         }
 
         // ************************************************************
@@ -189,6 +198,19 @@
                 ($scope.hideDetails || angular.noop)();
                 e.preventDefault();
             }
+        }
+
+        /**
+         * Simply utility function wait with a promise
+         * @param delay
+         * @returns {Deferred.promise|*}
+         */
+        function wait (delay, value) {
+            var deferred = $q.defer();
+            $timeout(function(){
+                deferred.resolve( value || true );
+            },delay,false);
+            return deferred.promise;
         }
 
     }
