@@ -6,7 +6,9 @@ The goal is the development of a *next-generation* Animation layer for AngularJS
 
 [Meaningful transitions](http://www.google.com/design/spec/animation/meaningful-transitions.html) establish visual continuity with and during transitions between two visual states.  Carefully choreographed motion design can effectively guide the user’s attention and focus through multiple steps of a process or procedure, avoid confusion when layouts change or elements are rearranged, and improve the overall beauty of the experience
 
-Higlighted in Material is a UX called the 'Reveal' pattern. Reveal animations provide users visual continuity when you show or hide a group of UI elements... Reveal animations often involve complex choreographies with hierarchical timing. The Koda application developed below uses the [Reveal effect](http://developer.android.com/training/material/animations.html#Reveal) and provides a UX composed of complex motions.
+Highlighted in Material Design is a user experience (UX) that is achieved using the 'Reveal' pattern. Reveal animations provide users visual continuity when you show or hide a group of UI elements... Reveal animations often involve complex choreographies with hierarchical timing; where elements are removed, added, or shared between the animation states. 
+
+The Koda application developed below uses the [Reveal effect](http://developer.android.com/training/material/animations.html#Reveal) and provides a UX composed of complex motions.
 
 New Animation API requirements and a viable **DSL** (domain-specific-language layered on top of AngularJS ngAnimate) will be derived from experiments and explorations of real-world UX animation samples using the following three (3) Animation libraries:
 
