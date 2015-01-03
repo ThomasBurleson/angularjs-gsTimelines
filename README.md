@@ -4,6 +4,8 @@
 
 The goal is the development of a *next-generation* Animation layer for AngularJS... with functionality and power to easily develop rich UX... as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) app.
 
+[Meaningful transitions](http://www.google.com/design/spec/animation/meaningful-transitions.html) establish visual continuity with and during transitions between two visual states. Reveal animations provide users visual continuity when you show or hide a group of UI elements... the Koda application developed below use the [Reveal effect](http://developer.android.com/training/material/animations.html#Reveal).
+
 New Animation API requirements and a viable **DSL** (domain-specific-language layered on top of AngularJS ngAnimate) will be derived from experiments and explorations of real-world UX animation samples using the following three (3) Animation libraries:
 
 *  [Greensock GSAP](https://github.com/greensock/GreenSock-JS)
@@ -118,7 +120,33 @@ This DSL is much more expressive and, more importantly, is embedded within the *
 Instead of the current separation of animation logic (and element manipulation) to *.js, we can express both the UI and the UX transitions within the UI layers of the client.
 
 *  More details on the Animation DLS can be found here: [Animation DSL](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)
-*  Source to the AngularJS-GSAP **$timeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
+*  Source to the AngularJS-GSAP **gsTimeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
+
+---
+
+## Animation States
+
+Leveraging the concept of associating views and view layouts with states of the application, transitions of states can be defined that animate elements and their properties. Changes between states can trigger animations...
+
+Such solutions can be seen in the:
+
+*  [Flex States](http://www.adobe.com/devnet/flex/videotraining/exercises/ex4_10.html) in the Flash technology platform.
+*  [Android View States](http://developer.android.com/training/material/animations.html#ViewState) in the Android Developers platform.
+
+With the features provided by **gsTimeline** library, animation states can be consider as specific groupings of transitions. 
+
+The [Koda #4](src/koda_4.html#L15) sample uses Animation states to define a `zoom` state that shows the tile details zoomed full screen. Simply set the `$scope.state = 'zoom'` to trigger the animations associated with that state.
+
+```js
+$timeline( "zoom", {
+    onUpdate          : makeNotify("zoom", "updating..."),
+    onComplete        : makeNotify("zoom", "complete.")
+});
+
+// Perform animation via state change
+$scope.state        = "zoom";
+$scope.selectedTile = selectedTile;
+```
 
 ---
 
@@ -133,7 +161,7 @@ Use Greensock's (**GSAP**) `TimelineLite` within a Gridlist application and demo
 | jQuery app with click animation | [koda_1.html](src/koda_1.html) |  [koda_1.js](src/assets/js/koda_1.js) | [CodePen #1](http://codepen.io/ThomasBurleson/pen/OPMgqj) |
 | AngularJS app with Timeline slider controls | [koda_2.html](src/koda_2.html) |  [koda_2.js](src/assets/js/koda_2.js) | [CodePen #2](http://codepen.io/ThomasBurleson/pen/ByKVGg)  |
 | AngularJS app with DSL |  [koda_3.html](src/koda_3.html#L14) |  [koda_3.js](src/assets/js/koda_3.js#L75-83) |  |
-| AngularJS app with DSL & States |  [koda_4.html](src/koda_4.html#L14) |  [koda_4.js](src/assets/js/koda_4.js#L52-53) | [CodePen #4](http://codepen.io/ThomasBurleson/pen/jEVyjr/?editors=101)  |
+| AngularJS app with DSL & States |  [koda_4.html](src/koda_4.html#L15) |  [koda_4.js](src/assets/js/koda_4.js#L52-53) | [CodePen #4](http://codepen.io/ThomasBurleson/pen/jEVyjr/?editors=101)  |
 <br/>
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
 
