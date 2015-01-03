@@ -30,8 +30,14 @@
 
         $timeout(function(){
             // Auto zoom first tile
-            showDetails(tilesModel[0], true);
-        }, 100 );
+            showDetails(tilesModel[0], true)
+                .then(function(){
+                    $timeout(function(){
+                        hideDetails();
+                    }, 100, false);
+                });
+
+        }, 500 );
 
 
         // ************************************************************
@@ -43,14 +49,18 @@
          *
          */
         function showDetails( selectedTile ) {
+            var request = promiseToNotify( "zoom", "complete." );
+
             $timeline( "zoom", {
                 onUpdate          : makeNotify("zoom", "updating..."),
-                onComplete        : makeNotify("zoom", "complete.")
+                onComplete        : request.notify
             });
 
             // Perform animation via state change
             $scope.state        = "zoom";
             $scope.selectedTile = selectedTile;
+
+            return request.promise;
         }
 
         /**
@@ -140,6 +150,17 @@
         // Other Features - autoClose and Scaling
         // ************************************************************
 
+        function promiseToNotify(direction, action) {
+            var deferred = $q.defer();
+
+            return {
+                promise : deferred.promise,
+                notify  : function(tl){
+                    $log.debug( "tl('{0}') {1}".supplant([direction, action || "finished"]));
+                    deferred.resolve(tl);
+                }
+            };
+        }
         /**
          * Reusable animation event callback for logging
          * @returns {Function}
@@ -184,7 +205,7 @@
             {
                 className : "tile1",
                 from: {
-                    left:0,
+                    left:-1,
                     top: 74,
                     width: 162,
                     height: 164
@@ -214,7 +235,7 @@
             {
                 className : "tile3",
                 from: {
-                    left:0,
+                    left:-1,
                     top: 240,
                     width: 162,
                     height: 162
@@ -243,7 +264,7 @@
             {
                 className : "tile5",
                 from: {
-                    left:0,
+                    left:-1,
                     top: 404,
                     width: 162,
                     height: 162

@@ -61,7 +61,7 @@ body {
 }
 
 #stage > div#tile1, #stage > div.tile1 {
-    left:0px;
+    left:-1px;
     top: 74px;
     width: 162px;
     height: 164px;
@@ -79,6 +79,7 @@ body {
 }
 
 #stage > div#tile3, #stage > div.tile3 {
+    left:-1px;;
     top: 240px;
     width: 162px;
     height: 162px;
@@ -97,6 +98,7 @@ body {
 
 
 #stage > div#tile4, #stage > div.tile5 {
+    left:-1px;
     top: 404px;
     width: 162px;
     height: 162px;
