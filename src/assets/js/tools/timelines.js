@@ -234,6 +234,14 @@
                 var hasDuration = !!keyValue(step, "duration");
                 var duration    = hasDuration ? keyValue(step, "duration") : 0;
 
+                // Patch fix special cases...
+                if ( !hasDuration ) {
+                    if ( styles.zIndex || styles.className ) {
+                        duration = "0.001";
+                        hasDuration = true;
+                    }
+                }
+
                 if ( frameLabel )   timeline.addLabel( frameLabel );
                 if ( hasDuration )  timeline.to(element,  +duration, styles,  position );
                 else                timeline.set(element, styles );
