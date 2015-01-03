@@ -618,12 +618,14 @@
                         win.height/stage.height,
                         win.width/stage.width
                     ),
-                    selector = '#' + attr.id;
+                    selector = '#' + attr.id,
+                    override = attr['gsScale'] ? parseFloat(attr['gsScale']) : NaN;
+
 
                 // Scale and FadeIn entire stage for better UX
 
                 new TimelineLite()
-                    .set(selector, {scale:scaling, transformOrigin:"0 0 0" })
+                    .set(selector, {scale:isNaN(override) ? scaling : override, transformOrigin:"0 0 0" })
                     .to(selector, 0.5, {opacity:1});
 
             }

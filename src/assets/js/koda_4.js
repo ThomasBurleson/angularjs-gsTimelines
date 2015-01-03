@@ -190,8 +190,10 @@
                     height: 164
                 },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_kodaline_v3.png",
+                thumbSrc: "./assets/images/koda/thumb_kodaline_v8.png",
                 albumSrc: "./assets/images/koda/album_kodaline.png",
+                title: "Kodaline",
+
                 titleSrc : "./assets/images/koda/title_kodaline.png",
                 infoSrc : "./assets/images/koda/info_kodaline.png"
             },
@@ -204,7 +206,7 @@
                     height: 164
                 },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_moby_v3.png",
+                thumbSrc: "./assets/images/koda/thumb_moby_v8.png",
                 albumSrc : "./assets/images/koda/album_moby_v2.png",
                 titleSrc : "./assets/images/koda/title_moby.png",
                 infoSrc : "./assets/images/koda/info_moby.png"
@@ -218,7 +220,7 @@
                     height: 162
                 },
                 to  : { height : 229  },
-                thumbSrc: "./assets/images/koda/thumb_supermodel.png",
+                thumbSrc: "./assets/images/koda/thumb_supermodel_v8.png",
                 albumSrc: "./assets/images/koda/album_supermodel.png",
                 titleSrc : "./assets/images/koda/title_supermodel.png",
                 infoSrc : "./assets/images/koda/info_supermodel.png"
@@ -233,7 +235,7 @@
                     height: 162
                 },
                 to  : { height : 229  },
-                thumbSrc: "./assets/images/koda/thumb_goulding.png",
+                thumbSrc: "./assets/images/koda/thumb_goulding_v8.png",
                 albumSrc: "./assets/images/koda/album_goulding.png",
                 titleSrc : "./assets/images/koda/title_goulding.png",
                 infoSrc : "./assets/images/koda/info_goulding.png"
@@ -247,7 +249,7 @@
                     height: 162
                 },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_goyte.png",
+                thumbSrc: "./assets/images/koda/thumb_goyte_v8.png",
                 albumSrc: "./assets/images/koda/album_goyte.png",
                 titleSrc : "./assets/images/koda/title_goyte.png",
                 infoSrc : "./assets/images/koda/info_goyte_v2.png"
@@ -261,7 +263,7 @@
                     height: 162
                 },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_pharrell.png",
+                thumbSrc: "./assets/images/koda/thumb_pharrell_v8.png",
                 albumSrc: "./assets/images/koda/album_pharrell.png",
                 titleSrc : "./assets/images/koda/title_pharrell.png",
                 infoSrc : "./assets/images/koda/info_pharrell.png"
