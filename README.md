@@ -27,7 +27,7 @@ The Koda application developed below uses the [Explode-Reveal effect](http://dev
 
 ## Using Greensock (GSAP) Timelines
 
-Leveraging the power of the Greensock Animation Platform (GSAP) and the timeline features provided in TimelineLite, we can implement choreographed animations in JavaScript and in our HTML DSL.
+Leveraging the power of the Greensock Animation Platform (GSAP) and the timeline features provided in TimelineLite, we can implement choreographed animations in JavaScript and in our Timeline DSL.
 
 > DSL: is an acronym for 'domain specific language'. In our case the DSL is intended to be used in HTML markup as a *designer-like* facade to Timeline features; features that are themselves layered on top of AngularJS ngAnimate features.
 
