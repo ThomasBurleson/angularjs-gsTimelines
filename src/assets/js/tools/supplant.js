@@ -63,6 +63,6 @@
 
 
     // Publish this global function...
-    return String.supplant = supplant;
+    String.supplant = supplant;
 
 })();
