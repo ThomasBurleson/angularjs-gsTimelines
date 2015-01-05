@@ -7,14 +7,14 @@ body {
 
 #stage {
     position: relative;
-    height: 573px;
-    width: 323px;
+    height: 602px;
+    width: 855px;
     z-index: 0;
     overflow: hidden;
     text-overflow: clip;
     background-color: #1A0B1A;
     background-size: 100% 100%;
-    opacity:0;
+    opacity:1;
     border: 1px solid #1A0B1A;
 }
 
@@ -38,175 +38,139 @@ body {
     width: 100%
 }
 
-#stage > div#status {
-    top: 0px;
-    width: 323px;
-    height: 21px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/status.png);
+#stage > div#grid {
+    top: 75px;
+    left: 0px;
+    width: 855px;
+    height: 528px;
+    background-image: url(http://localhost:8080/assets/images/pharrell/grid.png);
 }
-
-#stage > div#green_status {
-    z-index: -15;
-    top: 21px;
-    width: 323px;
-    height: 18px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/zoomed_header.png);
-}
-
 #stage > div#header {
-    top: 21px;
-    width: 323px;
-    height: 53px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/header.png);
+    top: 0px;
+    width: 100%;
+    height: 74px;
+    background-image: url(http://localhost:8080/assets/images/pharrell/header.png);
 }
 
-#stage > div#tile1, #stage > div.tile1 {
-    left:-1px;
-    top: 74px;
-    width: 162px;
-    height: 164px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_kodaline_v8.png);
+#stage > div#tile, #stage > div.tile {
+    left:517px;
+    top: 303px;
+    width: 338px;
+    height: 299px;
+    background-image: url(http://localhost:8080/assets/images/pharrell/album.png);
     cursor: zoom-in;
 }
 
-#stage > div#tile2, #stage > div.tile2 {
-    left: 164px;
-    top: 74px;
-    width: 161px;
-    height: 164px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_moby_v8.png);
-    cursor: zoom-in;
+#stage div#nowPlaying {
+    left: 105px;
+    top: 549px;
+    width: 642px;
+    height: 55px;
+    background-image: url(http://localhost:8080/assets/images/pharrell/nowPlaying.png);
+    -webkit-box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
+    -moz-box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
+    box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
+    border:none;
 }
 
-#stage > div#tile3, #stage > div.tile3 {
-    left:-1px;;
-    top: 240px;
-    width: 162px;
-    height: 162px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_supermodel_v8.png);
-    cursor: zoom-in;
-}
-
-#stage > div#tile4, #stage > div.tile4 {
-    left: 164px;
-    top: 240px;
-    width: 162px;
-    height: 162px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_goulding_v8.png);
-    cursor: zoom-in;
-}
-
-
-#stage > div#tile4, #stage > div.tile5 {
-    left:-1px;
-    top: 404px;
-    width: 162px;
-    height: 162px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_goyte_v8.png);
-    cursor: zoom-in;
-}
-
-#stage > div#tile6, #stage > div.tile6 {
-    left: 164px;
-    top: 404px;
-    width: 162px;
-    height: 162px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/thumb_pharrell_v8.png);
-    cursor: zoom-in;
-}
-
-#stage > div#details {
-    top: 75px;
-    width: 162px;
-    height: 162px;
+#details {
+    top: 0px;
+    left: 0px;
+    width: 855px;
+    height: 602px;
     overflow: hidden;
-    z-index: 100;
     cursor: zoom-out;
+    display:none;
 }
 
-#stage div#title {
-    margin-top: -4px;
+#details div.content {
     position: relative;
-    width: 323px;
-    height: 0px;
-    /*height: 131px;*/
-    background: #3c6373;
+    width:855px;
+    height:528px;
 }
 
-#stage div#title > .content {
-    opacity: 0;
-    width: 323px;
-    height: 131px;
-}
-
-#stage div#info {
-    position: relative;
-    width: 323px;
-    height: 0px;
-    /*height: 56px;*/
-    background: white;
-}
-
-#stage div#info > .content {
-    opacity: 0;
-    width: 323px;
-    height: 56px;
-}
-
-
-#stage > div#nowPlaying {
-    left: 88px;
-    top: 481px;
-    width: 237px;
-    height: 51px;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/otherTiles_v8.png);
-}
-
-#stage > div#footer {
-    border-top: 1px solid black;
-    margin: -1px;
-    top: 532px;
-    width: 332px;
-    height: 42px;
-    z-index: 150;
-    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/footer_v4.png);
-}
-
-#stage > div#mask {
-    z-index: 0;
-    background-color: rgba(0, 0, 0, 1);
-    opacity: 0.0;
-    top: 75px;
-    width: 324px;
-    height: 458px;
-}
-
-#pause {
+.content > div {
     position: absolute;
+    margin: 0px;
+    right: auto;
+    bottom: auto;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0);
+    background-size: 100% 100%;
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+}
 
-    top: 305px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
+.content > #circle {
+    left: 492px;
+    top: 279px;
+    width: 338px;
+    height: 338px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
     border-radius: 50%;
-    background: #67CABC;
-    -webkit-box-shadow: 2px 4px 3px 0px rgba(20, 20, 20, 0.7);
-    -moz-box-shadow: 2px 4px 3px 0px rgba(20, 20, 20, 0.7);
-    box-shadow: 2px 4px 3px 0px rgba(20, 20, 20, 0.7);
+    background: #fec003;
+}
 
-    -webkit-transform: scale(0.4);
-    -moz-transform: scale(0.4);
-    transform: scale(0.4);
-    opacity: 0;
+
+.content > div#artist {
+    opacity:0;
+    left:-1px;
+    top: 20px;
+    width: 857px;
+    height: 584px;
+    background-image: url(http://localhost:8080/assets/images/pharrell/pharrell.png);
+    border:none;
+}
+
+.content > div#status {
+    margin-top: -1px;
+    opacity:0;
+    left: 0px;
+    top: 0px;
+    width: 855px;
+    height: 21px;
+    background-image: url(http://localhost:8080/assets/images/pharrell/header_reveal.png);
+    border:none;
+}
+
+
+
+#album {
+    display: none;
+    left:517px;
+    top: 303px;
+    width: 338px;
+    height: 299px;
+    background-image: url(http://localhost:8080/assets/images/pharrell/album.png);
+}
+
+.content > div#playlist {
+    position: absolute;
+    margin:0px;
+    padding:0px;
     overflow: hidden;
+    left:320px;
+    top:315px;
+    width:242px;
+    height:243px;
+    display: none;
 }
 
-.pause {
-    margin-left: 4px;
-    margin-top: 5px;
+.content > div#playlist > *{
+    border: none;
 }
 
-div#title > img, div#info > img {
-    opacity: 0;
+.shadow {
+    background-image: url(http://localhost:8080/assets/images/pharrell/nowPlaying.png);
+    -webkit-box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
+    -moz-box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
+    box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
 }
+
+#playlist > img {
+    margin-top: -1px;
+    margin-left: -1px;
+}
+
 
