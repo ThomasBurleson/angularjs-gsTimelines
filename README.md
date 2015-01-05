@@ -4,8 +4,6 @@
 
 The goal is the development of a *next-generation* Animation layer for AngularJS with functionality and power to easily develop complex, rich user experiences. A new Animation **Timeline** API and a easy-to-use **DSL** will be derived based on experiments and explorations of real-world animation design samples; as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) application.
 
-> DSL: is an acronym for 'domain specific language'. In our case the DSL is intended to be used in HTML markup as a *designer-like* facade to Timeline features; features that are themselves layered on top of AngularJS ngAnimate features.
-
 The following three (3) Animation libraries will be considered:
 
 *  [Greensock GSAP](https://github.com/greensock/GreenSock-JS)
@@ -29,7 +27,9 @@ The Koda application developed below uses the [Explode-Reveal effect](http://dev
 
 ## Using Greensock (GSAP) Timelines
 
-Leveraging the power of the Greensock Animation Platform (GSAP) and the timeline features provided in TimelineLite, we can implement choreographed animations.
+Leveraging the power of the Greensock Animation Platform (GSAP) and the timeline features provided in TimelineLite, we can implement choreographed animations in JavaScript and in our HTML DSL.
+
+> DSL: is an acronym for 'domain specific language'. In our case the DSL is intended to be used in HTML markup as a *designer-like* facade to Timeline features; features that are themselves layered on top of AngularJS ngAnimate features.
 
 #### From Javascript to DSL 
 
