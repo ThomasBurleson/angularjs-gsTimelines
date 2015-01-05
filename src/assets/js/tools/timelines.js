@@ -236,11 +236,19 @@
 
                 // Patch fix special cases...
                 if ( !hasDuration ) {
-                    if ( styles.zIndex || styles.className ) {
+                    if ( styles.zIndex || styles.className || styles.display ) {
                         duration = "0.001";
                         hasDuration = true;
                     }
                 }
+
+                // Special `bounds` attribute case
+                if ( styles.bounds ) {
+                    "left top width height".split(" ").forEach(function(key) {
+                        styles[key] = styles.bounds[key];
+                    });
+                }
+                delete styles.bounds;
 
                 if ( frameLabel )   timeline.addLabel( frameLabel );
                 if ( hasDuration )  timeline.to(element,  +duration, styles,  position );
@@ -619,8 +627,8 @@
                         height: $window.innerHeight-20
                     },
                     stage = {
-                        width : 323,
-                        height: 574
+                        width : element[0].clientWidth,
+                        height: element[0].clientHeight
                     },
                     scaling = Math.min(
                         win.height/stage.height,
@@ -719,21 +727,32 @@
      */
     function toJSON(style) {
        var result = { };
-       var pairs = !style ? [ ] : style.replace(/\s+/g,"").split(/;|,/g);
+       var pairs = !style ? [ ] : style.replace(/\s+/g,"").split(/;/g);
 
        pairs.forEach(function(it) {
          if ( it.length ) {
-           it = it.split(":");
-           var key = it[0];
+           it = !isObject(it) ? it.split(":") : extractObject(it);
+           var key = stripQuotes(it[0]);
            var value = it[1];
 
-           if ( String(value).length ) {
-             result[ stripQuotes(key) ] = stripQuotes(value);
-           }
+           result[ key ] = angular.isString(value) ? stripQuotes(value) : value;
          }
        });
 
        return result;
+
+       function isObject(it) {
+           return (it.indexOf("{")>-1) && (it.indexOf("}")>-1);
+       }
+
+       function extractObject(it) {
+           var matches = it.match(/[\s]*([A-Za-z]+)[\s]*\:[\s]*\{(.*)\}/);
+           var key   = matches[1];
+           var value = toJSON( String(matches[2]).replace(/,/g,";").replace(/\"/g,"") );
+
+
+           return [ key,  value ];
+       }
     }
 
     /**
