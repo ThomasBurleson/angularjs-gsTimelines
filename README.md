@@ -4,7 +4,7 @@
 
 The goal is the development of a *next-generation* Animation layer for AngularJS with functionality and power to easily develop rich user experiences; as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) app. A new Animation API and a easy-to-use **DSL** will be derived based on experiments and explorations of real-world UX animation samples.
 
-> DSL: is an acronym for 'domain specific language'. In our case the DSL is intened to be used in HTML markup acts as a markup facade to Timeline features; features that are themselves layered on top of AngularJS ngAnimate features.
+> DSL: is an acronym for 'domain specific language'. In our case the DSL is intended to be used in HTML markup as a *designer-like* facade to Timeline features; features that are themselves layered on top of AngularJS ngAnimate features.
 
 The following three (3) Animation libraries will be considered:
 
