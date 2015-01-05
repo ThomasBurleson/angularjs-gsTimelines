@@ -16,8 +16,10 @@ New Animation API requirements and a viable **DSL** (domain-specific-language la
 *  [Polymer WedAnimations](https://www.polymer-project.org/platform/web-animations.html), [GitHub  WebAnimations](https://github.com/web-animations/web-animations-js)
 *  [Famo.us](http://famo.us/)
 
-For these experiments, two (2) real-world UX applications were selected from Material Design: 
+For these experiments, several real-world UX applications were selected from Material Design: 
 ![dsl_ideas](https://cloud.githubusercontent.com/assets/210413/5424470/0d8c746e-82b6-11e4-92ba-3c76a5b89807.jpg)
+
+![screen shot 2015-01-04 at 10 16 55 pm](https://cloud.githubusercontent.com/assets/210413/5609174/45ed43d2-945f-11e4-8909-dc3c742b8c42.png)
 
 Each application will be implemented with the three (3) Animation libraries show above. These implementations will be used to identify core animation APIs and features. And that API will, in turn, be used to derive a XML-based Animation DSL.
 
@@ -166,6 +168,7 @@ Use Greensock's (**GSAP**) `TimelineLite` within a Gridlist application and demo
 | AngularJS app with Timeline slider controls | [koda_2.html](src/koda_2.html) |  [koda_2.js](src/assets/js/koda_2.js) | [CodePen #2](http://codepen.io/ThomasBurleson/pen/ByKVGg)  |
 | AngularJS app with DSL |  [koda_3.html](src/koda_3.html#L14) |  [koda_3.js](src/assets/js/koda_3.js#L75-83) |  |
 | AngularJS app with DSL & States |  [koda_4.html](src/koda_4.html#L15) |  [koda_4.js](src/assets/js/koda_4.js#L52-53) | [CodePen #4](http://codepen.io/ThomasBurleson/pen/jEVyjr/?editors=101)  |
+| DSL for Explode-Reveal |  [reveal_1.html](src/reveal_1.html) |  [reveal_1.js](src/assets/js/reveal_1.js) | [CodePen #5](http://codepen.io/ThomasBurleson/pen/KwNoNP?editors=100)  |
 <br/>
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
 
