@@ -245,7 +245,11 @@
                 // Special `bounds` attribute case
                 if ( styles.bounds ) {
                     "left top width height".split(" ").forEach(function(key) {
-                        styles[key] = styles.bounds[key];
+                        var value = styles.bounds[key];
+                        if ( angular.isDefined( value ))
+                        {
+                            styles[key] = value;
+                        }
                     });
                 }
                 delete styles.bounds;

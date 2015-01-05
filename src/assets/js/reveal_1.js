@@ -150,6 +150,13 @@
                     width:641,
                     height:294
                 },
+                // Layout position when the album and playlist switch out
+                switchOver : {
+                    width:242,
+                    height:243,
+                    top:315,
+                    left:320
+                },
                 playlist : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/playlist.png"
             }
         ];

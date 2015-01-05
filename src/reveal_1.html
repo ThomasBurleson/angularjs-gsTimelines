@@ -24,7 +24,7 @@
         <gs-step target="#circle"       style="opacity:0"               duration="0.3"   position="start+=0.5"></gs-step>
         <gs-step target="#artist"       style="opacity:1"               duration="0.8"   position="start"></gs-step>
         <gs-step target="#status"       style="opacity:1"               duration="0.8"   position="start"></gs-step>
-        <gs-step target="#album"        style="width:242;height:243;top:315;left:320;"   duration="0.33"  position="start"></gs-step>
+        <gs-step target="#album"        style="bounds:{{ album.switchOver }}" duration="0.33"  position="start"></gs-step>
         <gs-step target="#playlist"     style="display:block;className:''"               position="start+=0.3"></gs-step>
         <gs-step target="#album"        style="opacity:0;display:none"  duration="0.010" position="start+=0.3"></gs-step>
         <gs-step target="#playlist"     style="className:'shadow'"                       position="start+=0.3"></gs-step>
