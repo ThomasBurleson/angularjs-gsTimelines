@@ -631,8 +631,10 @@
                 var timeline   = new TimelineLite();
 
                 adjustScaling();
+
                 if ( !isLocked ) {
-                    watchResize( adjustScaling );
+                    // Watch resize; remove watcher during tear down.
+                    scope.$on("$destroy", watchResize( adjustScaling ) );
                 }
 
                 /**
@@ -674,10 +676,16 @@
          * the # of events to debounce until idle for 30 frames
          */
         function watchResize( targetFn ) {
-            var debounce = $debounce($timeout, true)
+            var win        = angular.element($window);
+            var debounce   = $debounce($timeout, true);
+            var onResizeFn = debounce(targetFn, 30);
 
-            angular.element($window)
-                   .bind('resize', debounce( targetFn, 30 ));
+            win.bind('resize', onResizeFn);
+
+            // Publish unwatch method...
+            return function(){
+                win.unbind('resize', onResizeFn);
+            }
         }
     }
 
