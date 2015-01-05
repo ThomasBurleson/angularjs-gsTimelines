@@ -43,13 +43,13 @@ body {
     left: 0px;
     width: 855px;
     height: 528px;
-    background-image: url(http://localhost:8080/assets/images/pharrell/grid.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/grid.png);
 }
 #stage > div#header {
     top: 0px;
     width: 100%;
     height: 74px;
-    background-image: url(http://localhost:8080/assets/images/pharrell/header.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/header.png);
 }
 
 #stage > div#tile, #stage > div.tile {
@@ -57,7 +57,7 @@ body {
     top: 303px;
     width: 338px;
     height: 299px;
-    background-image: url(http://localhost:8080/assets/images/pharrell/album.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/album.png);
     cursor: zoom-in;
 }
 
@@ -66,7 +66,7 @@ body {
     top: 549px;
     width: 642px;
     height: 55px;
-    background-image: url(http://localhost:8080/assets/images/pharrell/nowPlaying.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/nowPlaying.png);
     -webkit-box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
     -moz-box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
     box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
@@ -119,7 +119,7 @@ body {
     top: 20px;
     width: 857px;
     height: 584px;
-    background-image: url(http://localhost:8080/assets/images/pharrell/pharrell.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/pharrell.png);
     border:none;
 }
 
@@ -130,7 +130,7 @@ body {
     top: 0px;
     width: 855px;
     height: 21px;
-    background-image: url(http://localhost:8080/assets/images/pharrell/header_reveal.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/header_reveal.png);
     border:none;
 }
 
@@ -142,7 +142,7 @@ body {
     top: 303px;
     width: 338px;
     height: 299px;
-    background-image: url(http://localhost:8080/assets/images/pharrell/album.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/album.png);
 }
 
 .content > div#playlist {
@@ -162,7 +162,7 @@ body {
 }
 
 .shadow {
-    background-image: url(http://localhost:8080/assets/images/pharrell/nowPlaying.png);
+    background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/nowPlaying.png);
     -webkit-box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
     -moz-box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);
     box-shadow: 0px -3px 22px 5px rgba(0,0,0,0.27);

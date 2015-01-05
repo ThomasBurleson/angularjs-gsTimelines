@@ -38,7 +38,7 @@
          * Zoom the `#details` view simply by setting a $scope.state variable
          *
          */
-        function showDetails( selectedTile, invokeApply ) {
+        function showDetails( selectedTile ) {
             var request = promiseToNotify( "zoom", "complete." );
 
             $timeline( "zoom", {

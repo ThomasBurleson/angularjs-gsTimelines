@@ -10,7 +10,7 @@
      */
     angular.module("gridReveal",['gsTimelines','ng'])
         .controller("RevealController", RevealController )
-        .factory(   "catalog",       AlbumCatalog );
+        .factory(   "catalog",          AlbumCatalog );
 
     /**
      * RevealController constructor
@@ -19,10 +19,17 @@
     function RevealController( $scope, catalog, $timeline, $timeout, $q, $log ) {
 
         $scope.catalog     = catalog;
+        $scope.album       = catalog[0];
         $scope.showDetails = showDetails;
         $scope.hideDetails = hideDetails;
 
         enableAutoClose();
+
+        // wait while reflow finishes
+        wait( 1200 )
+          .then( function() { return showDetails( $scope.album );})
+          .then( function() { return wait( 300 );                })
+          .then( hideDetails );
 
         // ************************************************************
         // Show Tile features
@@ -32,7 +39,7 @@
          * Zoom the `#details` view simply by setting a $scope.state variable
          *
          */
-        function showDetails( album, invokeApply ) {
+        function showDetails( album ) {
             var request = promiseToNotify( "zoom", "complete." );
 
             $timeline( "zoom", {
@@ -142,7 +149,8 @@
                     top:309,
                     width:641,
                     height:294
-                }
+                },
+                playlist : "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/playlist.png"
             }
         ];
     }

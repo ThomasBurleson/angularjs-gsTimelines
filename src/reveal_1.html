@@ -38,7 +38,7 @@
         <div id="stage" gs-scale>
             <div id="header"></div>
             <div id="grid"></div>
-            <div id="tile" class="pharrell" ng-click="showDetails(catalog[0])"></div>
+            <div id="tile" class="pharrell" ng-click="showDetails(album)"></div>
             <div id="nowPlaying"></div>
 
             <div id="details" class="hidden" ng-click="hideDetails()">
@@ -47,7 +47,7 @@
                     <div id="artist" ></div>
                     <div id="circle" ></div>
                     <div id="playlist" >
-                        <img src="./assets/images/pharrell/playlist.png">
+                        <img ng-src="{{album.playlist}}">
                     </div>
                     <div id="album"></div>
                 </div>
