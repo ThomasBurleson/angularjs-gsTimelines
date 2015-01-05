@@ -2,8 +2,8 @@
     "use strict";
 
     /**
-     * GSAP TimelineLite AngularJS module that supports
-     * a custom DSL for animation definitions
+     * AngularJS-GSAP Timeline module that supports a custom DSL for
+     * animation definitions using Greensock's TimelineLite API.
      *
      * NOTE: Currently this module has some dependencies upon jQuery() features
      *       in querySelector()...
@@ -41,7 +41,7 @@
 
 
     /**
-     * @ngdoc service                                                                        å
+     * @ngdoc service
      * @private
      *
      * Internal State management for Timelines
@@ -615,41 +615,70 @@
      * @ngdoc directive
      * Scale Directive
      *
-     * Scale the attached element to the window inner bounds.
+     * Scale the attached element to the window inner bounds or to a fixed scale value
      *
      * Startup viewport scaling for UX; this will increase
      * the stage size to fill the window area with
      * PROPORTIONAL_FIT_INSIDE
      *
      */
-    function ScaleDirective($window) {
+    function ScaleDirective($window, $timeout) {
         return {
             restrict : "A",
             link : function LinkStepDirective(scope, element, attr) {
-                var win = {
-                        width : $window.innerWidth-20,
-                        height: $window.innerHeight-20
-                    },
-                    stage = {
-                        width : element[0].clientWidth,
-                        height: element[0].clientHeight
-                    },
-                    scaling = Math.min(
+                var fixedScale = attr['gsScale'] ? parseFloat(attr['gsScale']) : NaN;
+                var isLocked   = !isNaN(fixedScale);
+                var timeline   = new TimelineLite();
+
+                adjustScaling();
+                if ( !isLocked ) {
+                    watchResize( adjustScaling );
+                }
+
+                /**
+                 * Will autoAdjust the scale so the target element will proportionally
+                 * fit INSIDE the window; unless an explicit size has been defined
+                 *
+                 *  gs-scale        === adjust scale to window size
+                 *  gs-scale="1.0"  === lock scale to 1x (ignore window size)
+                 *  gs-scale="3"    === lock scale to 3x (ignore window size)
+                 *
+                 */
+                function adjustScaling() {
+                    var win = {
+                          width : $window.innerWidth-20,
+                          height: $window.innerHeight-20
+                      },
+                      stage = {
+                          width : element[0].clientWidth,
+                          height: element[0].clientHeight
+                      },
+                      scaling = Math.min(
                         win.height/stage.height,
                         win.width/stage.width
-                    ),
-                    selector = '#' + attr.id,
-                    override = attr['gsScale'] ? parseFloat(attr['gsScale']) : NaN;
+                      ),
+                      selector = '#' + attr.id;
 
 
-                // Scale and FadeIn entire stage for better UX
+                    // Scale and FadeIn entire stage for better UX
 
-                new TimelineLite()
-                    .set(selector, {scale:isNaN(override) ? scaling : override, transformOrigin:"0 0 0" })
-                    .to(selector, 0.5, {opacity:1});
-
+                    timeline.clear(true)
+                      .set(selector, { scale:isLocked ? fixedScale : scaling, transformOrigin:"0 0 0" } )
+                      .to(selector, 0.5, {opacity:1});
+                }
             }
         };
+
+        /**
+         * Auto-adjust scaling when window resizes... minimize
+         * the # of events to debounce until idle for 30 frames
+         */
+        function watchResize( targetFn ) {
+            var debounce = $debounce($timeout, true)
+
+            angular.element($window)
+                   .bind('resize', debounce( targetFn, 30 ));
+        }
     }
 
 
@@ -801,7 +830,7 @@
      * @returns {Function}
      *
      */
-    function $debounce( $timeout ) {
+    function $debounce( $timeout, invokeApply ) {
 
         return function debounce(func, wait, scope) {
           var timer;
@@ -816,7 +845,7 @@
                 timer = undefined;
                 func.apply(context, args);
 
-            }, wait || 10 );
+            }, wait || 10, invokeApply );
           };
         }
     }
