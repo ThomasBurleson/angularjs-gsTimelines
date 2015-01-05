@@ -19,7 +19,7 @@ New Animation API requirements and a viable **DSL** (domain-specific-language la
 For these experiments, several real-world UX applications were selected from Material Design: 
 ![dsl_ideas](https://cloud.githubusercontent.com/assets/210413/5424470/0d8c746e-82b6-11e4-92ba-3c76a5b89807.jpg)
 
-![screen shot 2015-01-04 at 10 16 55 pm](https://cloud.githubusercontent.com/assets/210413/5609174/45ed43d2-945f-11e4-8909-dc3c742b8c42.png)
+![revealexplode](https://cloud.githubusercontent.com/assets/210413/5609205/166176dc-9460-11e4-894a-696273cf2f8a.jpg)
 
 Each application will be implemented with the three (3) Animation libraries show above. These implementations will be used to identify core animation APIs and features. And that API will, in turn, be used to derive a XML-based Animation DSL.
 
