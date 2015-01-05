@@ -29,7 +29,7 @@ The Koda application developed below uses the [Explode-Reveal effect](http://dev
 
 ## Using Greensock (GSAP) Timelines
 
-Leverage the power of the Greensock Animation Platform (GSAP) and the timeline features provided in TimelineLite, we can implement choreographed animations.
+Leveraging the power of the Greensock Animation Platform (GSAP) and the timeline features provided in TimelineLite, we can implement choreographed animations.
 
 #### From Javascript to DSL 
 
