@@ -2,9 +2,13 @@
 
 ## Summary
 
-The goal is the development of a *next-generation* Animation layer for AngularJS... with functionality and power to easily develop rich UX... as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) app.
+The goal is the development of a *next-generation* Animation layer for AngularJS with functionality and power to easily develop rich user experiences; as demonstrated in [Material Design](http://www.google.com/design/spec/material-design/introduction.html) and the [Polymer Topeka Quiz](https://www.polymer-project.org/apps/topeka/) app.
 
-New Animation API requirements and a viable **DSL** (domain-specific-language layered on top of AngularJS ngAnimate) will be derived from experiments and explorations of real-world UX animation samples using the following three (3) Animation libraries:
+A new Animation API requirements and a easy-to-use **DSL** will be derived from experiments and explorations of real-world UX animation samples.
+
+> DSL: domain-specific-language to be used in HTML markup and layered on top of AngularJS ngAnimate features.
+
+The following three (3) Animation libraries will be considered:
 
 *  [Greensock GSAP](https://github.com/greensock/GreenSock-JS)
 *  [Polymer WedAnimations](https://www.polymer-project.org/platform/web-animations.html), [GitHub  WebAnimations](https://github.com/web-animations/web-animations-js)
