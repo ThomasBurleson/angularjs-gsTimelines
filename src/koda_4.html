@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:ng="http://angularjs.org/">
     <head>
-        <link rel="stylesheet" href="assets/koda3.css"></gs-step>
+        <link rel="stylesheet" href="assets/koda3.css">
     </head>
 
     <body ng-app="kodaline" ng-controller="KodaController" >
@@ -18,13 +18,13 @@
         <gs-step target="#details"      style="zIndex:-11;className:''"       ></gs-step>
         <gs-step target="#green_status" style="zIndex:-13;className:''"       ></gs-step>
         <gs-step target="#mask"         style="zIndex:90"                     ></gs-step>
-        <gs-step target="#nowPlaying"        style="top:481;left:88;opacity:1.0"   duration="0.001"></gs-step>
-        <gs-step target="#details"      style="zIndex:92; opacity:0.01; left:{{selectedTile.from.left}}; top:{{selectedTile.from.top-1}}; width:{{selectedTile.from.width}}; height:{{selectedTile.from.height}}" ></gs-step>
+        <gs-step target="#nowPlaying"   style="top:481;left:88;opacity:1.0"   duration="0.001"></gs-step>
+        <gs-step target="#details"      style="zIndex:92; opacity:0.01; bounds:{{selectedTile.from}};" ></gs-step>
 
         <gs-step target="#details"      style="opacity:1.0"                           duration="0.3"></gs-step>
         <gs-step mark-position="fullThumb"></gs-step>
-        <gs-step target="#nowPlaying"        style="top:532;left:324;"                duration="0.2" ></gs-step>
-        <gs-step target="#nowPlaying"        style="opacity:0"                        duration="0.1" position="fullThumb+=0.1"></gs-step>
+        <gs-step target="#nowPlaying"   style="top:532;left:324;"                     duration="0.2" ></gs-step>
+        <gs-step target="#nowPlaying"   style="opacity:0"                             duration="0.1" position="fullThumb+=0.1"></gs-step>
         <gs-step target="#details"      style="delay:0.3; left:0; height:{{selectedTile.to.height}}; width:329" duration="0.5"></gs-step>
         <gs-step mark-position="fullWidth"></gs-step>
         <gs-step target="#mask"         style="opacity:0.80"                          duration="0.5"   position="fullWidth-=0.3"></gs-step>

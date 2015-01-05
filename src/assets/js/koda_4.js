@@ -10,7 +10,7 @@
      */
     angular.module("kodaline",['gsTimelines','ng'])
         .controller("KodaController", KodaController )
-        .factory(   "tilesModel",     TileDataModel )
+        .factory(   "tilesModel",     TileDataModel );
 
     /**
      * KodaController constructor
