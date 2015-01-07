@@ -138,6 +138,10 @@
         return [
             {
                 className : "pharrell",
+                aria : {
+                    artist: "Pharrell Williams",
+                    album : "GIRL"
+                },
                 from: {
                     left:517,
                     top: 303,

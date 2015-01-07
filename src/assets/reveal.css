@@ -18,7 +18,7 @@ body {
     border: 1px solid #1A0B1A;
 }
 
-#stage > div {
+#stage > div, #stage > button {
     position: absolute;
     margin: 0px;
     right: auto;
@@ -29,6 +29,7 @@ body {
     background-position: 0px 0px;
     background-repeat: no-repeat;
 }
+
 
 .hidden {
     display: none;
@@ -52,13 +53,14 @@ body {
     background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/header.png);
 }
 
-#stage > div#tile, #stage > div.tile {
+#stage > button#tile, #stage > button.tile {
     left:517px;
     top: 303px;
     width: 338px;
     height: 299px;
     background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/pharrell/album.png);
     cursor: zoom-in;
+    border:none;
 }
 
 #stage div#nowPlaying {

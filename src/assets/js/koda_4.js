@@ -233,6 +233,9 @@
                     height: 164
                 },
                 to  : { height : 216  },
+                aria : {
+                    artist: "Kodaline In a perfect world"
+                },
                 thumbSrc: "./assets/images/koda/thumb_kodaline_v8.png",
                 albumSrc: "./assets/images/koda/album_kodaline.png",
                 title: "Kodaline",
@@ -249,6 +252,9 @@
                     height: 164
                 },
                 to  : { height : 216  },
+                aria : {
+                    artist: "Moby Eighteen"
+                },
                 thumbSrc: "./assets/images/koda/thumb_moby_v8.png",
                 albumSrc : "./assets/images/koda/album_moby_v2.png",
                 titleSrc : "./assets/images/koda/title_moby.png",
@@ -263,6 +269,9 @@
                     height: 162
                 },
                 to  : { height : 229  },
+                aria : {
+                    artist: "Supermodel Foster the People"
+                },
                 thumbSrc: "./assets/images/koda/thumb_supermodel_v8.png",
                 albumSrc: "./assets/images/koda/album_supermodel.png",
                 titleSrc : "./assets/images/koda/title_supermodel.png",
@@ -278,6 +287,9 @@
                     height: 162
                 },
                 to  : { height : 229  },
+                aria : {
+                    artist: "Ellie Goulding Halycon Days"
+                },
                 thumbSrc: "./assets/images/koda/thumb_goulding_v8.png",
                 albumSrc: "./assets/images/koda/album_goulding.png",
                 titleSrc : "./assets/images/koda/title_goulding.png",
@@ -292,6 +304,9 @@
                     height: 162
                 },
                 to  : { height : 216  },
+                aria : {
+                    artist: "Goyte ft. Kimbra Somebody that I used to know."
+                },
                 thumbSrc: "./assets/images/koda/thumb_goyte_v8.png",
                 albumSrc: "./assets/images/koda/album_goyte.png",
                 titleSrc : "./assets/images/koda/title_goyte.png",
@@ -306,6 +321,9 @@
                     height: 162
                 },
                 to  : { height : 216  },
+                aria : {
+                    artist: "Pharrell Williams GIRL"
+                },
                 thumbSrc: "./assets/images/koda/thumb_pharrell_v8.png",
                 albumSrc: "./assets/images/koda/album_pharrell.png",
                 titleSrc : "./assets/images/koda/title_pharrell.png",

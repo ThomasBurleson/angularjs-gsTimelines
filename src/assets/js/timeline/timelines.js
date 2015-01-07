@@ -230,13 +230,18 @@
                 var element     = querySelector( step.target );
                 var frameLabel  = keyValue(step, "markPosition");
                 var position    = keyValue(step, "position", "");
-                var styles      = toJSON(keyValue(step, "style"));
                 var hasDuration = !!keyValue(step, "duration");
+                var styles      = toJSON(keyValue(step, "style"));
+
                 var duration    = hasDuration ? keyValue(step, "duration") : 0;
 
                 // Patch fix special cases...
                 if ( !hasDuration ) {
-                    if ( styles.zIndex || styles.className || styles.display ) {
+                    var hasPosition = !!keyValue(step, "position");
+                    var forceDuration = ( styles.zIndex || styles.className );
+                        forceDuration = forceDuration || ( styles.display && hasPosition );
+
+                    if ( forceDuration ) {
                         duration = "0.001";
                         hasDuration = true;
                     }

@@ -18,7 +18,7 @@ body {
     border: 1px solid #1A0B1A;
 }
 
-#stage > div {
+#stage > div, #stage > button {
     position: absolute;
     margin: 0px;
     right: auto;
@@ -28,6 +28,16 @@ body {
     background-size: 100% 100%;
     background-position: 0px 0px;
     background-repeat: no-repeat;
+}
+
+button {
+    border: 1px dotted transparent;
+    outline:none;
+}
+
+button:focus, button:hover {
+    border: 1px dotted gray;
+    outline:none;
 }
 
 .hidden {
@@ -60,7 +70,7 @@ body {
     background-image: url(http://solutionoptimist-bucket.s3.amazonaws.com/kodaline/header.png);
 }
 
-#stage > div#tile1, #stage > div.tile1 {
+#stage > #tile1, #stage > .tile1 {
     left:-1px;
     top: 74px;
     width: 162px;
@@ -69,7 +79,7 @@ body {
     cursor: zoom-in;
 }
 
-#stage > div#tile2, #stage > div.tile2 {
+#stage > #tile2, #stage > .tile2 {
     left: 164px;
     top: 74px;
     width: 161px;
@@ -78,7 +88,7 @@ body {
     cursor: zoom-in;
 }
 
-#stage > div#tile3, #stage > div.tile3 {
+#stage > #tile3, #stage > .tile3 {
     left:-1px;;
     top: 240px;
     width: 162px;
@@ -87,7 +97,7 @@ body {
     cursor: zoom-in;
 }
 
-#stage > div#tile4, #stage > div.tile4 {
+#stage > #tile4, #stage > .tile4 {
     left: 164px;
     top: 240px;
     width: 162px;
@@ -97,7 +107,7 @@ body {
 }
 
 
-#stage > div#tile4, #stage > div.tile5 {
+#stage > #tile4, #stage > .tile5 {
     left:-1px;
     top: 404px;
     width: 162px;
@@ -106,7 +116,7 @@ body {
     cursor: zoom-in;
 }
 
-#stage > div#tile6, #stage > div.tile6 {
+#stage > #tile6, #stage > .tile6 {
     left: 164px;
     top: 404px;
     width: 162px;
