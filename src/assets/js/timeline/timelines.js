@@ -238,8 +238,9 @@
                 // Patch fix special cases...
                 if ( !hasDuration ) {
                     var hasPosition = !!keyValue(step, "position");
-                    var forceDuration = ( styles.zIndex || styles.className );
-                        forceDuration = forceDuration || ( styles.display && hasPosition );
+
+                    var forceDuration = ( styles.zIndex || styles.className || styles.display );
+                        forceDuration = forceDuration || hasPosition;
 
                     if ( forceDuration ) {
                         duration = "0.001";
