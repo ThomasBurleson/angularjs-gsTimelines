@@ -69,10 +69,9 @@ We can this express this same transition as an HTML-based DSL:
 
  <!-- Animation DSL -->
 
- <timeline state="enter"
+ <timeline state="zoom"
           time-scale="1"
-          resolve="preloadImages(source)"
-          cache="true" >
+          resolve="preloadImages(source)" >
     <!-- timelines for #mask and #details run in parallel -->
 
     <timeline target="#mask" position="">
