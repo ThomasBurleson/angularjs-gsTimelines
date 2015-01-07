@@ -50,6 +50,7 @@
             // Perform animation via state change
             $scope.state = "zoom";
             $scope.album = album;
+            $scope.timeScale = 1.0;
 
             return request.promise;
         }
@@ -64,6 +65,7 @@
             });
 
             $scope.state = '';
+            $scope.timeScale = 1.0;
         }
 
 

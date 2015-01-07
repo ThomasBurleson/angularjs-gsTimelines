@@ -370,7 +370,7 @@
      * @param $scope
      * @constructor
      */
-    function TimeLineController($scope, $element, $q, $timeout, $timeline) {
+    function TimeLineController($scope, $element, $q, $timeout, $timeline, $log) {
         var self         = this,
             timeline     = null,
             children     = [ ],
@@ -380,9 +380,15 @@
             debounce       = $debounce( $timeout ),
             parentCntrl    = $element.parent().controller('timeline');
 
-        self.addStep     = onStepChanged;  // Used by StepDirective
-        self.addChild    = onAddTimeline;  // Used by TimelineDirective
-        self.addResolve  = onAddResolve;   // Used by TimelineDirective
+        self.addStep         = onStepChanged;  // Used by StepDirective
+        self.addChild        = onAddTimeline;  // Used by TimelineDirective
+        self.addResolve      = onAddResolve;   // Used by TimelineDirective
+
+        // Rebuild when the timeScale changes..
+        $scope.$watch('timeScale', function(current,previous) {
+            $log.debug( 'timeScale( {0} -> {1} '.supplant([previous, current]));
+            asyncRebuild();
+        });
 
         /**
          * Deferred external accessor to `timeline` to support asyncRebuild(s).
@@ -518,7 +524,9 @@
 
        return {
            restrict: "E",
-           scope : { },
+           scope : {
+            timeScale : "@?"
+           },
            controller : TimeLineController,
            link : function (scope, element, attr, controller )
            {
@@ -526,12 +534,13 @@
 
                scope.id        = attr.id        || attr.state || ("timeline_" + counter++);
                scope.position  = attr.position  || 0;
-               scope.timeScale = attr.timeScale || 1.0;
+               scope.timeScale = scope.timeScale || 1.0;
                scope.state     = attr.state;
                scope.target    = attr.target;
 
                prepareResolve();
                prepareStateWatch();
+
 
                // ******************************************************************
                // Internal Methods
