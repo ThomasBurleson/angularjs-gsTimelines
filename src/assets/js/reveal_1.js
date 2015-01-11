@@ -18,6 +18,7 @@
      */
     function RevealController( $scope, catalog, $timeline, $timeout, $q, $log ) {
 
+        $scope.pulse       = 0.02;
         $scope.catalog     = catalog;
         $scope.album       = catalog[0];
         $scope.showDetails = showDetails;
@@ -26,7 +27,7 @@
         enableAutoClose();
 
         // wait while reflow finishes
-        wait( 1200 )
+        wait( 800 )
           .then( function() { return showDetails( $scope.album );})
           .then( function() { return wait( 300 );                })
           .then( hideDetails );
@@ -40,17 +41,20 @@
          *
          */
         function showDetails( album ) {
-            var request = promiseToNotify( "zoom", "complete." );
+            var nextState = 'zoom';
+            var message   = "RevealController::showDetails() >> trigger '{0}' animation for '{1}'";
+            var request   = promiseToNotify( "zoom", "complete." );
 
-            $timeline( "zoom", {
-                onUpdate          : makeNotify("zoom", "updating..."),
-                onComplete        : request.notify
-            });
+            $log.debug(message.supplant([nextState,  album.aria.artist ]));
 
-            // Perform animation via state change
-            $scope.state = "zoom";
-            $scope.album = album;
+                $timeline( "zoom", {
+                    onUpdate          : makeNotify("zoom", "updating..."),
+                    onComplete        : request.notify
+                });
+
             $scope.timeScale = 1.0;
+            $scope.album     = album;
+            $scope.state     = nextState;  // Perform animation via state change
 
             return request.promise;
         }
@@ -59,13 +63,22 @@
          *  Unzoom the `#details` view simply by clearing the state
          */
         function hideDetails() {
-            $timeline( "zoom", {
-                onUpdate          : makeNotify("zoom", "reversing..."),
-                onReverseComplete : makeNotify("zoom", "reversed.")
-            });
+            var state = 'zoom';
+            var album = $scope.album;
+            var request = promiseToNotify( state, "reversed." );
+            var message   = "RevealController::hideDetails() >> trigger '{0}' animation for '{1}'";
 
-            $scope.state = '';
-            $scope.timeScale = 1.0;
+            $log.debug(message.supplant([state,  album.aria.artist]));
+
+                $timeline( state, {
+                    onUpdate          : makeNotify(state, "reversing..."),
+                    onReverseComplete : request.notify,
+                    onComplete        : null
+                });
+
+            $scope.state = "-" + state;
+
+            return request.promise;
         }
 
 
@@ -108,7 +121,7 @@
          * Auto-close details view upon ESCAPE keydowns
          */
         function autoClose(e) {
-            if ((e.keyCode == 27) || (e.type == "mousedown")) {
+            if ((e.keyCode == 27) ) {
                 ($scope.hideDetails || angular.noop)();
                 e.preventDefault();
             }

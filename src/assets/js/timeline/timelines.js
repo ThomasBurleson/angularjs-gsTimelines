@@ -107,22 +107,22 @@
                 if ( state   === ""        ) return;
 
                 $rootScope.$evalAsync(function(){
-                    var isReverse = (current[0] == "-");
+                    var shouldReverse = isReversal(current);
 
                     // Must use $timeline() to integrate the resolve processing...
                     $timeline(state).then( function(timeline){
 
                         // Pop special `-` reverse indicator (if present)
-                        current = isReverse ? current.substr(1) : current;
+                        current = stripReversal(current);
 
                         $log.debug( ">> TimelineStates::triggerTimeline( state = '{0}' )".supplant([current]) );
 
                         if ( current === state ){
-                          if ( !isReverse )  timeline.restart();
-                          else               timeline.reverse();
+
+                          if ( shouldReverse ) timeline.reverse();
+                          else                 timeline.restart();
 
                         }
-
                     });
 
                 });
@@ -195,12 +195,13 @@
                 // Is this an implicit lookup?
 
                 if ( angular.isDefined(id) ){
-                    var promise = hasState(id) ? findByState(id) : findById(id);
+                    id = stripReversal(id);
 
+                    var promise = hasState(id) ? findByState(id) : findById(id);
                     return promise
-                               .then( waitForRebuild )
-                               .then( registerCallbacks(callbacks) )
-                               .then( resolveBeforeUse );
+                            .then( waitForRebuild )
+                            .then( registerCallbacks(callbacks) )
+                            .then( resolveBeforeUse );
                 }
 
                 // Not a lookup, so return the API
@@ -208,13 +209,12 @@
                 return self;
             };
 
-            // Attach special direct search and make functions to the published
-            // API for `$timeline` service
+        // Attach special direct search and make functions to the published
+        // API for `$timeline` service
 
-            angular.forEach(self,function(fn,key){
-                $timeline[key] = fn;
-            });
-
+        angular.forEach(self,function(fn,key){
+            $timeline[key] = fn;
+        });
 
         // Publish the service with its API
 
@@ -246,45 +246,18 @@
             source.children = source.children || [ ];
 
             source.steps.forEach(function(step, index) {
-
                 var element     = querySelector( step.target );
-                var frameLabel  = keyValue(step, "markPosition");
+
                 var position    = keyValue(step, "position", "");
-                var hasDuration = !!keyValue(step, "duration");
+                var frameLabel  = keyValue(step, "markPosition");
                 var styles      = toJSON(keyValue(step, "style"));
+                var duration    = getDuration(step, styles);
 
-                var duration    = hasDuration ? keyValue(step, "duration") : 0;
+                styles = updateEasing(updateBounds( styles ))
 
-                // Patch fix special cases...
-                if ( !hasDuration ) {
-                    var hasPosition = !!keyValue(step, "position");
-
-                    var forceDuration = ( styles.zIndex || styles.className || styles.display );
-                        forceDuration = forceDuration || hasPosition;
-
-                    if ( forceDuration ) {
-                        duration = "0.001";
-                        hasDuration = true;
-                    }
-                }
-
-                // Special `bounds` attribute case
-                if ( styles.bounds ) {
-                    "left top width height".split(" ").forEach(function(key) {
-                        var value = styles.bounds[key];
-                        if ( angular.isDefined( value ))
-                        {
-                            styles[key] = value;
-                        }
-                    });
-                }
-                delete styles.bounds;
-
-                updateEasing(styles);
-
-                if ( frameLabel )   timeline.addLabel( frameLabel );
-                if ( hasDuration )  timeline.to(element,  +duration, styles,  position );
-                else                timeline.set(element, styles );
+                if ( frameLabel )     timeline.addLabel( frameLabel );
+                if ( duration !== 0 ) timeline.to(element,  +duration, styles,  position );
+                else                  timeline.set(element, styles );
 
             });
 
@@ -298,6 +271,43 @@
             });
 
             return logBuild(source, targets, $log);
+        }
+
+        /**
+         * Get explicit duration value or calculate an implicit
+         * duration if certain keys are used.
+         */
+        function getDuration(step, styles) {
+            var duration    = keyValue(step, "duration", 0);
+
+            if ( duration === 0 ) {
+                var hasPosition = !!keyValue(step, "position");
+
+                var forceDuration = ( styles.zIndex || styles.className || styles.display );
+                    forceDuration = forceDuration || hasPosition;
+
+                if ( forceDuration ) duration = "0.001";
+            }
+
+            return duration;
+        }
+
+        /**
+         * For the special `bounds` style, extract/flatten the specifiers
+         */
+        function updateBounds(styles) {
+            if ( styles.bounds ) {
+                "left top width height".split(" ").forEach(function(key) {
+                    var value = styles.bounds[key];
+                    if ( angular.isDefined( value ))
+                    {
+                        styles[key] = value;
+                    }
+                });
+            }
+            delete styles.bounds;
+
+            return styles;
         }
 
         /**
@@ -328,6 +338,8 @@
             catch (e ) { /* suppress errors */ }
             finally    { if (invalid){ delete styles.ease; }}
 
+            return styles;
+
             /**
              * If full property chain is not valid, then do not continue
              * with the ease translation lookup.
@@ -339,7 +351,6 @@
                 }
             }
         }
-
 
         /**
          * Provide a async lookup to return a timeline after
@@ -385,20 +396,6 @@
         }
 
         /**
-         * Register timeline for easy lookups later...
-         */
-        function register(timeline, id, state) {
-            if ( timeline && id && id.length ) {
-
-                cache[ id ] = timeline;
-                if ( angular.isDefined(state) )
-                {
-                    timeline.$$state = state;
-                }
-            }
-        }
-
-        /**
          * Scan available timelines to see if any have a matching state
          * @param state
          * @returns {boolean|*}
@@ -414,6 +411,20 @@
                 }
             });
             return found;
+        }
+
+        /**
+         * Register timeline for easy lookups later...
+         */
+        function register(timeline, id, state) {
+            if ( timeline && id && id.length ) {
+
+                cache[ id ] = timeline;
+                if ( angular.isDefined(state) )
+                {
+                    timeline.$$state = state;
+                }
+            }
         }
     }
 
@@ -935,6 +946,28 @@
             }, wait || 10, invokeApply );
           };
         }
+    }
+
+
+    /**
+     * Scan for special prefix that indicates if the state
+     * should be reversed...
+     * @param state
+     * @returns {boolean}
+     */
+    function isReversal(state) {
+        return (state[0] == "-");
+    }
+
+    /**
+     * If the id has a reverse aniamtion indicator prefixed,
+     * strip that for proper lookups.
+     *
+     * @param state String name of state to lookup
+     * @returns {string}
+     */
+    function stripReversal(state) {
+        return (state[0] == "-") ? state.substr(1) : state;
     }
 
 

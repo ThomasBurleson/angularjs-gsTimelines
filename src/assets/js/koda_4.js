@@ -47,8 +47,8 @@
             });
 
             // Perform animation via state change
-            $scope.state        = "zoom";
             $scope.selectedTile = selectedTile;
+            $scope.state        = "zoom";
 
             return request.promise;
         }
@@ -62,7 +62,7 @@
                 onReverseComplete : makeNotify("zoom", "reversed.")
             });
 
-            $scope.state = '';
+            $scope.state = '-zoom';
         }
 
 
