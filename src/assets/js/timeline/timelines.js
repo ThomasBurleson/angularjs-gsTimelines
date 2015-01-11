@@ -1,4 +1,4 @@
-(function(){
+(function(globals){
     "use strict";
 
     /**
@@ -50,7 +50,7 @@
      * NOTE: currently this is a CRUDE architecture that does not account for hierarchical states
      * and complex animation chains...
      */
-    function TimelineStates( $timeline, $log ) {
+    function TimelineStates( $timeline, $log, $rootScope ) {
         var self, registry = { };
 
         return self = {
@@ -101,20 +101,32 @@
             // Watch for the scope `state` change... to start or reverse the animations
             // Watch for state changes and fire the associated timeline
 
-            var unwatch = parent.$watch('state', function(current, old){
+            var unwatch = parent.$watch('state', function(current, previous){
+                if ( current === previous  ) return;
                 if ( current === undefined ) return;
                 if ( state   === ""        ) return;
 
-                // Must use $timeline() to integrate the resolve processing...
+                $rootScope.$evalAsync(function(){
+                    var isReverse = (current[0] == "-");
 
-                $timeline(state).then(function(timeline){
+                    // Must use $timeline() to integrate the resolve processing...
+                    $timeline(state).then( function(timeline){
 
-                    $log.debug( ">> TimelineStates::triggerTimeline( state = '{0}' )".supplant([current]) );
+                        // Pop special `-` reverse indicator (if present)
+                        current = isReverse ? current.substr(1) : current;
 
-                    if ( current === state ) timeline.restart();
-                    else                     timeline.reverse();
+                        $log.debug( ">> TimelineStates::triggerTimeline( state = '{0}' )".supplant([current]) );
+
+                        if ( current === state ){
+                          if ( !isReverse )  timeline.restart();
+                          else               timeline.reverse();
+
+                        }
+
+                    });
 
                 });
+
             });
 
             // Auto unwatch when the scope is destroyed..
@@ -129,7 +141,7 @@
      * Service to build a GSAP TimelineLite instance based on <gs-timeline> and nested <gs-step>
      * directive settings...
      */
-    function TimelineBuilder( $log, $rootScope, $q ) {
+    function TimelineBuilder( $log, $q  ) {
         var counter = 0,
             targets = { },
             cache   = { },
@@ -161,12 +173,19 @@
             // Chain step to resolve AFTER the timeline is ready
             // but BEFORE the timeline is delivered externally
 
-            resolveBeforeReady = function(tl) {
+            resolveBeforeUse= function(tl) {
                 var callback = tl.$$resolveWith || angular.noop;
 
                 return  $q.when( callback() ).then(function(){
                           return tl;
                         });
+            },
+
+            // If the timeline is dirty and needs to rebuild,
+            // wait for that first.
+
+            waitForRebuild = function(tl) {
+                return (tl && tl.$$dirty) ? tl.$$dirty : tl;
             },
 
             // Special lookup or accessor function
@@ -179,8 +198,9 @@
                     var promise = hasState(id) ? findByState(id) : findById(id);
 
                     return promise
+                               .then( waitForRebuild )
                                .then( registerCallbacks(callbacks) )
-                               .then( resolveBeforeReady );
+                               .then( resolveBeforeUse );
                 }
 
                 // Not a lookup, so return the API
@@ -260,6 +280,8 @@
                 }
                 delete styles.bounds;
 
+                updateEasing(styles);
+
                 if ( frameLabel )   timeline.addLabel( frameLabel );
                 if ( hasDuration )  timeline.to(element,  +duration, styles,  position );
                 else                timeline.set(element, styles );
@@ -279,6 +301,47 @@
         }
 
         /**
+         * Special lookup of the easing instance in the GSAP globals;
+         * used to replace the easing reference with an object instance
+         *
+         * @param styles
+         */
+        function updateEasing(styles) {
+            var warning = 'TimelineBuilder::makeTimeline() - ignoring invalid easing `{0}` ';
+            var invalid = true;
+            var easing  = styles.ease || "";
+
+            try {
+                if ( easing.length ) {
+                    var inst = globals;
+                    var keys = easing.split(".");
+
+                    keys.forEach(function(key){
+                        exitOnInvalid(key, inst);
+                        inst = inst[key];
+                    });
+
+                    invalid = !!inst ? false : true;
+                    styles.ease = inst;
+                }
+            }
+            catch (e ) { /* suppress errors */ }
+            finally    { if (invalid){ delete styles.ease; }}
+
+            /**
+             * If full property chain is not valid, then do not continue
+             * with the ease translation lookup.
+             */
+            function exitOnInvalid(key, inst) {
+                if ( angular.isUndefined(inst[key]) ) {
+                    $log.warn( warning.supplant([easing]));
+                    throw( new Error('invalid ease') );
+                }
+            }
+        }
+
+
+        /**
          * Provide a async lookup to return a timeline after
          * all $digest changes have completed.
          *
@@ -287,14 +350,10 @@
          */
         function findById( id ) {
             var deferred = $q.defer();
+            var timeline = cache[id];
 
-                $rootScope.$evalAsync( function(){
-                    var timeline = cache[id];
-
-                    if ( timeline )  deferred.resolve(timeline);
-                    else             deferred.reject( "Timeline( id == '{0}' ) was not found.".supplant([ id ]) );
-
-                });
+            if ( timeline )  deferred.resolve(timeline);
+            else             deferred.reject( "Timeline( id == '{0}' ) was not found.".supplant([ id ]) );
 
             return deferred.promise;
         }
@@ -308,23 +367,19 @@
          */
         function findByState( state ) {
             var deferred = $q.defer();
+            var timeline;
 
-                $rootScope.$evalAsync( function(){
-                    var timeline;
+            angular.forEach(cache, function(it) {
+                if ( angular.isDefined(it.$$state) ){
+                    if ( it.$$state == state     )
+                    {
+                        timeline = it;
+                    }
+                }
+            });
 
-                    angular.forEach(cache, function(it) {
-                        if ( angular.isDefined(it.$$state) ){
-                            if ( it.$$state == state )
-                            {
-                                timeline = it;
-                            }
-                        }
-                    });
-
-                    if ( timeline )  deferred.resolve(timeline);
-                    else             deferred.reject( "Timeline( state == '{0}' ) was not found.".supplant([ state ]) );
-
-                });
+            if ( timeline )  deferred.resolve(timeline);
+            else             deferred.reject( "Timeline( state == '{0}' ) was not found.".supplant([ state ]) );
 
             return deferred.promise;
         }
@@ -349,15 +404,16 @@
          * @returns {boolean|*}
          */
         function hasState(state) {
+            var found = false;
             angular.forEach(cache, function(it) {
                 if ( angular.isDefined(it.$$state) ){
                     if ( it.$$state == state )
                     {
-                        return true;
+                        found = true;
                     }
                 }
             });
-            return false;
+            return found;
         }
     }
 
@@ -386,8 +442,13 @@
 
         // Rebuild when the timeScale changes..
         $scope.$watch('timeScale', function(current,previous) {
-            $log.debug( 'timeScale( {0} -> {1} '.supplant([previous, current]));
-            asyncRebuild();
+            if ( current !== previous ) {
+                $log.debug( ( previous != "" ) ?
+                            'timeScale( {0} -> {1} )'.supplant([previous, current]) :
+                            'timeScale( {0} )'.supplant([current])
+                );
+                asyncRebuild();
+            }
         });
 
         /**
@@ -413,36 +474,39 @@
             // Keep debouncing...
             bouncedRebuild();
 
+            // Temporarily mark this as dirty...
+            if ( timeline != null ) timeline.$$dirty = pendingRebuild.promise;
+
             /**
              * Rebuild the timeline when the steps or children timelines are changed...
              */
              function rebuildTimeline() {
                  try {
-                     if ( children.length || steps.length ) {
 
-                         // No rebuilding while active...
-                         if ( timeline && timeline.isActive() ) {
-                             timeline.kill();
-                         }
-
-                         // Build or update the TimelineLite instance
-                         timeline = $timeline.makeTimeline({
-                             id       : $scope.id,
-                             timeline : timeline,
-                             steps    : steps,
-                             children : children,
-                             target   : $scope.target,
-                             timeScale: +$scope.timeScale || 1.0
-                         });
+                     // No rebuilding while active...
+                     if ( timeline && timeline.isActive() ) {
+                         timeline.kill();
                      }
 
-                     // Register for easy lookups later...
-                     $timeline.register( timeline, $scope.id, $scope.state );
+                     // Build or update the TimelineLite instance
+                     timeline = $timeline.makeTimeline({
+                         id       : $scope.id,
+                         timeline : timeline,
+                         steps    : steps,
+                         children : children,
+                         target   : $scope.target,
+                         timeScale: +$scope.timeScale || 1.0
+                     });
 
+                     // Register for easy lookups later...
                      // Add to parent as child timeline (if parent exists)
+
+                     $timeline.register( timeline, $scope.id, $scope.state );
                      parentCntrl && parentCntrl.addChild( timeline, +$scope.position  || 0.0 );
 
                      // Then resolve promise (for external requests)
+
+                     delete $timeline.$$dirty;
                      pendingRebuild.resolve( timeline );
 
                  }
@@ -874,4 +938,4 @@
     }
 
 
-})();
+})(window);
