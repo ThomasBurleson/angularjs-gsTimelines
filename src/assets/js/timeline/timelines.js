@@ -37,6 +37,7 @@
         .service(  '$$gsStates',  TimelineStates  )
         .directive('gsTimeline',  TimelineDirective )
         .directive('gsStep',      StepDirective )
+        .directive('gsPause',     PauseDirective )
         .directive('gsScale',     ScaleDirective);
 
 
@@ -102,9 +103,9 @@
             // Watch for state changes and fire the associated timeline
 
             var unwatch = parent.$watch('state', function(current, previous){
+                if ( state   === ""        ) return;
                 if ( current === previous  ) return;
                 if ( current === undefined ) return;
-                if ( state   === ""        ) return;
 
                 $rootScope.$evalAsync(function(){
                     var shouldReverse = isReversal(current);
@@ -247,18 +248,18 @@
 
             source.steps.forEach(function(step, index) {
                 var element     = querySelector( step.target );
-
+                var callback    = keyValue(step, "callback", null );
                 var position    = keyValue(step, "position", "");
                 var frameLabel  = keyValue(step, "markPosition");
-                var styles      = toJSON(keyValue(step, "style"));
+                var styles      = toJSON(updateZIndex(keyValue(step, "style" )));
                 var duration    = getDuration(step, styles);
 
-                styles = updateEasing(updateBounds( styles ))
+                styles = updateEasing(updateBounds( styles ));
 
-                if ( frameLabel )     timeline.addLabel( frameLabel );
-                if ( duration !== 0 ) timeline.to(element,  +duration, styles,  position );
-                else                  timeline.set(element, styles );
-
+                if ( callback )             timeline.addPause( position, callback, [timeline] );
+                else if ( frameLabel )      timeline.addLabel( frameLabel, position );
+                else if ( duration !== 0 )  timeline.to(element,  +duration, styles,  position );
+                else                        timeline.set(element, styles );
             });
 
             source.children.forEach(function(it){
@@ -290,6 +291,15 @@
             }
 
             return duration;
+        }
+
+        /**
+         * Pre-toJSON scan for `z-index`; which is not a valid JSON.
+         * Replace with `zIndex` key words.
+         * @param styles
+         */
+        function updateZIndex(styles) {
+            return angular.isString(styles)? styles.replace(/z-index/g,"zIndex") : styles;
         }
 
         /**
@@ -447,9 +457,10 @@
             debounce       = $debounce( $timeout ),
             parentCntrl    = $element.parent().controller('timeline');
 
-        self.addStep         = onStepChanged;  // Used by StepDirective
-        self.addChild        = onAddTimeline;  // Used by TimelineDirective
-        self.addResolve      = onAddResolve;   // Used by TimelineDirective
+        self.addStep       = onStepChanged;  // Used by StepDirective
+        self.addCallback   = onAddCallback;  // Used by PauseDirectives
+        self.addChild      = onAddTimeline;  // Used by TimelineDirective
+        self.addResolve    = onAddResolve;   // Used by TimelineDirective
 
         // Rebuild when the timeScale changes..
         $scope.$watch('timeScale', function(current,previous) {
@@ -584,6 +595,43 @@
             }
         }
 
+        /**
+         * Add a special step that will pause the timeline progress
+         * until the callback finishes or resolves.
+         *
+         * @param fn Function created in the `gs-pause` Directive
+         * @param position
+         */
+        function onAddCallback(fn, position) {
+
+            self.addStep({
+                callback : wrapCallback(fn),
+                position : position,
+                params   : ["{self}"]
+            });
+
+            /**
+             * Create wrapper function that will pause the timeline
+             * while the callback is in-progress, then resume once
+             * the callback finishes. If a promise is returned, then
+             * the promise must be resolved before the timeline will continue
+             *
+             * @param fn
+             * @returns {Function}
+             */
+            function wrapCallback(fn) {
+                return function (tl) {
+
+                    $q.when( fn() )
+                      .then( function() {
+                          tl.resume();
+                      });
+
+                }
+            }
+
+        }
+
     }
 
 
@@ -700,6 +748,41 @@
         };
     }
 
+    /**
+     * @ngdoc directive
+     * Step Directive
+     *
+     * Steps can only be defined as children of a Timeline. Steps are used to label frames, set styles,
+     * or animate 1..n sets of properties for a specific duration.
+     *
+     * @returns {{restrict: string, scope: {style: string, duration: string, position: string, markPosition: string, clazz: string}, require: string[], link: LinkStepDirective}}
+     * @constructor
+     *
+     * @example:
+     *
+     *      <gs-step  className=""
+     *                duration="0.3"
+     *                position="0.1"
+     *                style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" >
+     *      </gs-step>
+     */
+    function PauseDirective() {
+        return {
+            restrict : "E",
+            scope : {
+                resolve  : "&",
+                position : "@"
+            },
+            require : "^gsTimeline",
+            link : function LinkStepDirective(scope, element, attr, ctrl) {
+
+                ctrl.addCallback(scope.resolve, scope.position );
+
+            }
+        };
+
+
+    }
 
     /**
      * @ngdoc directive

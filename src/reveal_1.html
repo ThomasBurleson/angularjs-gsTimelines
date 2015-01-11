@@ -26,8 +26,10 @@
         </div>
 
 
+
         <gs-timeline state="zoom" time-scale="{{ timeScale }}" >
 
+            <gs-step target="#nowPlaying"   style="z-index:100;"                                                            ></gs-step>
             <gs-step target="#circle"       style="display:block;scale:1.2;opacity:0"                                       ></gs-step>
             <gs-step target="#album"        style="left:-400;top:-400;"                                                     ></gs-step>
 
@@ -36,11 +38,11 @@
             <gs-step target="#album"        style="bounds:{{ album.from }}"                                                 ></gs-step>
             <gs-step target="#details"      style="display:block;"                                                          ></gs-step>
             <gs-step target="#album"        style="display:block;"                                                          ></gs-step>
-            <gs-step target="#nowPlaying"   style="z-index:100;"                                                            ></gs-step>
 
             <gs-step mark-position="start"                                                           position="0.08"        ></gs-step>
 
-            <gs-step target="#nowPlaying"   style="z-index:100; top:602"           duration="0.2"                           ></gs-step>
+            <gs-step target="#nowPlaying"   style="z-index:100; top:602"           duration="0.2"    position="start"       ></gs-step>
+
             <gs-step target="#playlist"     style="display:none;"                                    position="start"       ></gs-step>
             <gs-step target="#circle"       style="opacity:1;"                     duration="0.01"   position="start"       ></gs-step>
             <gs-step target="#status"       style="opacity:1"                      duration="0.8"    position="start"       ></gs-step>

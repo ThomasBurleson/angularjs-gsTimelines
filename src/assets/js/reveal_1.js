@@ -23,6 +23,7 @@
         $scope.album       = catalog[0];
         $scope.showDetails = showDetails;
         $scope.hideDetails = hideDetails;
+        $scope.confirmContinue = confirmContinue;
 
         enableAutoClose();
 
@@ -79,6 +80,24 @@
             $scope.state = "-" + state;
 
             return request.promise;
+        }
+
+        function confirmContinue()
+        {
+            $log.debug("RevealController::confirmContinue()");
+
+            var deferred = $q.defer();
+
+            $timeout(function() {
+
+                $log.debug("RevealController::confirmContinue() - confirmed");
+                deferred.resolve( true );
+
+            },3000, false);
+
+
+            return deferred.promise;
+
         }
 
 
