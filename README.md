@@ -68,21 +68,18 @@ We can this express this same transition as an HTML-based DSL:
 <body ng-app="kodaline">
 
  <!-- Animation DSL -->
-
- <timeline state="zoom"
-          time-scale="1"
-          resolve="preloadImages(source)" >
+ <timeline state="zoom" time-scale="1" resolve="preloadImages(source)" >
     <timeline target="#mask" position="">
-      <step                                          style="z-index:90;" class="" />
+      <step                                          style="z-index:90;" />
       <step duration="0.5"                           style="opacity:0.8;" position="300" />
     </timeline>
     <timeline target="#details" position="">
-      <step                                          style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" class="" />
+      <step                                          style="opacity:1; bounds:{{source.from}};"/>
       <step                                          style="left:0; height:210; width:323;" duration="0.3"  />
       <step mark-position="fullWidth"/>
       <step                                          style="top:18; height:512" duration="300" position="fullWidth-=0.3"/>
       <step mark-position="slideIn"/>
-      <step target="#details > #green"               style="z-index:92; opacity:1; top:21;" class="" />
+      <step target="#details > #green"               style="z-index:92; opacity:1; top:21;" />
       <step target="#details > #green"               style="top:0;" />
       <step target="#details > #title"               style="height:131;"  duration="200" position="fullWidth" />
       <step target="#details > #info"                style="height:56;"   duration="0.6" position="fullWidth+=0.2" />
