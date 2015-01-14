@@ -3,7 +3,7 @@
 
     /**
      * AngularJS-GSAP Timeline module that supports a custom DSL for
-     * animation definitions using Greensock's TimelineLite API.
+     * animation definitions using Greensock's TimelineMax API.
      *
      * NOTE: Currently this module has some dependencies upon jQuery() features
      *       in querySelector()...
@@ -139,7 +139,7 @@
     /**
      * @ngdoc service
      *
-     * Service to build a GSAP TimelineLite instance based on <gs-timeline> and nested <gs-step>
+     * Service to build a GSAP TimelineMax instance based on <gs-timeline> and nested <gs-step>
      * directive settings...
      */
     function TimelineBuilder( $log, $q  ) {
@@ -166,7 +166,7 @@
                         });
                     }
 
-                    // publish/provide the TimelineLite instance
+                    // publish/provide the TimelineMax instance
                     return tl;
                 }
             },
@@ -226,18 +226,18 @@
         // ******************************************************************
 
         /**
-         * Make or update a TimelineLite instance
+         * Make or update a TimelineMax instance
          *
          * @param source TimelineController
          * @param flushTargets Boolean to rebuild the query selectors
-         * @returns {*} GSAP TimelineLite instance
+         * @returns {*} GSAP TimelineMax instance
          */
         function makeTimeline(source, flushTargets) {
             source  = source || { steps:[ ], children: [ ] };
             targets = flushTargets ? { } : targets;
 
             var querySelector = makeQuery( source,  targets );
-            var timeline = source.timeline || new TimelineLite({paused: true, data: {id: source.id || counter++ }});
+            var timeline = source.timeline || new TimelineMax({paused: true, data: {id: source.id || counter++ }});
 
                 timeline.clear(true).timeScale( source.timeScale || 1.0 );
                 timeline.data.id = source.id || timeline.data.id;
@@ -249,17 +249,18 @@
             source.steps.forEach(function(step, index) {
                 var element     = querySelector( step.target );
                 var callback    = keyValue(step, "callback", null );
-                var position    = keyValue(step, "position", "");
+                var position    = keyValue(step, "position", null );
                 var frameLabel  = keyValue(step, "markPosition");
                 var styles      = toJSON(updateZIndex(keyValue(step, "style" )));
                 var duration    = getDuration(step, styles);
 
                 styles = updateEasing(updateBounds( styles ));
 
-                if ( callback )             timeline.addPause( position, callback, [timeline] );
-                else if ( frameLabel )      timeline.addLabel( frameLabel, position );
-                else if ( duration !== 0 )  timeline.to(element,  +duration, styles,  position );
-                else                        timeline.set(element, styles );
+                if ( callback )                 timeline.addPause( position, callback, [timeline] );
+                else if ( frameLabel )          timeline.addLabel( frameLabel, position );
+                else if ( duration === 0 )      timeline.set(element, styles);
+                else if ( useTweenMax(styles) ) timeline.add( TweenMax.to(element, duration,  styles), position )
+                else                            timeline.to(element,  +duration, styles,  position || timeline.totalDuration() );
             });
 
             source.children.forEach(function(it){
@@ -291,6 +292,29 @@
             }
 
             return duration;
+        }
+
+        /**
+         * Some properties require the special powers
+         * of TweenMax instead of TweenLite...
+         *
+         * @param styles
+         * @returns {boolean|*}
+         */
+        function useTweenMax(styles){
+            var needTweenMax = false;
+
+            if (angular.isDefined(styles.yoyo) ) {
+                needTweenMax = true;
+                styles.yoyo = Boolean(styles.yoyo);
+            }
+
+            if (angular.isDefined(styles.repeat) ) {
+                needTweenMax = true;
+                styles.repeat = +styles.repeat;
+            }
+
+            return needTweenMax;
         }
 
         /**
@@ -510,7 +534,7 @@
                          timeline.kill();
                      }
 
-                     // Build or update the TimelineLite instance
+                     // Build or update the TimelineMax instance
                      timeline = $timeline.makeTimeline({
                          id       : $scope.id,
                          timeline : timeline,
@@ -541,7 +565,7 @@
         /**
          * Add a child timeline instance to this timeline parent
          *
-         * @param timeline Child TimelineLite instance
+         * @param timeline Child TimelineMax instance
          * @param position start offset in the parent timeline
          */
         function onAddTimeline(timeline, position) {
@@ -639,6 +663,12 @@
      * @ngdoc directive
      * Timeline Directive contains 0..n steps and 0..n child timelines
      *
+     * @param state String constant used to auto-trigger animation with the parent scope `state` matches
+     * @param timeScale Float value configures time scale of timeline instance
+     * @param target String element identifier of the fallback target element for each step
+     * @param resolve Expression that is evaluated before each timeline is ready to run
+     * @param position String identifier that specifies the position of this timeline within a parent timeline
+     *
      * @returns {{restrict: string, controller: string, link: Function}}
      * @constructor
      */
@@ -649,6 +679,10 @@
            restrict: "E",
            scope : {
             timeScale : "@?"
+            // state : "@?",
+            // target : "@?target",
+            // position : "@?position",
+            // resolve : "&?resolve",
            },
            controller : TimeLineController,
            link : function (scope, element, attr, controller )
@@ -737,13 +771,19 @@
                 style        : "@"
             },
             require : "^gsTimeline",
-            link : function LinkStepDirective(scope, element, attr, ctrl) {
+            compile : function compile(tElement, tAttrs, transclude) {
+                // Convert all commas to semi-colons (for later conversion to JSON)
+                if ( angular.isDefined(tAttrs.style) ) {
+                    tAttrs.style = tAttrs.style.replace(/,/g,";");
+                }
 
-                scope.target = attr.target;
-                scope.$watch('style', function onChangeStep() {
-                    ctrl.addStep(scope);
-                });
+                return function LinkStepDirective(scope, element, attr, ctrl) {
 
+                    scope.target = attr.target;
+                    scope.$watch('style', function onChangeStep() {
+                        ctrl.addStep(scope);
+                    });
+                }
             }
         };
     }
@@ -801,7 +841,7 @@
             link : function LinkStepDirective(scope, element, attr) {
                 var fixedScale = attr['gsScale'] ? parseFloat(attr['gsScale']) : NaN;
                 var isLocked   = !isNaN(fixedScale);
-                var timeline   = new TimelineLite();
+                var timeline   = new TimelineMax();
 
                 adjustScaling();
 
@@ -873,7 +913,7 @@
      * @param source
      * @param targets
      * @param $log
-     * @returns {*|TimelineLite}
+     * @returns {*|TimelineMax}
      */
     function logBuild( source, targets, $log ) {
         $log.debug( ">> TimelineBuilder::makeTimeline() invoked by $timeline('{data.id}')".supplant(source.timeline) );
