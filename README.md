@@ -120,7 +120,7 @@ This DSL is much more expressive and intuitive. For web designers tasked with an
 Instead of the typical separation of HTML layouts from animation logic (and element manipulation) in JavaScript, we can express both the UI and the UX transitions within the same UI layers of the client.
 
 *  More details on the Animation DLS can be found here: [Animation DSL](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)
-*  Source to the AngularJS-GSAP **gsTimeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
+*  Source to the AngularJS-GSAP **gsTimeline** features can be found here: [src/libs/angularjs-gsap/timelines.js](src/libs/angularjs-gsap/timelines.js)
 
 >Note: some of the parameters (eg. Line #69) support AngularJS interpolation symbols and data-binding. This is powerful feature over the javascript-approach... timelines will be automatically updated when scope variables are modified. This, in turn, means that the timeline can be applied to 1..n targets. In the case of Koda, the timeline is applied to any of the gridlist tiles.
 
