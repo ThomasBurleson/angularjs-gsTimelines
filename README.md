@@ -72,18 +72,11 @@ We can this express this same transition as an HTML-based DSL:
  <timeline state="zoom"
           time-scale="1"
           resolve="preloadImages(source)" >
-    <!-- timelines for #mask and #details run in parallel -->
-
     <timeline target="#mask" position="">
-
       <step                                          style="z-index:90;" class="" />
       <step duration="0.5"                           style="opacity:0.8;" position="300" />
-
     </timeline>
     <timeline target="#details" position="">
-
-      <!-- frame #details as overlay above thumbnail of tile `source` element -->
-
       <step                                          style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" class="" />
       <step                                          style="left:0; height:210; width:323;" duration="0.3"  />
       <step mark-position="fullWidth"/>
@@ -96,7 +89,6 @@ We can this express this same transition as an HTML-based DSL:
       <step target="#details > #title > div.content" style="opacity:1.0;" duration="500" position="fullWidth+=0.3" />
       <step target="#details > #pause"               style="opacity:0.8;" duration="800" position="fullWidth+=0.4" />
       <step target="#details > #info > div.content"  style="opacity:0;"   duration="0.4" position="fullWidth+=0.6" />
-
     </timeline>
  </timeline>
 
