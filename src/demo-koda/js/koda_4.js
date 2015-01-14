@@ -227,55 +227,55 @@
             {
                 className : "tile1",
                 from: {
-                    left:-1,
-                    top: 74,
-                    width: 162,
-                    height: 164
+                    left:0,
+                    top: 75,
+                    width: 161,
+                    height: 163
                 },
                 to  : { height : 216  },
                 aria : {
                     artist: "Kodaline In a perfect world"
                 },
-                thumbSrc: "./assets/images/koda/thumb_kodaline_v8.png",
-                albumSrc: "./assets/images/koda/album_kodaline.png",
+                thumbSrc: "./images/thumb_kodaline_v8.png",
+                albumSrc: "./images/album_kodaline.png",
                 title: "Kodaline",
 
-                titleSrc : "./assets/images/koda/title_kodaline.png",
-                infoSrc : "./assets/images/koda/info_kodaline.png"
+                titleSrc : "./images/title_kodaline.png",
+                infoSrc : "./images/info_kodaline.png"
             },
             {
                 className : "tile2",
                 from: {
                     left: 164,
-                    top: 74,
-                    width: 161,
+                    top: 75,
+                    width: 160,
                     height: 164
                 },
                 to  : { height : 216  },
                 aria : {
                     artist: "Moby Eighteen"
                 },
-                thumbSrc: "./assets/images/koda/thumb_moby_v8.png",
-                albumSrc : "./assets/images/koda/album_moby_v2.png",
-                titleSrc : "./assets/images/koda/title_moby.png",
-                infoSrc : "./assets/images/koda/info_moby.png"
+                thumbSrc: "./images/thumb_moby_v8.png",
+                albumSrc : "./images/album_moby_v2.png",
+                titleSrc : "./images/title_moby.png",
+                infoSrc : "./images/info_moby.png"
             },
             {
                 className : "tile3",
                 from: {
-                    left:-1,
-                    top: 240,
-                    width: 162,
-                    height: 162
+                    left:0,
+                    top: 241,
+                    width: 161,
+                    height: 161
                 },
                 to  : { height : 229  },
                 aria : {
                     artist: "Supermodel Foster the People"
                 },
-                thumbSrc: "./assets/images/koda/thumb_supermodel_v8.png",
-                albumSrc: "./assets/images/koda/album_supermodel.png",
-                titleSrc : "./assets/images/koda/title_supermodel.png",
-                infoSrc : "./assets/images/koda/info_supermodel.png"
+                thumbSrc: "./images/thumb_supermodel_v8.png",
+                albumSrc: "./images/album_supermodel.png",
+                titleSrc : "./images/title_supermodel.png",
+                infoSrc : "./images/info_supermodel.png"
 
             },
             {
@@ -290,10 +290,10 @@
                 aria : {
                     artist: "Ellie Goulding Halycon Days"
                 },
-                thumbSrc: "./assets/images/koda/thumb_goulding_v8.png",
-                albumSrc: "./assets/images/koda/album_goulding.png",
-                titleSrc : "./assets/images/koda/title_goulding.png",
-                infoSrc : "./assets/images/koda/info_goulding.png"
+                thumbSrc: "./images/thumb_goulding_v8.png",
+                albumSrc: "./images/album_goulding.png",
+                titleSrc : "./images/title_goulding.png",
+                infoSrc : "./images/info_goulding.png"
             },
             {
                 className : "tile5",
@@ -307,10 +307,10 @@
                 aria : {
                     artist: "Goyte ft. Kimbra Somebody that I used to know."
                 },
-                thumbSrc: "./assets/images/koda/thumb_goyte_v8.png",
-                albumSrc: "./assets/images/koda/album_goyte.png",
-                titleSrc : "./assets/images/koda/title_goyte.png",
-                infoSrc : "./assets/images/koda/info_goyte_v2.png"
+                thumbSrc: "./images/thumb_goyte_v8.png",
+                albumSrc: "./images/album_goyte.png",
+                titleSrc : "./images/title_goyte.png",
+                infoSrc : "./images/info_goyte_v2.png"
             },
             {
                 className : "tile6",
@@ -324,10 +324,10 @@
                 aria : {
                     artist: "Pharrell Williams GIRL"
                 },
-                thumbSrc: "./assets/images/koda/thumb_pharrell_v8.png",
-                albumSrc: "./assets/images/koda/album_pharrell.png",
-                titleSrc : "./assets/images/koda/title_pharrell.png",
-                infoSrc : "./assets/images/koda/info_pharrell.png"
+                thumbSrc: "./images/thumb_pharrell_v8.png",
+                albumSrc: "./images/album_pharrell.png",
+                titleSrc : "./images/title_pharrell.png",
+                infoSrc : "./images/info_pharrell.png"
             }
         ];
 
@@ -340,7 +340,7 @@
          * @constructor
          */
         function CDNify(items) {
-            var prefixLocal = "./assets/images/koda/";
+            var prefixLocal = "./images/";
             var prefixCDN   = "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline";
 
             items.forEach(function(it){

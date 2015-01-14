@@ -56,6 +56,7 @@ button:focus, button:hover {
 }
 
 #stage > div#green_status {
+    display:none;
     z-index: -15;
     top: 21px;
     width: 323px;
@@ -132,6 +133,7 @@ button:focus, button:hover {
     overflow: hidden;
     z-index: 100;
     cursor: zoom-out;
+    display:none;
 }
 
 #stage div#title {
@@ -189,6 +191,7 @@ button:focus, button:hover {
     top: 75px;
     width: 324px;
     height: 458px;
+    display:none;
 }
 
 #pause {

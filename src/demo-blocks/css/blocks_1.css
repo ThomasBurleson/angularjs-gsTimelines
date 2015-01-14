@@ -1,0 +1,33 @@
+body {
+    padding: 15px;
+}
+
+th {
+    width: 100px;
+}
+
+.block {
+    width: 100px;
+    height: 100px;
+    margin: 15px 0;
+
+    /* Helps Firefox with anti-aliasing */
+    outline: 1px solid transparent;
+}
+
+.orange {
+    background-color: orange;
+}
+
+.purple {
+    background-color: purple;
+}
+
+/* Prevent Bootstrap's fade class from messing with */
+/* the fade animation used in block.animation.js */
+.fade {
+    opacity: 1;
+    -webkit-transition: none;
+    -o-transition: none;
+    transition: none;
+}

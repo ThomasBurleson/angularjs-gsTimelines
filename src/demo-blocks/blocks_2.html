@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" />
+    <link rel="stylesheet" href="./css/blocks.css">
+</head>
+
+<body>
+
+<div ng-app="AnimationChainsApp" ng-controller="AnimationController">
+
+    <button class="btn btn-default" ng-click="animate()" ng-disabled="animating">
+        Start Animations
+    </button>
+    <button class="btn btn-default" ng-click="reset()" ng-disabled="animating">
+        Reset
+    </button>
+    <span style="padding-left:30px;">Duration = {{ elapsedTime }} msecs.</span>
+    <hr />
+
+    <status-table progress="progress.purple"></status-table>
+    <div class="block purple"></div>
+    <hr>
+
+    <status-table progress="progress.orange"></status-table>
+    <div class="block orange"></div>
+    <hr />
+
+    <p>
+        This Demo #2 Animation uses a custom $timeline Service with a animation data model.<br/>
+        <br/>
+        The controller uses `$timeline()` to lookup the animation, register callbacks and<br/>
+        The animation service $timeline creates the sequence chain.<br/>
+        <br/>
+        Pro:  Databinding is used to update the status-table details<br/>
+        Pro:  Directives know nothing about animations<br/>
+        <br/>
+        Con:  The process to build a sequence chain is hardcoded in the Service layer<br/>
+        Con:  The animation sequence details are hard-coded in the Service layer<br/>
+        <br/>
+    </p>
+
+
+</div>
+
+
+<!-- vendor -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.15.0/TweenMax.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+
+<!-- app -->
+
+<script type="text/javascript" src="../libs/angularjs-gsap/supplant.js"></script>
+<script type="text/javascript" src="./js/blocks_2.js"></script>
+<script type="text/javascript" src="./js/statusTable.js"></script>
+</body>
+</html>

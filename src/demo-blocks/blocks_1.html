@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" />
+    <link rel="stylesheet" href="./css/blocks_1.css" />
+</head>
+
+<body>
+
+<div ng-controller="MainController as vm">
+
+    <button class="btn btn-default" ng-click="vm.animate()" ng-disabled="vm.status.running">
+        Start Animations
+    </button>
+    <button class="btn btn-default" ng-click="vm.reset()" ng-disabled="vm.status.running">
+        Reset
+    </button>
+    <hr />
+
+    <animation-status animations="vm.purpleBlock"></animation-status>
+    <purple-block status="vm.status"></purple-block>
+    <hr>
+
+    <animation-status animations="vm.orangeBlock"></animation-status>
+    <orange-block></orange-block>
+    <hr />
+
+    <p>
+        This Demo #1 Animation uses ngAnimate and `addClass` callbacks to run custom TweenMax transitions.<br/>
+        <br/>
+        The block directives must add or remove classes use `$animate.addClass`.<br/>
+        The `block` directives also use $q.all() to create the sequence chain.<br/>
+        The `.animation(".block", blockAnimations)` use TweenMax in the Services layer to specify the property transitions<br/>
+        <br/>
+        Con:  This animation is contained in the Directive layers of the app.<br/>
+        Con:  Directives add classes and trigger Services to custom animation callback code [registered with .animate()]<br/>
+        Con:  Complicated events are sent to update the Status table [using $emit()]
+        <br/>
+    </p>
+
+
+</div>
+
+<!-- vendor -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.15.0/TweenMax.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-animate.min.js"></script>
+
+<!-- app -->
+<script src="./js/blocks_1.js"></script>
+<script src="./js/blocks_1.directive.js"></script>
+<script src="./js/blocks_1.animations.js"></script>
+
+</body>
+</html>

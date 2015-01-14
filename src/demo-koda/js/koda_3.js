@@ -111,10 +111,10 @@
          */
         function updateBounds(tile, $event) {
             if ( $event && $event.currentTarget ) {
-                tile.from.left   = $event.currentTarget.offsetLeft + 1;
-                tile.from.top    = $event.currentTarget.offsetTop + 1;
-                tile.from.width  = $event.currentTarget.offsetWidth - 1;
-                tile.from.height = $event.currentTarget.offsetHeight - 1;
+                tile.from.left   = $event.currentTarget.offsetLeft;
+                tile.from.top    = $event.currentTarget.offsetTop;
+                tile.from.width  = $event.currentTarget.offsetWidth;
+                tile.from.height = $event.currentTarget.offsetHeight;
             }
             return tile;
         }
@@ -225,74 +225,74 @@
                 className : "tile1",
                 from: {               },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_kodaline_v3.png",
-                albumSrc: "./assets/images/koda/album_kodaline.png",
-                titleSrc : "./assets/images/koda/title_kodaline.png",
-                infoSrc : "./assets/images/koda/info_kodaline.png"
+                thumbSrc: "./images/thumb_kodaline_v3.png",
+                albumSrc: "./images/album_kodaline.png",
+                titleSrc : "./images/title_kodaline.png",
+                infoSrc : "./images/info_kodaline.png"
             },
             {
                 className : "tile2",
                 from: {               },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_moby_v3.png",
-                albumSrc : "./assets/images/koda/album_moby_v2.png",
-                titleSrc : "./assets/images/koda/title_moby.png",
-                infoSrc : "./assets/images/koda/info_moby.png"
+                thumbSrc: "./images/thumb_moby_v3.png",
+                albumSrc : "./images/album_moby_v2.png",
+                titleSrc : "./images/title_moby.png",
+                infoSrc : "./images/info_moby.png"
             },
             {
                 className : "tile3",
                 from: {               },
                 to  : { height : 229  },
-                thumbSrc: "./assets/images/koda/thumb_supermodel.png",
-                albumSrc: "./assets/images/koda/album_supermodel.png",
-                titleSrc : "./assets/images/koda/title_supermodel.png",
-                infoSrc : "./assets/images/koda/info_supermodel.png"
+                thumbSrc: "./images/thumb_supermodel.png",
+                albumSrc: "./images/album_supermodel.png",
+                titleSrc : "./images/title_supermodel.png",
+                infoSrc : "./images/info_supermodel.png"
 
             },
             {
                 className : "tile4",
                 from: {               },
                 to  : { height : 229  },
-                thumbSrc: "./assets/images/koda/thumb_goulding.png",
-                albumSrc: "./assets/images/koda/album_goulding.png",
-                titleSrc : "./assets/images/koda/title_goulding.png",
-                infoSrc : "./assets/images/koda/info_goulding.png"
+                thumbSrc: "./images/thumb_goulding.png",
+                albumSrc: "./images/album_goulding.png",
+                titleSrc : "./images/title_goulding.png",
+                infoSrc : "./images/info_goulding.png"
             },
             {
                 from: {               },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_kodaline_v3.png",
-                albumSrc: "./assets/images/koda/album_kodaline.png",
-                titleSrc : "./assets/images/koda/title_kodaline.png",
-                infoSrc : "./assets/images/koda/info_kodaline.png"
+                thumbSrc: "./images/thumb_kodaline_v3.png",
+                albumSrc: "./images/album_kodaline.png",
+                titleSrc : "./images/title_kodaline.png",
+                infoSrc : "./images/info_kodaline.png"
             },
             {
                 className : "tile5",
                 from: {
                     left:0,
-                    top: 404,
+                    top: 402,
                     width: 162,
-                    height: 162
+                    height: 163
                 },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_goyte.png",
-                albumSrc: "./assets/images/koda/album_goyte.png",
-                titleSrc : "./assets/images/koda/title_goyte.png",
-                infoSrc : "./assets/images/koda/info_goyte_v2.png"
+                thumbSrc: "./images/thumb_goyte.png",
+                albumSrc: "./images/album_goyte.png",
+                titleSrc : "./images/title_goyte.png",
+                infoSrc : "./images/info_goyte_v2.png"
             },
             {
                 className : "tile6",
                 from: {
                     left: 164,
-                    top: 404,
+                    top: 403,
                     width: 162,
-                    height: 162
+                    height: 163
                 },
                 to  : { height : 216  },
-                thumbSrc: "./assets/images/koda/thumb_pharrell.png",
-                albumSrc: "./assets/images/koda/album_pharrell.png",
-                titleSrc : "./assets/images/koda/title_pharrell.png",
-                infoSrc : "./assets/images/koda/info_pharrell.png"
+                thumbSrc: "./images/thumb_pharrell.png",
+                albumSrc: "./images/album_pharrell.png",
+                titleSrc : "./images/title_pharrell.png",
+                infoSrc : "./images/info_pharrell.png"
             }
         ];
 
@@ -305,7 +305,7 @@
          * @constructor
          */
         function CDNify(items) {
-            var prefixLocal = "./assets/images/koda/";
+            var prefixLocal = "./images/";
             var prefixCDN   = "http://solutionoptimist-bucket.s3.amazonaws.com/kodaline";
 
             items.forEach(function(it){

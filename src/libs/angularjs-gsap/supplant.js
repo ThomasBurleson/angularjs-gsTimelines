@@ -1,9 +1,5 @@
 /**
- * @author      Thomas Burleson
- * @date        November, 2013
- * @description
- *
- *  String supplant global utility (similar to but more powerful than sprintf() ).
+ *  String Supplant global utility (similar to but more powerful than sprintf() ).
  *
  *  Usages:
  *
@@ -21,6 +17,8 @@
  *          },
  *          message = "Hello Mr. {first} {last}. How's life in {address.city}, {address.state} ?";
  *
+ *
+ *     // return message.supplant(user);
  *     return supplant( message, user );
  *
  *
