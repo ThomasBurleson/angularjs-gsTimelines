@@ -65,7 +65,7 @@ We can this express this same transition as an HTML-based DSL:
 ```xml
 <!-- AngularJS Koda SPA  -->
 
-<body ng-app="kodaline">
+<body ng-app="kodaline" ng-controller="TimelineController" >
 
  <!-- Animation DSL -->
  <timeline state="zoom" time-scale="1" resolve="preloadImages(source)" >
@@ -91,7 +91,7 @@ We can this express this same transition as an HTML-based DSL:
 
  <!-- UI View Elements --> 
 
- <div id="stage" ng-controller="TimelineController" >
+ <div id="stage">
 
     <!-- Tile Grid View -->
     <div id="status" class="status"></div>
