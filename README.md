@@ -174,9 +174,9 @@ Here are some quick links to source or demos for the experiments:
 
 | Description | HTML | Javascript | Live Demos |
 |--------|--------|--------|--------|
-| Use **ngAnimate** with TweenMax | [block_1.html](src/demo-blocks/block_1.html) |  [block_1.js](src/demo-blocks/js/block_1.js) | [Plunkr #1](http://plnkr.co/edit/6c0ggc?p=preview) |
-| Use custom Animation services layer  | [block_2.html](src/demo-blocks/block_2.html) |  [block_2.js](src/demo-blocks/js/block_2.js) | [CodePen #2](http://codepen.io/ThomasBurleson/pen/jEyjrd) |
-| Use gsTimeline **$timeline()** with DSL  | [block_3.html](src/demo-blocks/block_3.html) |  [block_3.js](src/demo-blocks/js/block_3.js) |  |
+| Use **ngAnimate** with TweenMax | [block_1.html](src/demo-blocks/blocks_1.html) |  [block_1.js](src/demo-blocks/js/blocks_1.js) | [Plunkr #1](http://plnkr.co/edit/6c0ggc?p=preview) |
+| Use custom Animation services layer  | [block_2.html](src/demo-blocks/blocks_2.html) |  [block_2.js](src/demo-blocks/js/blocks_2.js) | [CodePen #2](http://codepen.io/ThomasBurleson/pen/jEyjrd) |
+| Use gsTimeline **$timeline()** with DSL  | [block_3.html](src/demo-blocks/blocks_3.html) |  [block_3.js](src/demo-blocks/js/blocks_3.js) |  |
 
 ![Block Animations](https://cloud.githubusercontent.com/assets/210413/5734299/2f3a3c24-9b78-11e4-928a-6edbf014ca49.jpg)
 <br/>
