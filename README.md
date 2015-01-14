@@ -168,16 +168,27 @@ $scope.selectedTile = selectedTile;
 
 #### Koda with GreenSock GSAP 
 
-Use Greensock's (**GSAP**) `TimelineLite` within a Gridlist application and demonstrate the use of animation timelines to build complex transitions. Here are some quick links to source or demos for the experiments:
+Use Greensock's (**GSAP**) `TimelineMax` within a Gridlist application and demonstrate the use of animation timelines to build complex transitions. 
+
+Here are some quick links to source or demos for the experiments:
 
 | Description | HTML | Javascript | Live Demos |
 |--------|--------|--------|--------|
-| jQuery app with click animation | [koda_1.html](src/koda_1.html) |  [koda_1.js](src/assets/js/koda_1.js) | [CodePen #1](http://codepen.io/ThomasBurleson/pen/OPMgqj) |
-| AngularJS app with Timeline slider controls | [koda_2.html](src/koda_2.html) |  [koda_2.js](src/assets/js/koda_2.js) | [CodePen #2](http://codepen.io/ThomasBurleson/pen/ByKVGg)  |
-| AngularJS app with DSL |  [koda_3.html](src/koda_3.html#L14) |  [koda_3.js](src/assets/js/koda_3.js#L75-83) |  |
-| AngularJS app with DSL & States |  [koda_4.html](src/koda_4.html#L15) |  [koda_4.js](src/assets/js/koda_4.js#L52-53) | [CodePen #4](http://codepen.io/ThomasBurleson/pen/jEVyjr/?editors=101)  |
-| DSL for Explode-Reveal |  [reveal_1.html](src/reveal_1.html) |  [reveal_1.js](src/assets/js/reveal_1.js) | [CodePen #5](http://codepen.io/ThomasBurleson/pen/KwNoNP?editors=100)  |
+| Use **ngAnimate** with TweenMax | [block_1.html](src/demo-blocks/block_1.html) |  [block_1.js](src/demo-blocks/js/block_1.js) | [Plunkr #1](http://plnkr.co/edit/6c0ggc?p=preview) |
+| Use custom Animation services layer  | [block_2.html](src/demo-blocks/block_2.html) |  [block_2.js](src/demo-blocks/js/block_2.js) | [CodePen #2](http://codepen.io/ThomasBurleson/pen/jEyjrd) |
+| Use gsTimeline **$timeline()** with DSL  | [block_3.html](src/demo-blocks/block_3.html) |  [block_3.js](src/demo-blocks/js/block_3.js) |  |
+
+![Block Animations](https://cloud.githubusercontent.com/assets/210413/5734299/2f3a3c24-9b78-11e4-928a-6edbf014ca49.jpg)
 <br/>
+<br/>
+
+| Description | HTML | Javascript | Live Demos |
+|--------|--------|--------|--------|
+| jQuery app with click animation | [koda_1.html](src/demo-koda/koda_1.html) |  [koda_1.js](src/demo-koda/js/koda_1.js) | [CodePen #1](http://codepen.io/ThomasBurleson/pen/OPMgqj) |
+| AngularJS app with Timeline slider controls | [koda_2.html](src/demo-koda/koda_2.html) |  [koda_2.js](src/demo-koda/js/koda_2.js) | [CodePen #2](http://codepen.io/ThomasBurleson/pen/ByKVGg)  |
+| AngularJS app with DSL |  [koda_3.html](src/demo-koda/koda_3.html#L14) |  [koda_3.js](src/demo-koda/js/koda_3.js#L75-83) |  |
+| AngularJS app with DSL & States |  [koda_4.html](src/demo-koda/koda_4.html#L15) |  [koda_4.js](src/demo-koda/js/koda_4.js#L52-53) | [CodePen #4](http://codepen.io/ThomasBurleson/pen/jEVyjr/?editors=101)  |
+| DSL for Explode-Reveal |  [reveal_1.html](src/demo-reveal/reveal_1.html) |  [reveal_1.js](src/demo-reveal/js/reveal_1.js) | [CodePen #5](http://codepen.io/ThomasBurleson/pen/KwNoNP?editors=100)  |
 ![dsl_codepen_2](https://cloud.githubusercontent.com/assets/210413/5424494/e88af0e0-82b6-11e4-9164-3b7af111037f.jpg)
 
 ---
