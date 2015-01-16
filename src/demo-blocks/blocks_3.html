@@ -10,25 +10,29 @@
 
 <div ng-app="AnimationChainsApp" ng-controller="AnimationController">
 
-    <gs-timeline id="purple" target="div.block.purple" >
-        <gs-step target="#btnReset"  style="opacity:0"                                   ></gs-step>
+    <gs-timeline id="main">
+        <gs-timeline id="purple" target="div.block.purple" >
+            <gs-step target="#btnReset"  style="opacity:0"                                   ></gs-step>
 
-        <gs-step style="autoAlpha:1, scale:1, rotation:0, x:0"                           ></gs-step>
-        <gs-step style="repeat:1, yoyo:true, x:400"                      duration="1.0"  ></gs-step>
-        <gs-step style="delay:0.03, rotation:180"                        duration="1.0"  ></gs-step>
-        <gs-step style="delay:0.03, scaleX:2, x:50"                      duration="1.0"  ></gs-step>
-        <gs-step style="delay:0.03, autoAlpha:0.2, scaleX:1, scaleY:0.5" duration="1.0"  ></gs-step>
+            <gs-step style="autoAlpha:1, scale:1, rotation:0, x:0"                           ></gs-step>
+            <gs-step style="rotation:0"                                                      ></gs-step>
+            <gs-step style="repeat:1, yoyo:true, x:400"                      duration="1.0"  ></gs-step>
+            <gs-step style="delay:0.03, rotation:180"                        duration="1.0"  ></gs-step>
+            <gs-step style="delay:0.03, scaleX:2, x:50"                      duration="1.0"  ></gs-step>
+            <gs-step style="delay:0.03, autoAlpha:0.2, scaleX:1, scaleY:0.5" duration="1.0"  ></gs-step>
 
-        <gs-step target="#btnReset"  style="opacity:1"                        duration="1.0"  ></gs-step>
-    </gs-timeline>
-    <gs-timeline id="orange" target="div.block.orange" >
-        <gs-step target="#btnReset"  style="opacity:0"                                   ></gs-step>
+            <gs-step target="#btnReset"  style="opacity:1"                        duration="1.0"  ></gs-step>
+        </gs-timeline>
+        <gs-timeline id="orange" target="div.block.orange" position="1.0">
+            <gs-step target="#btnReset"  style="opacity:0"                                   ></gs-step>
 
-        <gs-step style="autoAlpha:1, scale:1, rotation:0, x:0"                           ></gs-step>
-        <gs-step style="repeat:1, yoyo:true, x:400"                      duration="1.0"  ></gs-step>
-        <gs-step style="delay:0.03, rotation:180"                        duration="1.0"  ></gs-step>
-        <gs-step style="delay:0.03, scaleX:2, x:50"                      duration="1.0"  ></gs-step>
-        <gs-step style="delay:0.03, autoAlpha:0.2, scaleX:1, scaleY:0.5" duration="1.0"  ></gs-step>
+            <gs-step style="autoAlpha:1, scale:1, rotation:0, x:0"                           ></gs-step>
+            <gs-step style="rotation:0"                                                      ></gs-step>
+            <gs-step style="repeat:1, yoyo:true, x:400"                      duration="1.0"  ></gs-step>
+            <gs-step style="delay:0.03, rotation:180"                        duration="1.0"  ></gs-step>
+            <gs-step style="delay:0.03, scaleX:2, x:50"                      duration="1.0"  ></gs-step>
+            <gs-step style="delay:0.03, autoAlpha:0.2, scaleX:1, scaleY:0.5" duration="1.0"  ></gs-step>
+        </gs-timeline>
     </gs-timeline>
 
 
@@ -41,11 +45,9 @@
     <span style="padding-left:30px;">Duration = {{ elapsedTime }} msecs.</span>
     <hr />
 
-    <status-table progress="progress.purple"></status-table>
-    <div class="block purple"></div>
-    <hr>
+    <status-table progress="progress.main"></status-table>
 
-    <status-table progress="progress.orange"></status-table>
+    <div class="block purple"></div>
     <div class="block orange"></div>
     <hr />
 

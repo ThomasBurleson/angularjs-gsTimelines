@@ -2,7 +2,7 @@
   "use strict";
 
   angular
-    .module("AnimationChainsApp", ['gsTimelines','ng' ])
+    .module("AnimationChainsApp", [ 'ng', 'gsTimelines' ])
     .controller("AnimationController", AnimationController );
 
 
@@ -12,10 +12,16 @@
    * @param $timeline
    * @constructor
    */
-  function AnimationController($scope, $timeline, $timeout, $q, $log) {
+  function AnimationController($scope, $timeline, $log) {
+    var progress = {
+      main   : {
+        start : "--",
+        done: "--"
+      }
+    };
 
     $scope.animating = false;
-    $scope.progress  = init();
+    $scope.progress  = angular.extend({}, progress);
 
     $scope.animate   = startAnimation;
     $scope.reset     = resetAnimations;
@@ -32,108 +38,56 @@
             animation.progress(0).pause();
           };
 
-        $scope.progress = init();
         $scope.elapsedTime = "";
+        $scope.progress = angular.extend({}, progress);
 
-        $timeline("purple").then( gotoStart );
-        $timeline("orange").then( gotoStart );
+        $timeline("main").then( gotoStart );
     }
 
     /**
      * Start animation sequences
      */
     function startAnimation()  {
-      var startedAt = Date.now();
-      var onReady = function(animation){
-            $log.debug("startAnimation( '{data.id}' )".supplant(animation) );
-            animation.restart();
-          };
 
-      $scope.animating=true;
       $scope.reset();
+      $scope.animating=true;
 
+      $timeline( "main", callbacks() ).then( function(animation) {
+        var message = "AnimationController::start( restarting '{data.id}' )";
+        $log.debug(message.supplant(animation));
 
-      $q.all([
-
-        startChain("orange", onReady, 0),
-        startChain("purple", onReady, 1000)
-
-      ]).then( function(animation){
-
-        // When all done...
-        $scope.animating=false;
-        $scope.elapsedTime = (Date.now() - startedAt);
-
+        animation.restart();
       });
-    }
 
-    /**
-     * Macro to create a promise wrapper around process:
-     * 1) Lookup timeline animation,
-     * 2) register callbacks,
-     * 3) call the readyFn to start the animations...
-     * 4) return promise when the animation is done
-     *
-     * NOTE: Start can delayed by `delay` msecs
-     *
-     * @param name
-     * @param readyFn
-     * @param delay
-     * @returns {*}
-     */
-    function startChain(name, readyFn, delay) {
-      var deferred = $q.defer();
-      var whenDone = function( tl ) { deferred.resolve( tl ); };
-
-        $timeout(function() {
-
-          return $timeline( name, makeCallbacks(name, whenDone) ).then( readyFn);
-
-        }, delay||0, false);
-
-      return deferred.promise;
-    }
-
-
-
-    /**
-     * Initialize a `progress` structure
-     * @returns {{purple: (void|Object|*), orange: (void|Object|*)}}
-     */
-    function init() {
-      var steps = {move : "--", rotate: "--", scale: "--", fade: "--"};
-
-      return {
-        purple : angular.extend({},steps),
-        orange : angular.extend({},steps)
-      };
     }
 
 
     /**
      * Create `onStart` and `onComplete` callbacks for
-     * each gs-timeline instance.
+     * the gs-timeline instance.
      *
      * @param id String timeline ID
      * @returns {{onStart: Function, onComplete: Function}}
      */
-    function makeCallbacks(id, done) {
-      done = done || angular.noop;
+    function callbacks() {
+      var id = "main";
+      var startedAt = Date.now();
 
       return {
         onStart    : function( ){
           $scope.$apply(function(){
             $log.debug("onStart( '{0}' )".supplant([id]) );
-            $scope.progress[id]["move"] = "running...";
+            $scope.progress[id]["start"] = "running...";
           });
         },
         onComplete : function( tl ){
           $log.debug("onComplete( '{0}' )".supplant([id]) );
           $scope.$apply(function(){
-            $scope.progress[id]["fade"] = "finished";
-          });
+            $scope.progress[id]["done"] = "finished";
 
-          done( tl );
+            $scope.animating=false;
+            $scope.elapsedTime = (Date.now() - startedAt);
+          });
         }
       }
 

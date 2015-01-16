@@ -1,5 +1,7 @@
-(function(globals){
+(function(window){
     "use strict";
+
+    String.supplant =  String["supplant"] || angular.noop;
 
     /**
      * AngularJS-GSAP Timeline module that supports a custom DSL for
@@ -246,7 +248,7 @@
             source.steps    = source.steps || [ ];
             source.children = source.children || [ ];
 
-            source.steps.forEach(function(step, index) {
+            source.steps.forEach(function( step ) {
                 var element     = querySelector( step.target );
                 var callback    = keyValue(step, "callback", null );
                 var position    = keyValue(step, "position", null );
@@ -259,16 +261,19 @@
                 if ( callback )                 timeline.addPause( position, callback, [timeline] );
                 else if ( frameLabel )          timeline.addLabel( frameLabel, position );
                 else if ( duration === 0 )      timeline.set(element, styles);
-                else if ( useTweenMax(styles) ) timeline.add( TweenMax.to(element, duration,  styles), position )
+                else if ( useTweenMax(styles) ) timeline.append( TweenMax.to(element, duration,  styles), position );
                 else                            timeline.to(element,  +duration, styles,  position || timeline.totalDuration() );
             });
 
             source.children.forEach(function(it){
-                if ( it.timeline ) {
-                    timeline.add(it.timeline, it.position);
+                var child   = it.timeline;
+                var position = keyValue(it, "position", null);
 
-                    // Unpause children timelines
-                    it.timeline.paused(false);
+                if ( child) {
+                    child.paused(false);    // Un-pause timelines when inserting in parent...
+
+                    if ( !position ) timeline.append(child);
+                    else             timeline.insert(child, position);
                 }
             });
 
@@ -345,10 +350,9 @@
         }
 
         /**
-         * Special lookup of the easing instance in the GSAP globals;
-         * used to replace the easing reference with an object instance
-         *
-         * @param styles
+         * Special lookup of the easing instance in the GSAP globals.
+         * This is used to replace the easing string property chain reference
+         * with an object instance
          */
         function updateEasing(styles) {
             var warning = 'TimelineBuilder::makeTimeline() - ignoring invalid easing `{0}` ';
@@ -357,7 +361,7 @@
 
             try {
                 if ( easing.length ) {
-                    var inst = globals;
+                    var inst = window;
                     var keys = easing.split(".");
 
                     keys.forEach(function(key){
@@ -472,14 +476,14 @@
      * @constructor
      */
     function TimeLineController($scope, $element, $q, $timeout, $timeline, $log) {
-        var self         = this,
-            timeline     = null,
-            children     = [ ],
-            steps        = [ ],
-            pendingRebuild = null,
-            bouncedRebuild = null,
-            debounce       = $debounce( $timeout ),
-            parentCntrl    = $element.parent().controller('timeline');
+        var self             = this,
+            timeline         = null,
+            children         = [ ],
+            steps            = [ ],
+            pendingRebuild   = null,
+            bouncedRebuild   = null,
+            debounce         = $debounce( $timeout ),
+            parentController = $element.parent().controller('gsTimeline');
 
         self.addStep       = onStepChanged;  // Used by StepDirective
         self.addCallback   = onAddCallback;  // Used by PauseDirectives
@@ -540,18 +544,19 @@
                          timeline : timeline,
                          steps    : steps,
                          children : children,
-                         target   : $scope.target,
+                         target   : findTimelineTarget(),
                          timeScale: +$scope.timeScale || 1.0
                      });
 
                      // Register for easy lookups later...
-                     // Add to parent as child timeline (if parent exists)
-
                      $timeline.register( timeline, $scope.id, $scope.state );
-                     parentCntrl && parentCntrl.addChild( timeline, +$scope.position  || 0.0 );
+
+                     // Add to parent as child timeline (if parent exists)
+                     if ( parentController ) {
+                         parentController.addChild( timeline, $scope.position );
+                     }
 
                      // Then resolve promise (for external requests)
-
                      delete $timeline.$$dirty;
                      pendingRebuild.resolve( timeline );
 
@@ -561,6 +566,39 @@
 
              }
         }
+
+        /**
+         * Scan up the parent controller chain to find the fallback
+         * target...
+         * @returns {*}
+         */
+        function findTimelineTarget() {
+            var target = $scope.target;
+            if ( !angular.isDefined(target) || (target == "") ) {
+
+                var parent = $element.parent();
+                var timelineCntrl = parent.controller('gsTimeline');
+
+                while ( timelineCntrl ) {
+
+                    if ( hasValidTarget(parent) ) {
+                        target = parent.attr("target");
+                        break;
+                    }
+
+                    parent = angular.element(parent.parent());
+                    timelineCntrl = parent.controller('gsTimeline');
+                }
+            }
+
+            return target;
+
+            function hasValidTarget(element) {
+                var target = element.attr("target");
+                return (angular.isDefined(target) && (target != ""));
+            }
+        }
+
 
         /**
          * Add a child timeline instance to this timeline parent
@@ -574,7 +612,7 @@
                 if ( children.indexOf(timeline) < 0 ) {
                     children.push({
                         timeline : timeline,
-                        position : +position
+                        position : position
                     });
                 }
             } finally {
@@ -684,6 +722,7 @@
             // position : "@?position",
             // resolve : "&?resolve",
            },
+           require : "^?gsTimeline",
            controller : TimeLineController,
            link : function (scope, element, attr, controller )
            {
@@ -697,7 +736,6 @@
 
                prepareResolve();
                prepareStateWatch();
-
 
                // ******************************************************************
                // Internal Methods
@@ -734,7 +772,7 @@
                            scope            : scope,
                            state            : attr.state,
                            controller       : controller,
-                           parentController : element.parent().controller('timeline')
+                           parentController : element.parent().controller('gsTimeline')
                        });
                    }
                }
@@ -918,7 +956,7 @@
     function logBuild( source, targets, $log ) {
         $log.debug( ">> TimelineBuilder::makeTimeline() invoked by $timeline('{data.id}')".supplant(source.timeline) );
 
-        source.steps.forEach(function(step, index) {
+        source.steps.forEach(function( step ) {
 
             var frameLabel  = keyValue(step, "markPosition");
             var position    = keyValue(step, "position", "");
@@ -934,7 +972,7 @@
 
         source.children.forEach(function(it){
             if ( it.timeline ) {
-                $log.debug( "add child timeline( '{data.id}' )".supplant(it) );
+                $log.debug( "$timeline('{0.data.id}').addChild( '{1.data.id}' )".supplant([source.timeline,  it.timeline]) );
             }
         });
 
