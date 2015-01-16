@@ -110,13 +110,13 @@
                 if ( current === undefined ) return;
 
                 $rootScope.$evalAsync(function(){
-                    var shouldReverse = isReversal(current);
+                    var shouldReverse = isStateReversal(current);
 
                     // Must use $timeline() to integrate the resolve processing...
                     $timeline(state).then( function(timeline){
 
                         // Pop special `-` reverse indicator (if present)
-                        current = stripReversal(current);
+                        current = stripStateReversal(current);
 
                         $log.debug( ">> TimelineStates::triggerTimeline( state = '{0}' )".supplant([current]) );
 
@@ -198,7 +198,7 @@
                 // Is this an implicit lookup?
 
                 if ( angular.isDefined(id) ){
-                    id = stripReversal(id);
+                    id = stripStateReversal(id);
 
                     var promise = hasState(id) ? findByState(id) : findById(id);
                     return promise
@@ -568,8 +568,8 @@
         }
 
         /**
-         * Scan up the parent controller chain to find the fallback
-         * target...
+         * Scan up the parent controller ancestor chain to find the fallback
+         * target, if it is not specified on the current scope.
          * @returns {*}
          */
         function findTimelineTarget() {
@@ -578,6 +578,8 @@
 
                 var parent = $element.parent();
                 var timelineCntrl = parent.controller('gsTimeline');
+                var isRoot = !timelineCntrl;
+
 
                 while ( timelineCntrl ) {
 
@@ -593,11 +595,17 @@
 
             return target;
 
+            /**
+             * Has the `target="<dom selector>"` attribute been specified?
+             * @param element
+             * @returns {boolean|*}
+             */
             function hasValidTarget(element) {
                 var target = element.attr("target");
                 return (angular.isDefined(target) && (target != ""));
             }
         }
+
 
 
         /**
@@ -693,7 +701,6 @@
             }
 
         }
-
     }
 
 
@@ -1015,6 +1022,7 @@
 
     /**
      * Convert markup styles to JSON style map
+     * supports nested object markup...
      * @param keyValues
      */
     function toJSON(style) {
@@ -1116,7 +1124,7 @@
      * @param state
      * @returns {boolean}
      */
-    function isReversal(state) {
+    function isStateReversal(state) {
         return (state[0] == "-");
     }
 
@@ -1127,7 +1135,7 @@
      * @param state String name of state to lookup
      * @returns {string}
      */
-    function stripReversal(state) {
+    function stripStateReversal(state) {
         return (state[0] == "-") ? state.substr(1) : state;
     }
 

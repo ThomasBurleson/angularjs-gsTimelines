@@ -16,12 +16,12 @@
 
             <gs-step style="autoAlpha:1, scale:1, rotation:0, x:0"                           ></gs-step>
             <gs-step style="rotation:0"                                                      ></gs-step>
-            <gs-step style="repeat:1, yoyo:true, x:400"                      duration="1.0"  ></gs-step>
+            <gs-step style="repeat:1,yoyo:true,x:400,ease:'Bounce.easeOut'"  duration="1.0"  ></gs-step>
             <gs-step style="delay:0.03, rotation:180"                        duration="1.0"  ></gs-step>
             <gs-step style="delay:0.03, scaleX:2, x:50"                      duration="1.0"  ></gs-step>
-            <gs-step style="delay:0.03, autoAlpha:0.2, scaleX:1, scaleY:0.5" duration="1.0"  ></gs-step>
+            <gs-step style="delay:0.03, autoAlpha:0.2,scaleX:1,scaleY:0.5;"  duration="1.0"  ></gs-step>
 
-            <gs-step target="#btnReset"  style="opacity:1"                        duration="1.0"  ></gs-step>
+            <gs-step target="#btnReset"  style="opacity:1"                   duration="1.0"  ></gs-step>
         </gs-timeline>
         <gs-timeline id="orange" target="div.block.orange" position="1.0">
             <gs-step target="#btnReset"  style="opacity:0"                                   ></gs-step>
