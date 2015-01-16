@@ -65,44 +65,33 @@ We can this express this same transition as an HTML-based DSL:
 ```xml
 <!-- AngularJS Koda SPA  -->
 
-<body ng-app="kodaline">
+<body ng-app="kodaline" ng-controller="TimelineController" >
 
  <!-- Animation DSL -->
-
- <timeline state="zoom"
-          time-scale="1"
-          resolve="preloadImages(source)" >
-    <!-- timelines for #mask and #details run in parallel -->
-
-    <timeline target="#mask" position="">
-
-      <step                                          style="z-index:90;" class="" />
-      <step duration="0.5"                           style="opacity:0.8;" position="300" />
-
+ <timeline state="zoom" time-scale="1" resolve="preloadImages(source)" >
+    <timeline>
+      <step target="#mask"                           style="z-index:90;" />
+      <step target="#mask"                           style="opacity:0.8;" position="300" duration="0.5"/>
     </timeline>
-    <timeline target="#details" position="">
-
-      <!-- frame #details as overlay above thumbnail of tile `source` element -->
-
-      <step                                          style="opacity:1; left:{{source.left}}; top:{{source.top}}; width:{{source.width}}; height:{{source.height}};" class="" />
-      <step                                          style="left:0; height:210; width:323;" duration="0.3"  />
+    <timeline>
+      <step target="#details"                        style="opacity:1; bounds:{{source.from}};"/>
+      <step target="#details"                        style="left:0; height:210; width:323;" duration="0.3"  />
       <step mark-position="fullWidth"/>
-      <step                                          style="top:18; height:512" duration="300" position="fullWidth-=0.3"/>
+      <step target="#details"                        style="top:18; height:512" duration="300" position="fullWidth-=0.3"/>
       <step mark-position="slideIn"/>
-      <step target="#details > #green"               style="z-index:92; opacity:1; top:21;" class="" />
+      <step target="#details > #green"               style="z-index:92; opacity:1; top:21;" />
       <step target="#details > #green"               style="top:0;" />
       <step target="#details > #title"               style="height:131;"  duration="200" position="fullWidth" />
       <step target="#details > #info"                style="height:56;"   duration="0.6" position="fullWidth+=0.2" />
       <step target="#details > #title > div.content" style="opacity:1.0;" duration="500" position="fullWidth+=0.3" />
       <step target="#details > #pause"               style="opacity:0.8;" duration="800" position="fullWidth+=0.4" />
       <step target="#details > #info > div.content"  style="opacity:0;"   duration="0.4" position="fullWidth+=0.6" />
-
     </timeline>
  </timeline>
 
  <!-- UI View Elements --> 
 
- <div id="stage" ng-controller="TimelineController" >
+ <div id="stage">
 
     <!-- Tile Grid View -->
     <div id="status" class="status"></div>
@@ -131,7 +120,7 @@ This DSL is much more expressive and intuitive. For web designers tasked with an
 Instead of the typical separation of HTML layouts from animation logic (and element manipulation) in JavaScript, we can express both the UI and the UX transitions within the same UI layers of the client.
 
 *  More details on the Animation DLS can be found here: [Animation DSL](https://github.com/ThomasBurleson/angularjs-animations-dsl/tree/master/docs/dsl)
-*  Source to the AngularJS-GSAP **gsTimeline** features can be found here: [src/assets/js/tools/timelines.js](src/assets/js/tools/timelines.js)
+*  Source to the AngularJS-GSAP **gsTimeline** features can be found here: [src/libs/angularjs-gsap/timelines.js](src/libs/angularjs-gsap/timelines.js)
 
 >Note: some of the parameters (eg. Line #69) support AngularJS interpolation symbols and data-binding. This is powerful feature over the javascript-approach... timelines will be automatically updated when scope variables are modified. This, in turn, means that the timeline can be applied to 1..n targets. In the case of Koda, the timeline is applied to any of the gridlist tiles.
 
@@ -176,7 +165,7 @@ Here are some quick links to source or demos for the experiments:
 |--------|--------|--------|--------|
 | Use **ngAnimate** with TweenMax | [block_1.html](src/demo-blocks/blocks_1.html) |  [block_1.js](src/demo-blocks/js/blocks_1.js) | [Plunkr #1](http://plnkr.co/edit/6c0ggc?p=preview) |
 | Use custom Animation services layer  | [block_2.html](src/demo-blocks/blocks_2.html) |  [block_2.js](src/demo-blocks/js/blocks_2.js) | [CodePen #2](http://codepen.io/ThomasBurleson/pen/jEyjrd) |
-| Use gsTimeline **$timeline()** with DSL  | [block_3.html](src/demo-blocks/blocks_3.html) |  [block_3.js](src/demo-blocks/js/blocks_3.js) |  |
+| Use gsTimeline **$timeline()** with DSL  | [block_3.html](src/demo-blocks/blocks_3.html) |  [block_3.js](src/demo-blocks/js/blocks_3.js) | [CodePen #3](http://codepen.io/ThomasBurleson/pen/gbmROx?editors=101)  |
 
 ![Block Animations](https://cloud.githubusercontent.com/assets/210413/5734299/2f3a3c24-9b78-11e4-928a-6edbf014ca49.jpg)
 <br/>
