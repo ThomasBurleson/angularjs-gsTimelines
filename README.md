@@ -160,7 +160,9 @@ $scope.selectedTile = selectedTile;
 Use Greensock's (**GSAP**) `TimelineMax` within a Gridlist application and demonstrate the use of animation timelines to build complex transitions. 
 
 
-## <a name="samples"></a> Here are some quick links to source or demos for the experiments:
+## <a name="samples"></a> Samples
+
+Here are some quick links to source or demos for the experiments:
 
 | Description | HTML | Javascript | Live Demos |
 |--------|--------|--------|--------|
